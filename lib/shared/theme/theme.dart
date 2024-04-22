@@ -7,7 +7,19 @@ final ThemeData appThemeData = ThemeData(
   primaryColor: AppColors.primaryMain,
   secondaryHeaderColor: AppColors.primaryPaper,
   scaffoldBackgroundColor: AppColors.backgroundMain,
-  cardColor: AppColors.backgroundPaper,
+  appBarTheme: const AppBarTheme(
+    backgroundColor: AppColors.backgroundPaper,
+    elevation: 0,
+    iconTheme: IconThemeData(color: AppColors.textPrimary),
+  ),
+  cardTheme: const CardTheme(
+    color: AppColors.backgroundPaper,
+    elevation: 0,
+    margin: EdgeInsets.all(0),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(8)),
+    ),
+  ),
   textTheme: const TextTheme(
     displayLarge: AppFonts.headline1,
     displayMedium: AppFonts.headline2,
