@@ -1,21 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:ratingus_mobile/shared/theme/theme.dart';
 
-import 'home_page.dart';
+import 'shared/router/router.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const RatingusApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class RatingusApp extends StatefulWidget {
+  const RatingusApp({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _RatingusAppState();
+}
+
+class _RatingusAppState extends State<RatingusApp> {
+  final _appRouter = AppRouter();
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
+    return MaterialApp.router(
+      routerConfig: _appRouter.config(),
+      title: 'Ratingus',
       theme: appThemeData,
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }

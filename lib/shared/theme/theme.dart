@@ -20,6 +20,14 @@ final ThemeData appThemeData = ThemeData(
       borderRadius: BorderRadius.all(Radius.circular(8)),
     ),
   ),
+  colorScheme: const ColorScheme.dark(
+    primary: AppColors.primaryMain,
+    secondary: AppColors.primaryPaper,
+    background: AppColors.backgroundMain,
+    surface: AppColors.backgroundPaper,
+    onPrimary: AppColors.textPrimary,
+    onSecondary: AppColors.textHelper,
+  ),
   textTheme: const TextTheme(
     displayLarge: AppFonts.headline1,
     displayMedium: AppFonts.headline2,
