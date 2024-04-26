@@ -1,16 +1,4 @@
-class ClassItem {
-  final int id;
-  final String name;
-
-  ClassItem({required this.id, required this.name});
-
-  factory ClassItem.fromJson(Map<String, dynamic> json) {
-    return ClassItem(
-      id: json['id'],
-      name: json['name'],
-    );
-  }
-}
+import 'package:ratingus_mobile/entity/class/model/class_model.dart';
 
 class Announcement {
   final String fullName;

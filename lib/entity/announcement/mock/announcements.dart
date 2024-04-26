@@ -1,4 +1,5 @@
 import 'package:ratingus_mobile/entity/announcement/model/announcement_model.dart';
+import 'package:ratingus_mobile/entity/class/model/class_model.dart';
 
 final List<Announcement> announcements = <Announcement>[
   Announcement(
