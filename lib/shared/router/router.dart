@@ -14,7 +14,7 @@ class AppRouter extends _$AppRouter {
           page: LayoutRoute.page,
           initial: true,
           children: [
-            AutoRoute(page: AnnouncementsRoute.page, path: 'announcements', initial: true),
+            AutoRoute(page: AnnouncementsRoute.page, path: 'announcements'),
             AutoRoute(page: ProfileRoute.page, path: 'profile'),
           ],
         )
