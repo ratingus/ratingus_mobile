@@ -37,6 +37,9 @@ final ThemeData appThemeData = ThemeData(
     bodyLarge: AppFonts.body,
     bodyMedium: AppFonts.small,
     bodySmall: AppFonts.caption,
+    titleLarge: AppFonts.bodyMedium,
+    titleMedium: AppFonts.smallMedium,
+    titleSmall: AppFonts.captionMedium,
   ).apply(
     bodyColor: AppColors.textPrimary,
     displayColor: AppColors.textPrimary,
