@@ -15,7 +15,7 @@ final ThemeData appThemeData = ThemeData(
   cardTheme: const CardTheme(
     color: AppColors.backgroundPaper,
     elevation: 0,
-    margin: EdgeInsets.all(0),
+    margin: EdgeInsets.zero,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.all(Radius.circular(8)),
     ),

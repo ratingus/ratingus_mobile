@@ -22,8 +22,9 @@ class LayoutScreen extends StatelessWidget {
         home: AutoTabsScaffold(
           routes: const [
             AnnouncementsRoute(),
+            DiaryRoute(),
+            CalendarRoute(),
             ProfileRoute(),
-            // TODO: routes
           ],
           bottomNavigationBuilder: (_, tabsRouter) =>
               RatingusBottomNavigationBar(onTap: tabsRouter.setActiveIndex),
