@@ -1,6 +1,6 @@
 import 'package:ratingus_mobile/entity/user/model/user.dart';
 
-final currentUser = User(
+var currentUser = User(
     id: 0,
     login: 'Логин',
     name: 'Имя',

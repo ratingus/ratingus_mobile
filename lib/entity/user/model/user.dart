@@ -17,4 +17,8 @@ class User {
       required this.schoolId,
       required this.classId,
       required this.birthdate});
+
+  String getFio() {
+    return '$surname $name $patronymic';
+  }
 }
