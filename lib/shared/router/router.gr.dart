@@ -21,6 +21,18 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const AnnouncementsPage(),
       );
     },
+    CalendarRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const CalendarPage(),
+      );
+    },
+    DiaryRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const DiaryPage(),
+      );
+    },
     LayoutRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -46,6 +58,34 @@ class AnnouncementsRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'AnnouncementsRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [CalendarPage]
+class CalendarRoute extends PageRouteInfo<void> {
+  const CalendarRoute({List<PageRouteInfo>? children})
+      : super(
+          CalendarRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'CalendarRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [DiaryPage]
+class DiaryRoute extends PageRouteInfo<void> {
+  const DiaryRoute({List<PageRouteInfo>? children})
+      : super(
+          DiaryRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'DiaryRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

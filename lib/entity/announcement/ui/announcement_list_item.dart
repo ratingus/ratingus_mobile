@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ratingus_mobile/entity/announcement/model/announcement_model.dart';
+import 'package:ratingus_mobile/entity/class/ui/class_item.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 import 'package:ratingus_mobile/shared/theme/consts/icons.dart';
 
@@ -52,25 +53,7 @@ class AnnouncementListItem extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: Row(
                   children: announcement.classes.map((classItem) {
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryMain,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
-                          child: Text(
-                            classItem.name,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(color: AppColors.primaryPaper),
-                          ),
-                        ),
-                      ),
-                    );
+                    return ClassListItem(classItem: classItem);
                   }).toList(),
                 ),
               ),
@@ -87,6 +70,5 @@ class AnnouncementListItem extends StatelessWidget {
             ],
           ),
         ));
-    ;
   }
 }
