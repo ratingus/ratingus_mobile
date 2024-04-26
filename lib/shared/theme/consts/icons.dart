@@ -8,4 +8,18 @@ final SvgPicture calendarIcon = SvgPicture.asset('assets/icons/calendar.svg');
 final SvgPicture announcementIcon = SvgPicture.asset('assets/icons/announcement.svg');
 final SvgPicture profileIcon = SvgPicture.asset('assets/icons/empty-profile.svg');
 
-final SvgPicture viewIcon = SvgPicture.asset('assets/icons/view.svg', colorFilter: const ColorFilter.mode(AppColors.textHelper, BlendMode.srcIn));
+final SvgPicture viewIcon = SvgPicture.asset(
+    'assets/icons/view.svg',
+    colorFilter: const ColorFilter.mode(AppColors.textHelper, BlendMode.srcIn)
+);
+
+final SvgPicture settingsIcon = SvgPicture.asset('assets/icons/settings.svg');
+final SvgPicture activeSettingsIcon = SvgPicture.asset('assets/icons/settings.svg',
+    colorFilter: const ColorFilter.mode(AppColors.primaryMain, BlendMode.srcIn)
+);
+final SvgPicture addUserIcon = SvgPicture.asset('assets/icons/add-user.svg');
+final SvgPicture activeAddUserIcon = SvgPicture.asset('assets/icons/add-user.svg',
+    colorFilter: const ColorFilter.mode(AppColors.primaryMain, BlendMode.srcIn)
+);
+
+final SvgPicture noImageIcon = SvgPicture.asset('assets/icons/no-image.svg');
