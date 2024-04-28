@@ -1,0 +1,25 @@
+import 'package:ratingus_mobile/entity/class/model/class_model.dart';
+
+final classes = [
+  ClassItem(id: 0, name: "Класс 1а"),
+  ClassItem(id: 1, name: "Класс 1б"),
+  ClassItem(id: 2, name: "Класс 2а"),
+  ClassItem(id: 3, name: "Класс 2б"),
+  ClassItem(id: 4, name: "Класс 3а"),
+  ClassItem(id: 5, name: "Класс 3б"),
+  ClassItem(id: 6, name: "Класс 4а"),
+  ClassItem(id: 7, name: "Класс 4б"),
+  ClassItem(id: 8, name: "Класс 5"),
+  ClassItem(id: 9, name: "Класс 6а"),
+  ClassItem(id: 10, name: "Класс 6б"),
+  ClassItem(id: 11, name: "Класс 6в"),
+  ClassItem(id: 12, name: "Класс 6г"),
+  ClassItem(id: 13, name: "Класс 7а"),
+  ClassItem(id: 14, name: "Класс 7б"),
+  ClassItem(id: 15, name: "Класс 8а"),
+  ClassItem(id: 16, name: "Класс 8б"),
+  ClassItem(id: 17, name: "Класс 9а"),
+  ClassItem(id: 18, name: "Класс 9б"),
+  ClassItem(id: 19, name: "Класс 10"),
+  ClassItem(id: 20, name: "Класс 11"),
+];

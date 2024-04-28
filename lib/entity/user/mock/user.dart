@@ -7,5 +7,5 @@ var currentUser = User(
     surname: 'Фамилия',
     patronymic: 'Отчество',
     schoolId: 0,
-    classId: 0,
+    classId: 17,
     birthdate: DateTime.utc(2002, 2, 12));
