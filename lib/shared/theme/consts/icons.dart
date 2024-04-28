@@ -23,3 +23,6 @@ final SvgPicture activeAddUserIcon = SvgPicture.asset('assets/icons/add-user.svg
 );
 
 final SvgPicture noImageIcon = SvgPicture.asset('assets/icons/no-image.svg');
+
+final SvgPicture arrowDown = SvgPicture.asset('assets/icons/arrow-down.svg',
+colorFilter: const ColorFilter.mode(AppColors.textPrimary, BlendMode.srcIn));

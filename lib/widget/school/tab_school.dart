@@ -14,8 +14,7 @@ class SchoolTabs extends StatefulWidget {
 
 class _SchoolTabsState extends State<SchoolTabs>
     with SingleTickerProviderStateMixin {
-  int _selectedSchoolIndex = 0;
-
+  int _selectedSchoolIndex = 0; // TODO: прокидывать user.schoolId и искать по нему дефолтный _selectedSchoolIndex
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
