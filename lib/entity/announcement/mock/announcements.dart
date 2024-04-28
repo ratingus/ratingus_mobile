@@ -7,8 +7,8 @@ final List<Announcement> announcements = <Announcement>[
     date: DateTime.utc(2024, 1, 30, 20, 49),
     views: 23,
     classes: [
-      ClassItem(id: 0, name: "Класс 9а"),
-      ClassItem(id: 1, name: "Класс 9б"),
+      ClassItem(id: 17, name: "Класс 9а"),
+      ClassItem(id: 18, name: "Класс 9б"),
     ],
     title: "Физры на 3 уроке сегодня не будет",
     content: "В связи с соревнованиями стрельбы по голубям и баскской пелоты.",
@@ -51,7 +51,7 @@ final List<Announcement> announcements = <Announcement>[
     date: DateTime.utc(2024, 1, 30, 11, 32),
     views: 126,
     classes: [
-      ClassItem(id: 0, name: "Класс 9а"),
+      ClassItem(id: 17, name: "Класс 9а"),
     ],
     title: "Только для класса 9а.",
   ),
@@ -60,7 +60,7 @@ final List<Announcement> announcements = <Announcement>[
     date: DateTime.utc(2024, 1, 30, 11, 32),
     views: 126,
     classes: [
-      ClassItem(id: 0, name: "Класс 9а"),
+      ClassItem(id: 17, name: "Класс 9а"),
     ],
     title: "Только для класса 9а.",
   ),
@@ -69,7 +69,7 @@ final List<Announcement> announcements = <Announcement>[
     date: DateTime.utc(2024, 1, 30, 11, 32),
     views: 126,
     classes: [
-      ClassItem(id: 0, name: "Класс 9а"),
+      ClassItem(id: 17, name: "Класс 9а"),
     ],
     title: "Только для класса 9а.",
   ),
@@ -78,7 +78,7 @@ final List<Announcement> announcements = <Announcement>[
     date: DateTime.utc(2024, 1, 30, 11, 32),
     views: 126,
     classes: [
-      ClassItem(id: 0, name: "Класс 9а"),
+      ClassItem(id: 17, name: "Класс 9а"),
     ],
     title: "Только для класса 9а.",
   ),
@@ -87,7 +87,7 @@ final List<Announcement> announcements = <Announcement>[
     date: DateTime.utc(2024, 1, 30, 11, 32),
     views: 126,
     classes: [
-      ClassItem(id: 0, name: "Класс 9а"),
+      ClassItem(id: 17, name: "Класс 9а"),
     ],
     title: "Только для класса 9а.",
   )

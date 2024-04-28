@@ -1,9 +1,6 @@
 import 'package:auto_route/annotations.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
-import 'package:ratingus_mobile/entity/class/ui/class_item.dart';
 import 'package:ratingus_mobile/entity/school/mock/schools.dart';
 import 'package:ratingus_mobile/entity/user/mock/user.dart';
 import 'package:ratingus_mobile/shared/components/buttons/pressed_button.dart';

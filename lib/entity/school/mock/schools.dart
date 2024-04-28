@@ -11,7 +11,7 @@ final schools = <School>[
       email: "school_31415@school.edu",
       role: UserRole.student,
       classes: [
-        ClassItem(id: 0, name: "Класс 9а"),
+        ClassItem(id: 17, name: "Класс 9а"),
       ]),
   School(
       id: 1,
