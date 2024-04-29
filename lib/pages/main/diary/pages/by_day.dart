@@ -6,6 +6,7 @@ import 'package:ratingus_mobile/shared/components/date_selector.dart';
 import 'package:ratingus_mobile/shared/helpers/datetime.dart';
 import 'package:ratingus_mobile/shared/helpers/strings.dart';
 import 'package:ratingus_mobile/shared/router/router.dart';
+import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 import 'package:ratingus_mobile/widget/diary/diary_list_by_day.dart';
 
 @RoutePage()
@@ -58,6 +59,7 @@ class _DiaryByDayPageState extends State<DiaryByDayPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColors.backgroundPaper,
         toolbarHeight: 0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(48),

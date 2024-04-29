@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'consts/colors.dart';
 import 'consts/fonts.dart';
 
@@ -8,7 +9,13 @@ final ThemeData appThemeData = ThemeData(
   secondaryHeaderColor: AppColors.primaryPaper,
   scaffoldBackgroundColor: AppColors.backgroundMain,
   appBarTheme: const AppBarTheme(
-    backgroundColor: AppColors.backgroundPaper,
+    systemOverlayStyle: SystemUiOverlayStyle(
+      statusBarColor: AppColors.backgroundMain,
+      statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.light,
+      systemNavigationBarColor: AppColors.backgroundMain,
+    ),
+    backgroundColor: Colors.transparent,
     elevation: 0,
     iconTheme: IconThemeData(color: AppColors.textPrimary),
   ),

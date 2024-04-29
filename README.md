@@ -1,16 +1,6 @@
-# ratingus_mobile
+# Мобильное приложение для проекта "Рейтингус"
 
-Mobile application for "Ratingus"
 
-## Getting Started
+![mobile thumb.png](https://github.com/ratingus/ratingus_mobile/blob/main/mobile_thumb.png)
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## [Скачайте наше приложение!](https://github.com/ratingus/ratingus_mobile/releases/tag/RELEASE-0.1)

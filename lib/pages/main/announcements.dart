@@ -1,5 +1,6 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
+import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 import 'package:ratingus_mobile/widget/announcements/announcements_listview_all.dart';
 import 'package:ratingus_mobile/widget/announcements/announcements_listview_by_class.dart';
 import 'package:ratingus_mobile/widget/announcements/announcements_tabbar.dart';
@@ -31,6 +32,7 @@ class _AnnouncementsPageState extends State<AnnouncementsPage>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: AppColors.backgroundPaper,
           toolbarHeight: 0,
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(48),

@@ -10,6 +10,7 @@ import 'package:ratingus_mobile/entity/study/ui/study_item.dart';
 import 'package:ratingus_mobile/entity/user/mock/user.dart';
 import 'package:ratingus_mobile/shared/helpers/datetime.dart';
 import 'package:ratingus_mobile/shared/helpers/strings.dart';
+import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 import 'package:ratingus_mobile/shared/theme/consts/icons.dart';
 import 'package:ratingus_mobile/widget/study/study_list_view.dart';
 
@@ -37,6 +38,7 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+            backgroundColor: AppColors.backgroundPaper,
             toolbarHeight: 0,
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(48),
