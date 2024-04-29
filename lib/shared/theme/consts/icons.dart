@@ -26,3 +26,8 @@ final SvgPicture noImageIcon = SvgPicture.asset('assets/icons/no-image.svg');
 
 final SvgPicture arrowDown = SvgPicture.asset('assets/icons/arrow-down.svg',
 colorFilter: const ColorFilter.mode(AppColors.textPrimary, BlendMode.srcIn));
+
+final SvgPicture arrowCircleRight = SvgPicture.asset('assets/icons/arrow-circle.svg',
+    colorFilter: const ColorFilter.mode(AppColors.textHelper, BlendMode.srcIn));
+final SvgPicture arrowCircleLeft = SvgPicture.asset('assets/icons/arrow-circle-left.svg',
+    colorFilter: const ColorFilter.mode(AppColors.textHelper, BlendMode.srcIn));
