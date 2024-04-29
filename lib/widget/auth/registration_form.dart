@@ -94,7 +94,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
             const SizedBox(
               height: 10,
             ),
-            _buildTextFormField(
+            buildTextFormField(
                 validator: _buildValidator('Фамилия'),
                 onChanged: (value) {
                   setState(() {
@@ -106,7 +106,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
             const SizedBox(
               height: 10,
             ),
-            _buildTextFormField(
+            buildTextFormField(
                 validator: _buildValidator('Имя'),
                 onChanged: (value) {
                   setState(() {
@@ -118,7 +118,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
             const SizedBox(
               height: 10,
             ),
-            _buildTextFormField(
+            buildTextFormField(
                 validator: patronymicValidator,
                 onChanged: (value) {
                   setState(() {
@@ -130,7 +130,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
             const SizedBox(
               height: 10,
             ),
-            _buildTextFormField(
+            buildTextFormField(
                 readOnly: true,
                 controller: _dateController,
                 labelText: 'Дата рождения',
@@ -146,7 +146,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
             const SizedBox(
               height: 10,
             ),
-            _buildTextFormField(
+            buildTextFormField(
                 validator: _buildValidator('Логин'),
                 onChanged: (value) {
                   setState(() {
@@ -158,7 +158,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
             const SizedBox(
               height: 10,
             ),
-            _buildTextFormField(
+            buildTextFormField(
                 validator: _buildValidator('Пароль'),
                 onChanged: (value) {
                   setState(() {
@@ -217,7 +217,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
   }
 }
 
-_buildTextFormField({
+buildTextFormField({
   validator,
   void Function(String)? onChanged,
   labelText,
