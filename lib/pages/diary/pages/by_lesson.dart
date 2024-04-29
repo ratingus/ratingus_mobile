@@ -5,6 +5,7 @@ import 'package:ratingus_mobile/entity/lesson/model/day_lesson_detail.dart';
 import 'package:ratingus_mobile/entity/lesson/model/lesson_detail.dart';
 import 'package:ratingus_mobile/shared/components/swiper.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
+import 'package:ratingus_mobile/shared/theme/consts/icons.dart';
 import 'package:ratingus_mobile/widget/diary/diary_list_by_lesson.dart';
 
 @RoutePage()
@@ -67,7 +68,7 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
       appBar: AppBar(
         toolbarHeight: 0,
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(60),
+          preferredSize: const Size.fromHeight(64),
           child: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               return Swiper<LessonDetail>(
@@ -78,19 +79,56 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                 renderSelectedValue: (LessonDetail selectedValue) {
                   return Column(
                     children: [
-                      Text(
-                        selectedValue.subject,
-                        style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                            color: AppColors.primaryMain
-                        ),
-                      ),
-                      Text(
-                        selectedValue.teacher.getFio(),
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleSmall
-                            ?.copyWith(color: AppColors.textHelper),
-                      )
+                      DropdownButton(
+                          icon: arrowDown,
+                          underline: const SizedBox(
+                            height: 0,
+                          ),
+                          selectedItemBuilder: (BuildContext context) {
+                            return dayLessonDetail.studies.map((lesson) {
+                              return Column(
+                                children: [
+                                  Text(
+                                    lesson.subject,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .displaySmall,
+                                  ),
+                                  Text(
+                                    selectedValue.teacher.getFio(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall
+                                        ?.copyWith(color: AppColors.textHelper),
+                                  ),
+                                ],
+                              );
+                            }).toList();
+                          },
+                          value: selectedValue,
+                          items: dayLessonDetail.studies
+                              .map((lesson) => DropdownMenuItem<LessonDetail>(
+                                    value: lesson,
+                                    child: Text(
+                                      lesson.subject,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .displaySmall
+                                          ?.copyWith(
+                                              color:
+                                                  selectedValue.id == lesson.id
+                                                      ? AppColors.primaryMain
+                                                      : AppColors.textPrimary),
+                                    ),
+                                  ))
+                              .toList(),
+                          onChanged: (newLesson) {
+                            setState(() {
+                              if (newLesson != null) {
+                                setLesson(newLesson);
+                              }
+                            });
+                          }),
                     ],
                   );
                 },
