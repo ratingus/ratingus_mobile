@@ -1,16 +1,19 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:ratingus_mobile/entity/lesson/model/day_lesson_detail.dart';
 import 'package:ratingus_mobile/pages/announcements.dart';
+import 'package:ratingus_mobile/pages/auth/guard.dart';
+import 'package:ratingus_mobile/pages/auth/layout.dart';
+import 'package:ratingus_mobile/pages/auth/pages/login.dart';
+import 'package:ratingus_mobile/pages/auth/pages/registration.dart';
+import 'package:ratingus_mobile/pages/auth/routes.dart';
 import 'package:ratingus_mobile/pages/calendar.dart';
 import 'package:ratingus_mobile/pages/diary/layout.dart';
 import 'package:ratingus_mobile/pages/diary/pages/by_day.dart';
 import 'package:ratingus_mobile/pages/diary/pages/by_lesson.dart';
 import 'package:ratingus_mobile/pages/diary/pages/by_week.dart';
 import 'package:ratingus_mobile/pages/diary/routes.dart';
+import 'package:ratingus_mobile/pages/layout.dart';
 import 'package:ratingus_mobile/pages/profile.dart';
 import 'package:flutter/foundation.dart';
-
-import 'layout.dart';
 
 part 'router.gr.dart';
 
@@ -21,12 +24,17 @@ class AppRouter extends _$AppRouter {
         AutoRoute(
           page: LayoutRoute.page,
           initial: true,
+          guards: [AuthGuard()],
           children: [
-            AutoRoute(page: AnnouncementsRoute.page, path: 'announcements'),
+            AutoRoute(
+                page: AnnouncementsRoute.page,
+                path: 'announcements',
+                initial: true),
             DiaryRoutes.routes,
             AutoRoute(page: CalendarRoute.page, path: 'calendar'),
             AutoRoute(page: ProfileRoute.page, path: 'profile'),
           ],
-        )
+        ),
+        AuthRoutes.routes,
       ];
 }
