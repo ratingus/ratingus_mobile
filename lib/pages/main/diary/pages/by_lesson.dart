@@ -66,6 +66,7 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColors.backgroundPaper,
         toolbarHeight: 0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(64),

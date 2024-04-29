@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:ratingus_mobile/entity/lesson/mock/diary.dart';
 import 'package:ratingus_mobile/shared/helpers/datetime.dart';
 import 'package:ratingus_mobile/shared/components/date_selector.dart';
+import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 import 'package:ratingus_mobile/widget/diary/diary_list_by_week.dart';
 
 @RoutePage()
@@ -52,6 +53,7 @@ class _DiaryByWeekPageState extends State<DiaryByWeekPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColors.backgroundPaper,
         toolbarHeight: 0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(48),
