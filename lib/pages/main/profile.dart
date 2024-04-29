@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ratingus_mobile/entity/school/mock/schools.dart';
 import 'package:ratingus_mobile/entity/user/mock/user.dart';
+import 'package:ratingus_mobile/shared/components/custom_modal.dart';
 import 'package:ratingus_mobile/shared/components/pressed_button.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 import 'package:ratingus_mobile/shared/theme/consts/icons.dart';
+import 'package:ratingus_mobile/widget/auth/registration_form.dart';
 import 'package:ratingus_mobile/widget/profile/profile_icon.dart';
 import 'package:ratingus_mobile/widget/school/tab_school.dart';
 
@@ -18,6 +20,137 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  void _showCodeModal(BuildContext context) {
+    Navigator.of(context).push(CustomModal(
+      content: Padding(
+        padding:
+            const EdgeInsets.only(top: 64, left: 16, right: 16, bottom: 16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Column(
+              children: [
+                Text(
+                  'Код приглашения',
+                  style: Theme.of(context).textTheme.displayMedium,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                buildTextFormField(
+                    onChanged: (value) {}, labelText: 'Введите код'),
+              ],
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: AppColors.primaryMain,
+              ),
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                'Ввести код',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: AppColors.primaryPaper,
+                    ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ));
+  }
+
+  final _dateController = TextEditingController();
+
+  DateTime? getSelectedDate() {
+    try {
+      return _dateFormatter.parse(_dateController.text);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  final _dateFormatter = DateFormat('dd MMM yyyy', 'ru');
+
+  @override
+  void dispose() {
+    _dateController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _selectDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      locale: const Locale('ru', 'RU'),
+      initialDate: getSelectedDate() ??
+          DateTime.now().subtract(const Duration(days: 365 * 7)),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now().subtract(const Duration(days: 365 * 6)),
+    );
+    if (picked != null) {
+      _dateController.text = _dateFormatter.format(picked);
+    }
+  }
+
+  void _showEditModal(BuildContext context) {
+    Navigator.of(context).push(CustomModal(
+      content: Padding(
+        padding:
+            const EdgeInsets.only(top: 64, left: 16, right: 16, bottom: 16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Column(
+              children: [
+                Text(
+                  'Профиль',
+                  style: Theme.of(context).textTheme.displayMedium,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                buildTextFormField(onChanged: (value) {}, labelText: 'Фамилия'),
+                const SizedBox(
+                  height: 10,
+                ),
+                buildTextFormField(onChanged: (value) {}, labelText: 'Имя'),
+                const SizedBox(
+                  height: 10,
+                ),
+                buildTextFormField(
+                    onChanged: (value) {}, labelText: 'Отчество'),
+                const SizedBox(
+                  height: 10,
+                ),
+                buildTextFormField(
+                    readOnly: true,
+                    controller: _dateController,
+                    labelText: 'Дата рождения',
+                    suffixIcon: InkWell(
+                        onTap: _selectDate,
+                        child: const Icon(
+                          Icons.calendar_today_outlined,
+                          color: AppColors.textHelper,
+                        ))),
+              ],
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: AppColors.primaryMain,
+              ),
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                'Изменить',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: AppColors.primaryPaper,
+                    ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     var user = currentUser;
@@ -54,12 +187,12 @@ class _ProfilePageState extends State<ProfilePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           PressedIconButton(
-                            onPressed: () {},
+                            onPressed: () => _showCodeModal(context),
                             icon: addUserIcon,
                             activeIcon: activeAddUserIcon,
                           ),
                           PressedIconButton(
-                            onPressed: () {},
+                            onPressed: () => _showEditModal(context),
                             icon: settingsIcon,
                             activeIcon: activeSettingsIcon,
                           ),
@@ -114,10 +247,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           Expanded(
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 12),
-                                child: SchoolTabs(schools: schoolList),
-                              )),
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: SchoolTabs(schools: schoolList),
+                          )),
                         ],
                       ),
                     ),

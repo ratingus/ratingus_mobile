@@ -23,7 +23,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
   final _formKey = GlobalKey<FormState>();
   String? errorMessage;
 
-  final _buildValidator = (String fieldName) => (String? value) {
+  _buildValidator(String fieldName) => (String? value) {
         if (value == null || value.isEmpty) {
           return 'Заполните поле';
         } else if (value.length <= 3) {
@@ -85,6 +85,8 @@ class _RegistrationFormState extends State<RegistrationForm> {
     }
   }
 
+  bool isWatchRules = false;
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -94,7 +96,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
             const SizedBox(
               height: 10,
             ),
-            _buildTextFormField(
+            buildTextFormField(
                 validator: _buildValidator('Фамилия'),
                 onChanged: (value) {
                   setState(() {
@@ -106,7 +108,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
             const SizedBox(
               height: 10,
             ),
-            _buildTextFormField(
+            buildTextFormField(
                 validator: _buildValidator('Имя'),
                 onChanged: (value) {
                   setState(() {
@@ -118,7 +120,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
             const SizedBox(
               height: 10,
             ),
-            _buildTextFormField(
+            buildTextFormField(
                 validator: patronymicValidator,
                 onChanged: (value) {
                   setState(() {
@@ -130,7 +132,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
             const SizedBox(
               height: 10,
             ),
-            _buildTextFormField(
+            buildTextFormField(
                 readOnly: true,
                 controller: _dateController,
                 labelText: 'Дата рождения',
@@ -146,7 +148,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
             const SizedBox(
               height: 10,
             ),
-            _buildTextFormField(
+            buildTextFormField(
                 validator: _buildValidator('Логин'),
                 onChanged: (value) {
                   setState(() {
@@ -158,7 +160,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
             const SizedBox(
               height: 10,
             ),
-            _buildTextFormField(
+            buildTextFormField(
                 validator: _buildValidator('Пароль'),
                 onChanged: (value) {
                   setState(() {
@@ -181,6 +183,50 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 ),
                 textInputType: TextInputType.visiblePassword,
                 textInputAction: TextInputAction.done),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: SizedBox(
+                    height: 24.0,
+                    width: 24.0,
+                    child: Checkbox(
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        value: isWatchRules,
+                        onChanged: (value) => {
+                              setState(() {
+                                isWatchRules = value ?? false;
+                              })
+                            }),
+                  ),
+                ),
+                Expanded(
+                    child: RichText(
+                        maxLines: null,
+                        text: TextSpan(
+                          text: 'Я согласен с ',
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    color: AppColors.textPrimary,
+                                  ),
+                          children: [
+                            // TODO: Ссылка на пользовательское соглашение
+                            TextSpan(
+                              text: '“Пользовательским соглашением”',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(
+                                    color: AppColors.primaryMain,
+                                  ),
+                            ),
+                          ],
+                        )))
+              ],
+            ),
             const SizedBox(
               height: 10,
             ),
@@ -217,7 +263,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
   }
 }
 
-_buildTextFormField({
+buildTextFormField({
   validator,
   void Function(String)? onChanged,
   labelText,
