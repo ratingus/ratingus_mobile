@@ -6,6 +6,7 @@ import 'package:ratingus_mobile/entity/user/mock/user.dart';
 import 'package:ratingus_mobile/shared/components/pressed_button.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 import 'package:ratingus_mobile/shared/theme/consts/icons.dart';
+import 'package:ratingus_mobile/widget/profile/profile_icon.dart';
 import 'package:ratingus_mobile/widget/school/tab_school.dart';
 
 @RoutePage()
@@ -70,39 +71,14 @@ class _ProfilePageState extends State<ProfilePage> {
                             constraints: const BoxConstraints(
                               maxHeight: 0,
                             ),
-                            child: Stack(
+                            child: const Stack(
                               clipBehavior: Clip.none,
                               children: [
                                 Positioned(
                                   top: -128 - 12,
                                   left: 0,
                                   right: 0,
-                                  child: TextButton(
-                                    onPressed: () {},
-                                    child: SizedBox(
-                                      width: 128,
-                                      height: 128,
-                                      child: Container(
-                                        clipBehavior:
-                                            Clip.antiAliasWithSaveLayer,
-                                        decoration: BoxDecoration(
-                                          color: AppColors.textPrimary,
-                                          borderRadius:
-                                              BorderRadius.circular(128),
-                                          border: Border.all(
-                                            color: Colors.black,
-                                            width: 4,
-                                            strokeAlign:
-                                                BorderSide.strokeAlignInside,
-                                          ),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(32),
-                                          child: noImageIcon,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                  child: ProfileIcon(size: 128),
                                 ),
                               ],
                             ))),

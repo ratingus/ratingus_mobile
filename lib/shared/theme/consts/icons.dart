@@ -31,3 +31,5 @@ final SvgPicture arrowCircleRight = SvgPicture.asset('assets/icons/arrow-circle.
     colorFilter: const ColorFilter.mode(AppColors.textHelper, BlendMode.srcIn));
 final SvgPicture arrowCircleLeft = SvgPicture.asset('assets/icons/arrow-circle-left.svg',
     colorFilter: const ColorFilter.mode(AppColors.textHelper, BlendMode.srcIn));
+
+final SvgPicture headerIcon = SvgPicture.asset('assets/icons/Logo.svg');

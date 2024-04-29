@@ -1,7 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:ratingus_mobile/pages/auth/layout.dart';
-import 'package:ratingus_mobile/shared/router/router.dart';
+import 'package:ratingus_mobile/pages/auth/pages/login.dart';
+import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
+import 'package:ratingus_mobile/widget/auth/registration_form.dart';
 
 @RoutePage()
 class RegistrationScreen extends StatelessWidget {
@@ -9,16 +10,42 @@ class RegistrationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Авторизация')),
-      body: Center(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'Регистрация',
+          style: Theme.of(context).textTheme.displayMedium,
+        ),
+        const RegistrationForm(),
+        const SizedBox(
+          height: 52,
+        ),
+        SizedBox(
+          width: double.infinity,
           child: ElevatedButton(
-              onPressed: () {
-                isAuthorized = true;
-
-                context.pushRoute(const LayoutRoute());
-              },
-              child: const Text('Зарегистрироваться'))),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                PageRouteBuilder(
+                  pageBuilder: (BuildContext context, Animation<double> animation1, Animation<double> animation2) {
+                    return const LoginScreen();
+                  },
+                  transitionDuration: Duration.zero,
+                  reverseTransitionDuration: Duration.zero,
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryPaper),
+            child: Text('Вход',
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    ?.copyWith(color: AppColors.textPrimary)),
+          ),
+        ),
+      ],
     );
   }
 }

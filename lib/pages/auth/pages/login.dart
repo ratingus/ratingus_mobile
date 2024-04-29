@@ -1,7 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:ratingus_mobile/pages/auth/layout.dart';
+import 'package:ratingus_mobile/pages/auth/pages/registration.dart';
 import 'package:ratingus_mobile/shared/router/router.dart';
+import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
+import 'package:ratingus_mobile/widget/auth/login_form.dart';
 
 @RoutePage()
 class LoginScreen extends StatelessWidget {
@@ -9,32 +11,42 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0,
-      ),
-      body: Center(
-        child: Card(
-          child: SizedBox(
-            height: 260,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-              child: Column(
-                children: [
-                  Text('Вход в систему', style: Theme.of(context).textTheme.displayMedium,),
-                  ElevatedButton(
-                      onPressed: () {
-                        isAuthorized = true;
-
-                        context.pushRoute(const LayoutRoute());
-                      },
-                      child: const Text('Войти'))
-                ],
-              ),
-            ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'Вход в систему',
+          style: Theme.of(context).textTheme.displayMedium,
+        ),
+        const LoginForm(),
+        const SizedBox(
+          height: 52,
+        ),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (BuildContext context, Animation<double> animation1, Animation<double> animation2) {
+                    return const RegistrationScreen();
+                  },
+                  transitionDuration: Duration.zero,
+                  reverseTransitionDuration: Duration.zero,
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryPaper),
+            child: Text('Регистрация',
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    ?.copyWith(color: AppColors.textPrimary)),
           ),
         ),
-      ),
+      ],
     );
   }
 }
