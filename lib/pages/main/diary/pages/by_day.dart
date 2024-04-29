@@ -1,8 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:ratingus_mobile/entity/lesson/mock/diary.dart';
 import 'package:ratingus_mobile/shared/components/date_selector.dart';
 import 'package:ratingus_mobile/shared/helpers/datetime.dart';
+import 'package:ratingus_mobile/shared/helpers/strings.dart';
 import 'package:ratingus_mobile/shared/router/router.dart';
 import 'package:ratingus_mobile/widget/diary/diary_list_by_day.dart';
 
@@ -67,7 +69,8 @@ class _DiaryByDayPageState extends State<DiaryByDayPage> {
                 prev: prevDayOfWeek,
                 set: setDayOfWeek,
                 renderSelectDate: ({required DateTime selectedDate}) {
-                  return Text(getDayMonth(selectedDate),
+                  return Text(
+                      '${capitalize(DateFormat('EEE', 'ru').format(selectedDate))}, ${getDayMonth(selectedDate)}',
                       style: Theme.of(context).textTheme.displaySmall);
                 },
               );
@@ -96,11 +99,11 @@ class _DiaryByDayPageState extends State<DiaryByDayPage> {
           final currentDayLesson = getCurrentDayDiary(selectedDay);
           return Center(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: DiaryListByDay(
-                  lessonList: [currentDayLesson],
-                ),
-              ));
+            padding: const EdgeInsets.symmetric(horizontal: 2),
+            child: DiaryListByDay(
+              lessonList: [currentDayLesson],
+            ),
+          ));
         },
       ),
     );
