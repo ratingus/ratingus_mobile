@@ -45,7 +45,7 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
     if (lesson.attendance != null) {
       return AttendanceMark(attendance: lesson.attendance!);
     }
-    return null;
+    return const SizedBox();
   }
 
   @override
