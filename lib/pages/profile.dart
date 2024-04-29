@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ratingus_mobile/entity/school/mock/schools.dart';
 import 'package:ratingus_mobile/entity/user/mock/user.dart';
-import 'package:ratingus_mobile/shared/components/buttons/pressed_button.dart';
+import 'package:ratingus_mobile/shared/components/pressed_button.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 import 'package:ratingus_mobile/shared/theme/consts/icons.dart';
 import 'package:ratingus_mobile/widget/school/tab_school.dart';
