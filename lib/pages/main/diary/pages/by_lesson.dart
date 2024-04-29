@@ -86,23 +86,26 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                           ),
                           selectedItemBuilder: (BuildContext context) {
                             return dayLessonDetail.studies.map((lesson) {
-                              return Column(
-                                children: [
-                                  Text(
-                                    lesson.subject,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displaySmall,
-                                  ),
-                                  Text(
-                                    selectedValue.teacher.getFio(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleSmall
-                                        ?.copyWith(color: AppColors.textHelper),
-                                  ),
-                                ],
-                              );
+                              return Padding(
+                                  padding: const EdgeInsets.only(right: 12),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        lesson.subject,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .displaySmall,
+                                      ),
+                                      Text(
+                                        selectedValue.teacher.getFio(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleSmall
+                                            ?.copyWith(
+                                                color: AppColors.textHelper),
+                                      ),
+                                    ],
+                                  ));
                             }).toList();
                           },
                           value: selectedValue,
