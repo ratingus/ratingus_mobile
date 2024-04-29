@@ -1,5 +1,13 @@
+
+import 'package:json_annotation/json_annotation.dart';
+
+part 'role.g.dart';
+
+@JsonSerializable()
 class UserRole {
   final String value;
+
+  UserRole(this.value);
 
   const UserRole._(this.value);
 
@@ -25,4 +33,8 @@ class UserRole {
 
   @override
   String toString() => value;
+
+  factory UserRole.fromJson(String value) => UserRole.fromString(value);
+
+  String toJson() => value;
 }

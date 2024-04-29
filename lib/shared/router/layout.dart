@@ -19,10 +19,13 @@ class LayoutScreen extends StatelessWidget {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
+        supportedLocales: const [
+          Locale('ru'),
+        ],
         home: AutoTabsScaffold(
           routes: const [
             AnnouncementsRoute(),
-            DiaryRoute(),
+            DiaryWrapperRoute(),
             CalendarRoute(),
             ProfileRoute(),
           ],

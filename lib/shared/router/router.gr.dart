@@ -27,10 +27,37 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const CalendarPage(),
       );
     },
-    DiaryRoute.name: (routeData) {
+    DiaryByDayRoute.name: (routeData) {
+      final args = routeData.argsAs<DiaryByDayRouteArgs>();
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const DiaryPage(),
+        child: DiaryByDayPage(
+          key: args.key,
+          date: args.date,
+        ),
+      );
+    },
+    DiaryByLessonRoute.name: (routeData) {
+      final args = routeData.argsAs<DiaryByLessonRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: DiaryByLessonPage(
+          key: args.key,
+          dayLessonDetail: args.dayLessonDetail,
+          selectedLesson: args.selectedLesson,
+        ),
+      );
+    },
+    DiaryByWeekRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const DiaryByWeekPage(),
+      );
+    },
+    DiaryWrapperRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: WrappedRoute(child: const DiaryWrapperPage()),
       );
     },
     LayoutRoute.name: (routeData) {
@@ -77,15 +104,110 @@ class CalendarRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [DiaryPage]
-class DiaryRoute extends PageRouteInfo<void> {
-  const DiaryRoute({List<PageRouteInfo>? children})
-      : super(
-          DiaryRoute.name,
+/// [DiaryByDayPage]
+class DiaryByDayRoute extends PageRouteInfo<DiaryByDayRouteArgs> {
+  DiaryByDayRoute({
+    Key? key,
+    required DateTime date,
+    List<PageRouteInfo>? children,
+  }) : super(
+          DiaryByDayRoute.name,
+          args: DiaryByDayRouteArgs(
+            key: key,
+            date: date,
+          ),
           initialChildren: children,
         );
 
-  static const String name = 'DiaryRoute';
+  static const String name = 'DiaryByDayRoute';
+
+  static const PageInfo<DiaryByDayRouteArgs> page =
+      PageInfo<DiaryByDayRouteArgs>(name);
+}
+
+class DiaryByDayRouteArgs {
+  const DiaryByDayRouteArgs({
+    this.key,
+    required this.date,
+  });
+
+  final Key? key;
+
+  final DateTime date;
+
+  @override
+  String toString() {
+    return 'DiaryByDayRouteArgs{key: $key, date: $date}';
+  }
+}
+
+/// generated route for
+/// [DiaryByLessonPage]
+class DiaryByLessonRoute extends PageRouteInfo<DiaryByLessonRouteArgs> {
+  DiaryByLessonRoute({
+    Key? key,
+    required DateTime dayLessonDetail,
+    required int selectedLesson,
+    List<PageRouteInfo>? children,
+  }) : super(
+          DiaryByLessonRoute.name,
+          args: DiaryByLessonRouteArgs(
+            key: key,
+            dayLessonDetail: dayLessonDetail,
+            selectedLesson: selectedLesson,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'DiaryByLessonRoute';
+
+  static const PageInfo<DiaryByLessonRouteArgs> page =
+      PageInfo<DiaryByLessonRouteArgs>(name);
+}
+
+class DiaryByLessonRouteArgs {
+  const DiaryByLessonRouteArgs({
+    this.key,
+    required this.dayLessonDetail,
+    required this.selectedLesson,
+  });
+
+  final Key? key;
+
+  final DateTime dayLessonDetail;
+
+  final int selectedLesson;
+
+  @override
+  String toString() {
+    return 'DiaryByLessonRouteArgs{key: $key, dayLessonDetail: $dayLessonDetail, selectedLesson: $selectedLesson}';
+  }
+}
+
+/// generated route for
+/// [DiaryByWeekPage]
+class DiaryByWeekRoute extends PageRouteInfo<void> {
+  const DiaryByWeekRoute({List<PageRouteInfo>? children})
+      : super(
+          DiaryByWeekRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'DiaryByWeekRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [DiaryWrapperPage]
+class DiaryWrapperRoute extends PageRouteInfo<void> {
+  const DiaryWrapperRoute({List<PageRouteInfo>? children})
+      : super(
+          DiaryWrapperRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'DiaryWrapperRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

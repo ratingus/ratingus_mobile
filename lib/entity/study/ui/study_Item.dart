@@ -5,8 +5,15 @@ import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 
 class StudyItem extends StatelessWidget {
   final Study study;
+  final Widget? rightSlot;
+  final Widget? bottomSlot;
 
-  const StudyItem({super.key, required this.study});
+  const StudyItem({
+    super.key,
+    required this.study,
+    this.rightSlot,
+    this.bottomSlot,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,51 +25,68 @@ class StudyItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           color: AppColors.backgroundMain,
         ),
-            child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                child: Column(
-                  children: [
-                    Card(
-                        child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '№${study.timetableNumber.toString()}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.copyWith(color: AppColors.textHelper),
-                            ),
-                            Text(
-                              timeTableEntry.getTime(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.copyWith(color: AppColors.textHelper),
-                            ),
-                          ]),
-                    )),
-                    const SizedBox(height: 4),
-                    Card(
-                      child: ListTile(
-                        contentPadding:
-                            const EdgeInsets.symmetric(horizontal: 8),
-                        title: Text(
-                          study.subject,
-                          style: Theme.of(context)
-                              .textTheme
-                              .displayMedium
-                              ?.copyWith(color: AppColors.primaryMain),
+        child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+            child: Column(
+              children: [
+                Card(
+                    child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '№${study.timetableNumber.toString()}',
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        subtitle: Text(
-                          study.teacher.getFio(),
-                          style: Theme.of(context).textTheme.titleMedium,
+                        Text(
+                          timeTableEntry.getTime(),
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
-                      ),
-                    )
-                  ],
-                )));
+                      ]),
+                )),
+                const SizedBox(height: 4),
+                SizedBox(
+                    width: double.infinity,
+                    child: Card(
+                      child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        study.subject,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .displayMedium
+                                            ?.copyWith(
+                                                color: AppColors.primaryMain),
+                                      ),
+                                      Text(
+                                        study.teacher.getFio(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium
+                                            ?.copyWith(
+                                                color: AppColors.textHelper),
+                                      )
+                                    ],
+                                  ),
+                                  if (rightSlot != null) rightSlot!
+                                ],
+                              ),
+                              if (bottomSlot != null) bottomSlot!
+                            ],
+                          )),
+                    ))
+              ],
+            )));
   }
 }
