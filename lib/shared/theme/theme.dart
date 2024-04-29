@@ -10,9 +10,10 @@ final ThemeData appThemeData = ThemeData(
   scaffoldBackgroundColor: AppColors.backgroundMain,
   appBarTheme: const AppBarTheme(
     systemOverlayStyle: SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
+      statusBarColor: AppColors.backgroundMain,
       statusBarIconBrightness: Brightness.light,
       statusBarBrightness: Brightness.light,
+      systemNavigationBarColor: AppColors.backgroundMain,
     ),
     backgroundColor: Colors.transparent,
     elevation: 0,
