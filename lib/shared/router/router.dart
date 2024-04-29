@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:ratingus_mobile/pages/layout.dart';
 import 'package:ratingus_mobile/pages/main/announcements.dart';
 import 'package:ratingus_mobile/pages/auth/guard.dart';
 import 'package:ratingus_mobile/pages/auth/layout.dart';
@@ -21,20 +22,23 @@ part 'router.gr.dart';
 class AppRouter extends _$AppRouter {
   @override
   List<AutoRoute> get routes => [
-        AutoRoute(
-          page: LayoutRoute.page,
-          initial: true,
-          guards: [AuthGuard()],
-          children: [
-            AutoRoute(
-                page: AnnouncementsRoute.page,
-                path: 'announcements',
-                initial: true),
-            DiaryRoutes.routes,
-            AutoRoute(page: CalendarRoute.page, path: 'calendar'),
-            AutoRoute(page: ProfileRoute.page, path: 'profile'),
-          ],
-        ),
-        AuthRoutes.routes,
+        AutoRoute(page: LayoutRoute.page, initial: true, children: [
+          AutoRoute(
+            page: MainLayoutRoute.page,
+            path: 'main',
+            initial: true,
+            guards: [AuthGuard()],
+            children: [
+              AutoRoute(
+                  page: AnnouncementsRoute.page,
+                  path: 'announcements',
+                  initial: true),
+              DiaryRoutes.routes,
+              AutoRoute(page: CalendarRoute.page, path: 'calendar'),
+              AutoRoute(page: ProfileRoute.page, path: 'profile'),
+            ],
+          ),
+          AuthRoutes.routes,
+        ])
       ];
 }

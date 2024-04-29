@@ -10,15 +10,31 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Авторизация')),
+      appBar: AppBar(
+        toolbarHeight: 0,
+      ),
       body: Center(
-          child: ElevatedButton(
-              onPressed: () {
-                isAuthorized = true;
+        child: Card(
+          child: SizedBox(
+            height: 260,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+              child: Column(
+                children: [
+                  Text('Вход в систему', style: Theme.of(context).textTheme.displayMedium,),
+                  ElevatedButton(
+                      onPressed: () {
+                        isAuthorized = true;
 
-                context.pushRoute(const LayoutRoute());
-              },
-              child: const Text('Войти'))),
+                        context.pushRoute(const LayoutRoute());
+                      },
+                      child: const Text('Войти'))
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

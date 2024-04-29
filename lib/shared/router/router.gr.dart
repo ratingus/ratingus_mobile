@@ -69,13 +69,19 @@ abstract class _$AppRouter extends RootStackRouter {
     LayoutRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const LayoutScreen(),
+        child: WrappedRoute(child: const LayoutScreen()),
       );
     },
     LoginRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const LoginScreen(),
+      );
+    },
+    MainLayoutRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: WrappedRoute(child: const MainLayoutPage()),
       );
     },
     ProfileRoute.name: (routeData) {
@@ -268,6 +274,20 @@ class LoginRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'LoginRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [MainLayoutPage]
+class MainLayoutRoute extends PageRouteInfo<void> {
+  const MainLayoutRoute({List<PageRouteInfo>? children})
+      : super(
+          MainLayoutRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MainLayoutRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }
