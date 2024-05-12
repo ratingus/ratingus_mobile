@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 import 'package:ratingus_mobile/shared/theme/consts/icons.dart';
 
-bool isAuthorized = false;
+bool isAuthorized = true;
 
 @RoutePage()
 class AuthWrapperPage extends StatelessWidget implements AutoRouteWrapper {
