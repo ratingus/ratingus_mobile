@@ -1,10 +1,15 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
-import 'package:ratingus_mobile/entity/lesson/mock/diary.dart';
+import 'package:get_it/get_it.dart';
+
+import 'package:ratingus_mobile/widget/diary/diary_list_by_week.dart';
+
+import 'package:ratingus_mobile/entity/lesson/model/day_lesson.dart';
+import 'package:ratingus_mobile/entity/lesson/repo/abstract_repo.dart';
+
 import 'package:ratingus_mobile/shared/helpers/datetime.dart';
 import 'package:ratingus_mobile/shared/components/date_selector.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
-import 'package:ratingus_mobile/widget/diary/diary_list_by_week.dart';
 
 @RoutePage()
 class DiaryByWeekPage extends StatefulWidget {
@@ -17,11 +22,24 @@ class DiaryByWeekPage extends StatefulWidget {
 class _DiaryByWeekPageState extends State<DiaryByWeekPage> {
   int weekOfYear = getAcademicWeekOfYear(DateTime.now());
   PageController _pageController = PageController();
+  late Future<List<DayLesson>> _lessonList;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: weekOfYear);
+    _lessonList = _fetchLessons(getAcademicDateByWeek(weekOfYear));
+  }
+
+  Future<List<DayLesson>> _fetchLessons(DateTime dateTime) {
+    var lessonRepo = GetIt.I<AbstractLessonRepo>();
+    return lessonRepo.getByWeek(dateTime);
+  }
+
+  Future<void> _refreshLessons(DateTime dateTime) async {
+    setState(() {
+      _lessonList = _fetchLessons(dateTime);
+    });
   }
 
   void nextWeek() {
@@ -78,17 +96,50 @@ class _DiaryByWeekPageState extends State<DiaryByWeekPage> {
         onPageChanged: (int index) {
           setState(() {
             weekOfYear = index + 1;
+            _lessonList = _fetchLessons(getAcademicDateByWeek(weekOfYear));
           });
         },
         itemCount: 52, // Maximum number of weeks in a year - 53
         itemBuilder: (context, index) {
-          return Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: DiaryListByWeek(
-                  lessonList: getCurrentWeekDiary(getAcademicDateByWeek(weekOfYear)),
-                ),
-              ));
+          return RefreshIndicator(
+            onRefresh: () async {
+              _refreshLessons(getAcademicDateByWeek(weekOfYear));
+            },
+            child: FutureBuilder<List<DayLesson>>(
+              future: _lessonList,
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<DayLesson>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Error: ${snapshot.error}'),
+                        ElevatedButton(
+                          onPressed: () => _refreshLessons(
+                              getAcademicDateByWeek(weekOfYear)),
+                          child: const Text('Повторить'),
+                        ),
+                      ],
+                    ),
+                  );
+                } else {
+                  var lessonList = snapshot.data;
+                  if (lessonList == null) return const SizedBox();
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2),
+                      child: DiaryListByWeek(
+                        lessonList: lessonList,
+                      ),
+                    ),
+                  );
+                }
+              },
+            ),
+          );
         },
       ),
     );
