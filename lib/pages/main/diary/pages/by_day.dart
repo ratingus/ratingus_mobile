@@ -1,7 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
-import 'package:ratingus_mobile/entity/lesson/mock/diary.dart';
+import 'package:ratingus_mobile/entity/lesson/model/day_lesson_detail.dart';
+import 'package:ratingus_mobile/entity/lesson/repo/abstract_repo.dart';
 import 'package:ratingus_mobile/shared/components/date_selector.dart';
 import 'package:ratingus_mobile/shared/helpers/datetime.dart';
 import 'package:ratingus_mobile/shared/helpers/strings.dart';
@@ -22,12 +24,25 @@ class DiaryByDayPage extends StatefulWidget {
 class _DiaryByDayPageState extends State<DiaryByDayPage> {
   DateTime selectedDay = DateTime.now();
   PageController _pageController = PageController();
+  late Future<DayLessonDetail> _dayLesson;
 
   @override
   void initState() {
     super.initState();
     selectedDay = widget.date;
     _pageController = PageController(initialPage: selectedDay.weekday);
+    _dayLesson = _fetchLessons(selectedDay);
+  }
+
+  Future<DayLessonDetail> _fetchLessons(DateTime dateTime) {
+    var lessonRepo = GetIt.I<AbstractLessonRepo>();
+    return lessonRepo.getByDay(dateTime);
+  }
+
+  Future<void> _refreshLessons(DateTime dateTime) async {
+    setState(() {
+      _dayLesson = _fetchLessons(dateTime);
+    });
   }
 
   void nextDayOfWeek() {
@@ -98,14 +113,43 @@ class _DiaryByDayPageState extends State<DiaryByDayPage> {
         },
         itemCount: 8,
         itemBuilder: (context, index) {
-          final currentDayLesson = getCurrentDayDiary(selectedDay);
-          return Center(
-              child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2),
-            child: DiaryListByDay(
-              lessonList: [currentDayLesson],
-            ),
-          ));
+          return RefreshIndicator(
+              onRefresh: () async {
+                _refreshLessons(selectedDay);
+              },
+              child: FutureBuilder<DayLessonDetail>(
+                future: _dayLesson,
+                builder:
+                    (BuildContext context, AsyncSnapshot<DayLessonDetail> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Error: ${snapshot.error}'),
+                          ElevatedButton(
+                            onPressed: () => _refreshLessons(selectedDay),
+                            child: const Text('Повторить'),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else {
+                    var dayLesson = snapshot.data;
+                    if (dayLesson == null) return const SizedBox();
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2),
+                        child: DiaryListByDay(
+                          lessonList: [dayLesson],
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ));
         },
       ),
     );
