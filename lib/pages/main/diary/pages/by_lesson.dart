@@ -1,7 +1,6 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:ratingus_mobile/entity/lesson/mock/diary.dart';
 import 'package:ratingus_mobile/entity/lesson/model/day_lesson_detail.dart';
 import 'package:ratingus_mobile/entity/lesson/model/lesson_detail.dart';
 import 'package:ratingus_mobile/entity/lesson/repo/abstract_repo.dart';

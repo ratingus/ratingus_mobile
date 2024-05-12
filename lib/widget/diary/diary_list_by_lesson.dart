@@ -100,7 +100,7 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              capitalize(DateFormat('MMMM', 'ru')
+              capitalize(DateFormat('EEEE', 'ru')
                   .format(widget.dayLessonDetail.dateTime)),
               style: Theme.of(context)
                   .textTheme
