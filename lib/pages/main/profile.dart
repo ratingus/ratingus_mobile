@@ -1,3 +1,4 @@
+import 'package:appmetrica_plugin/appmetrica_plugin.dart';
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -45,7 +46,10 @@ class _ProfilePageState extends State<ProfilePage> {
               style: TextButton.styleFrom(
                 backgroundColor: AppColors.primaryMain,
               ),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                AppMetrica.reportEvent('Введён код организации');
+                Navigator.pop(context);
+              },
               child: Text(
                 'Ввести код',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -70,6 +74,11 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   final _dateFormatter = DateFormat('dd MMM yyyy', 'ru');
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -187,12 +196,18 @@ class _ProfilePageState extends State<ProfilePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           PressedIconButton(
-                            onPressed: () => _showCodeModal(context),
+                            onPressed: () {
+                              AppMetrica.reportEvent(
+                                  'Нажата кнопка "Ввести код"');
+                              _showCodeModal(context);
+                            },
                             icon: addUserIcon,
                             activeIcon: activeAddUserIcon,
                           ),
                           PressedIconButton(
-                            onPressed: () => _showEditModal(context),
+                            onPressed: () {
+                              _showEditModal(context);
+                            },
                             icon: settingsIcon,
                             activeIcon: activeSettingsIcon,
                           ),

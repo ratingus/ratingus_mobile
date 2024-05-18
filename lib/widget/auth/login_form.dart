@@ -1,3 +1,4 @@
+import 'package:appmetrica_plugin/appmetrica_plugin.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:ratingus_mobile/pages/auth/layout.dart';
@@ -39,6 +40,7 @@ class _LoginFormState extends State<LoginForm> {
     debugPrint('login: $login, password: $password');
     if (login == 'Логин' && password == 'admin') {
       isAuthorized = true;
+      AppMetrica.reportEvent('Пользователь вошёл в аккаунт');
       context.router.popAndPush(const LayoutRoute());
     } else {
       setState(() {
