@@ -1,3 +1,4 @@
+import 'package:appmetrica_plugin/appmetrica_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 import 'package:ratingus_mobile/shared/theme/consts/icons.dart';
@@ -22,7 +23,10 @@ class RatingusBottomNavigationBar extends StatelessWidget {
                     padding: MaterialStateProperty.all<EdgeInsets>(
                         const EdgeInsets.all(0)),
                   ),
-                  onPressed: () => onTap(0),
+                  onPressed: () {
+                    AppMetrica.reportEvent('Посещение объявлений');
+                    onTap(0);
+                  },
                   child: announcementIcon,
                 ),
                 Container(
@@ -34,7 +38,10 @@ class RatingusBottomNavigationBar extends StatelessWidget {
                     padding: MaterialStateProperty.all<EdgeInsets>(
                         const EdgeInsets.all(0)),
                   ),
-                  onPressed: () => onTap(1),
+                  onPressed: () {
+                    AppMetrica.reportEvent('Посещение дневника');
+                    onTap(1);
+                  },
                   child: diaryIcon,
                 ),
                 Container(
@@ -46,7 +53,10 @@ class RatingusBottomNavigationBar extends StatelessWidget {
                     padding: MaterialStateProperty.all<EdgeInsets>(
                         const EdgeInsets.all(0)),
                   ),
-                  onPressed: () => onTap(2),
+                  onPressed: () {
+                    AppMetrica.reportEvent('Посещение расписания');
+                    onTap(2);
+                  },
                   child: calendarIcon,
                 ),
                 Container(
@@ -58,7 +68,10 @@ class RatingusBottomNavigationBar extends StatelessWidget {
                     padding: MaterialStateProperty.all<EdgeInsets>(
                         const EdgeInsets.all(0)),
                   ),
-                  onPressed: () => onTap(3),
+                  onPressed: () {
+                    AppMetrica.reportEvent('Посещение профиля');
+                    onTap(3);
+                    },
                   child: profileIcon,
                 )
               ]),

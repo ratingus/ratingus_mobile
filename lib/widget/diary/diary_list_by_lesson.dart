@@ -1,3 +1,4 @@
+import 'package:appmetrica_plugin/appmetrica_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ratingus_mobile/entity/lesson/model/day_lesson_detail.dart';
@@ -80,6 +81,9 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
             TextFormField(
               maxLines: null,
               initialValue: lesson.note,
+              onEditingComplete: () {
+                AppMetrica.reportEvent('Оставлена заметка в дневнике');
+              },
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(12),
                 border: const OutlineInputBorder().copyWith(

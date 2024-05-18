@@ -1,3 +1,4 @@
+import 'package:appmetrica_plugin/appmetrica_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:ratingus_mobile/entity/class/ui/class_item.dart';
 import 'package:ratingus_mobile/entity/school/model/school.dart';
@@ -33,6 +34,7 @@ class _SchoolTabsState extends State<SchoolTabs>
                   alignment: Alignment.centerLeft),
               onPressed: () {
                 setState(() {
+                  AppMetrica.reportEvent('Пользователь сменил школу');
                   _selectedSchoolIndex = index;
                 });
               },
