@@ -6,8 +6,9 @@ import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 
 class SchoolTabs extends StatefulWidget {
   final List<School> schools;
+  final int defaultSchoolId;
 
-  const SchoolTabs({super.key, required this.schools});
+  const SchoolTabs({super.key, required this.schools, required this.defaultSchoolId});
 
   @override
   State<SchoolTabs> createState() => _SchoolTabsState();
@@ -15,7 +16,17 @@ class SchoolTabs extends StatefulWidget {
 
 class _SchoolTabsState extends State<SchoolTabs>
     with SingleTickerProviderStateMixin {
-  int _selectedSchoolIndex = 0; // TODO: прокидывать user.schoolId и искать по нему дефолтный _selectedSchoolIndex
+  late int _selectedSchoolIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedSchoolIndex = widget.schools.indexWhere((school) => school.id == widget.defaultSchoolId);
+    if (_selectedSchoolIndex == -1) {
+      _selectedSchoolIndex = 0;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
@@ -49,7 +60,7 @@ class _SchoolTabsState extends State<SchoolTabs>
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Text(
-                widget.schools[index].role.value,
+                widget.schools[index].role.text,
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ),
@@ -62,9 +73,7 @@ class _SchoolTabsState extends State<SchoolTabs>
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                   child: Row(
-                    children: widget.schools[index].classes.map((classItem) {
-                      return ClassListItem(classItem: classItem);
-                    }).toList(),
+                    children: [ClassListItem(classItem: widget.schools[index].classDto)],
                   ),
                 )),
           ],

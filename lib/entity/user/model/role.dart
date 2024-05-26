@@ -6,25 +6,26 @@ part 'role.g.dart';
 @JsonSerializable()
 class UserRole {
   final String value;
+  final String text;
 
-  UserRole(this.value);
+  UserRole(this.value,this.text);
 
-  const UserRole._(this.value);
+  const UserRole._(this.value,this.text);
 
-  static const UserRole student = UserRole._('Ученик');
-  static const UserRole teacher = UserRole._('Учитель');
-  static const UserRole localAdmin = UserRole._('Локальный админ');
-  static const UserRole manager = UserRole._('Менеджер платформы');
+  static const UserRole student = UserRole._('STUDENT', 'Ученик');
+  static const UserRole teacher = UserRole._('TEACHER', 'Учитель');
+  static const UserRole localAdmin = UserRole._('LOCAL_ADMIN', 'Локальный админ');
+  static const UserRole manager = UserRole._('MANAGER', 'Менеджер платформы');
 
   static UserRole fromString(String value) {
     switch (value) {
-      case 'Ученик':
+      case 'STUDENT':
         return student;
-      case 'Учитель':
+      case 'TEACHER':
         return teacher;
-      case 'Локальный админ':
+      case 'LOCAL_ADMIN':
         return localAdmin;
-      case 'Менеджер платформы':
+      case 'MANAGER':
         return manager;
       default:
         throw ArgumentError('Unknown UserRole value: $value');
@@ -32,7 +33,7 @@ class UserRole {
   }
 
   @override
-  String toString() => value;
+  String toString() => text;
 
   factory UserRole.fromJson(String value) => UserRole.fromString(value);
 
