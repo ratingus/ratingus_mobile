@@ -25,6 +25,8 @@ dependencies:
   appmetrica_plugin: ^2.0.0
   get_it: ^7.7.0
   flutter_dotenv: ^5.1.0
+  flutter_secure_storage: ^4.2.1
+  jwt_decoder: ^2.0.1
 
 dev_dependencies:
   flutter_test:
