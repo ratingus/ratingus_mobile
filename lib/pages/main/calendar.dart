@@ -1,8 +1,9 @@
-import 'package:appmetrica_plugin/appmetrica_plugin.dart';
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
+import 'package:ratingus_mobile/entity/user/model/jwt.dart';
+import 'package:ratingus_mobile/shared/api/api_dio.dart';
 
 import 'package:ratingus_mobile/widget/study/study_list_view.dart';
 
@@ -12,7 +13,6 @@ import 'package:ratingus_mobile/entity/study/model/day_study.dart';
 import 'package:ratingus_mobile/entity/study/model/study.dart';
 import 'package:ratingus_mobile/entity/study/repo/abstract_repo.dart';
 import 'package:ratingus_mobile/entity/study/ui/study_item.dart';
-import 'package:ratingus_mobile/entity/user/mock/user.dart';
 
 import 'package:ratingus_mobile/shared/helpers/datetime.dart';
 import 'package:ratingus_mobile/shared/helpers/strings.dart';
@@ -29,23 +29,30 @@ class CalendarPage extends StatefulWidget {
 class _CalendarPageState extends State<CalendarPage> {
   late Future<List<DayStudy>> _studyList;
   late Future<List<ClassItem>> _classesInSchool;
-  ClassItem _selectedClass = currentUser.classId;
+  late ClassItem _selectedClass;
+  final api = GetIt.I<Api>();
 
   @override
   void initState() {
     super.initState();
-    _studyList = _fetchStudies(_selectedClass.id);
+    _getClassFromToken();
+    _studyList = _fetchStudies();
     _classesInSchool = _fetchClasses();
   }
 
-  Future<List<DayStudy>> _fetchStudies(int classId) {
-    var studyRepo = GetIt.I<AbstractStudyRepo>();
-    return studyRepo.getByClass(classId);
+  Future<void> _getClassFromToken() async {
+    var jwt = await api.decodeToken();
+    _selectedClass = ClassItem(id: jwt.classId!, name: jwt.className!);
   }
 
-  Future<List<ClassItem>> _fetchClasses() {
+  Future<List<DayStudy>> _fetchStudies() async {
+    var studyRepo = GetIt.I<AbstractStudyRepo>();
+    return studyRepo.getByClass(_selectedClass.id);
+  }
+
+  Future<List<ClassItem>> _fetchClasses() async {
     var classRepo = GetIt.I<AbstractClassRepo>();
-    return classRepo.getAll();
+    return await classRepo.getAll();
   }
 
 
@@ -56,7 +63,7 @@ class _CalendarPageState extends State<CalendarPage> {
   }
   Future<void> _refreshStudies() async {
     setState(() {
-      _studyList = _fetchStudies(_selectedClass.id);
+      _studyList = _fetchStudies();
     });
   }
 

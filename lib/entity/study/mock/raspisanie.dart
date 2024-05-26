@@ -5,7 +5,7 @@ import 'package:ratingus_mobile/entity/user/model/teacher.dart';
 final raspisanie = <DayStudy>[
   DayStudy(
     dayOfWeek: DateTime.monday,
-    studies: [
+    lessons: [
       Study(
         timetableNumber: 1,
         studyId: 1,
@@ -16,6 +16,8 @@ final raspisanie = <DayStudy>[
             surname: "Фёдорова",
             patronymic: "Оскарльдовна"
         ),
+        startTime: DateTime(2024, 10, 11, 8, 0),
+        endTime: DateTime(2024, 10, 11, 8, 40),
       ),
       Study(
         timetableNumber: 2,
@@ -27,6 +29,8 @@ final raspisanie = <DayStudy>[
             surname: "Фёдорова",
             patronymic: "Оскарльдовна"
         ),
+        startTime: DateTime(2024, 10, 11, 8, 50),
+        endTime: DateTime(2024, 10, 11, 9, 30),
       ),
       Study(
         timetableNumber: 3,
@@ -38,12 +42,14 @@ final raspisanie = <DayStudy>[
             surname: "Фёдорова",
             patronymic: "Олеговна"
         ),
+        startTime: DateTime(2024, 10, 11, 9, 45),
+        endTime: DateTime(2024, 10, 11, 10, 25),
       ),
     ]
   ),
   DayStudy(
       dayOfWeek: DateTime.tuesday,
-      studies: [
+      lessons: [
         Study(
           timetableNumber: 1,
           studyId: 1,
@@ -54,6 +60,8 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Оскарльдовна"
           ),
+          startTime: DateTime(2024, 10, 11, 8, 0),
+          endTime: DateTime(2024, 10, 11, 8, 40),
         ),
         Study(
           timetableNumber: 2,
@@ -65,6 +73,8 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Оскарльдовна"
           ),
+          startTime: DateTime(2024, 10, 11, 8, 50),
+          endTime: DateTime(2024, 10, 11, 9, 30),
         ),
         Study(
           timetableNumber: 3,
@@ -76,12 +86,14 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Олеговна"
           ),
+          startTime: DateTime(2024, 10, 11, 9, 45),
+          endTime: DateTime(2024, 10, 11, 10, 25),
         ),
       ]
   ),
   DayStudy(
       dayOfWeek: DateTime.wednesday,
-      studies: [
+      lessons: [
         Study(
           timetableNumber: 1,
           studyId: 1,
@@ -92,6 +104,8 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Оскарльдовна"
           ),
+          startTime: DateTime(2024, 10, 11, 8, 0),
+          endTime: DateTime(2024, 10, 11, 8, 40),
         ),
         Study(
           timetableNumber: 2,
@@ -103,6 +117,8 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Оскарльдовна"
           ),
+          startTime: DateTime(2024, 10, 11, 8, 50),
+          endTime: DateTime(2024, 10, 11, 9, 30),
         ),
         Study(
           timetableNumber: 3,
@@ -114,12 +130,14 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Олеговна"
           ),
+          startTime: DateTime(2024, 10, 11, 9, 45),
+          endTime: DateTime(2024, 10, 11, 10, 25),
         ),
       ]
   ),
   DayStudy(
       dayOfWeek: DateTime.thursday,
-      studies: [
+      lessons: [
         Study(
           timetableNumber: 1,
           studyId: 1,
@@ -130,6 +148,8 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Оскарльдовна"
           ),
+          startTime: DateTime(2024, 10, 11, 8, 0),
+          endTime: DateTime(2024, 10, 11, 8, 40),
         ),
         Study(
           timetableNumber: 2,
@@ -141,6 +161,8 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Оскарльдовна"
           ),
+          startTime: DateTime(2024, 10, 11, 8, 50),
+          endTime: DateTime(2024, 10, 11, 9, 30),
         ),
         Study(
           timetableNumber: 3,
@@ -152,12 +174,14 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Олеговна"
           ),
+          startTime: DateTime(2024, 10, 11, 9, 45),
+          endTime: DateTime(2024, 10, 11, 10, 25),
         ),
       ]
   ),
   DayStudy(
       dayOfWeek: DateTime.friday,
-      studies: [
+      lessons: [
         Study(
           timetableNumber: 1,
           studyId: 1,
@@ -168,6 +192,8 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Оскарльдовна"
           ),
+          startTime: DateTime(2024, 10, 11, 8, 0),
+          endTime: DateTime(2024, 10, 11, 8, 40),
         ),
         Study(
           timetableNumber: 2,
@@ -179,6 +205,8 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Оскарльдовна"
           ),
+          startTime: DateTime(2024, 10, 11, 8, 50),
+          endTime: DateTime(2024, 10, 11, 9, 30),
         ),
         Study(
           timetableNumber: 3,
@@ -190,12 +218,14 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Олеговна"
           ),
+          startTime: DateTime(2024, 10, 11, 9, 45),
+          endTime: DateTime(2024, 10, 11, 10, 25),
         ),
       ]
   ),
   DayStudy(
       dayOfWeek: DateTime.saturday,
-      studies: [
+      lessons: [
         Study(
           timetableNumber: 1,
           studyId: 1,
@@ -206,6 +236,8 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Оскарльдовна"
           ),
+          startTime: DateTime(2024, 10, 11, 8, 0),
+          endTime: DateTime(2024, 10, 11, 8, 40),
         ),
         Study(
           timetableNumber: 2,
@@ -217,6 +249,8 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Оскарльдовна"
           ),
+          startTime: DateTime(2024, 10, 11, 8, 50),
+          endTime: DateTime(2024, 10, 11, 9, 30),
         ),
         Study(
           timetableNumber: 3,
@@ -228,7 +262,9 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Олеговна"
           ),
+          startTime: DateTime(2024, 10, 11, 9, 45),
+          endTime: DateTime(2024, 10, 11, 10, 25),
         ),
       ]
-  )
+  ),
 ];

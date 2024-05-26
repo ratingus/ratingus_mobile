@@ -37,6 +37,7 @@ class Api {
           final setCookie = response.headers['Set-Cookie'];
           if (setCookie != null && setCookie.isNotEmpty) {
             final token = _extractTokenFromSetCookie(setCookie.first);
+            print("token: $token");
             if (token != null) {
               await secureStorage.write(key: 'token', value: token);
             }

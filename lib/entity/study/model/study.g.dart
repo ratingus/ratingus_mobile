@@ -11,6 +11,8 @@ Study _$StudyFromJson(Map<String, dynamic> json) => Study(
       timetableNumber: (json['timetableNumber'] as num).toInt(),
       subject: json['subject'] as String,
       teacher: Teacher.fromJson(json['teacher'] as Map<String, dynamic>),
+      startTime: DateTime.parse(json['startTime'] as String),
+      endTime: DateTime.parse(json['endTime'] as String),
     );
 
 Map<String, dynamic> _$StudyToJson(Study instance) => <String, dynamic>{
@@ -18,4 +20,6 @@ Map<String, dynamic> _$StudyToJson(Study instance) => <String, dynamic>{
       'timetableNumber': instance.timetableNumber,
       'subject': instance.subject,
       'teacher': instance.teacher,
+      'startTime': instance.startTime.toIso8601String(),
+      'endTime': instance.endTime.toIso8601String(),
     };

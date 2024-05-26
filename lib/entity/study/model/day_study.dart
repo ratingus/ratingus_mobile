@@ -9,9 +9,9 @@ part 'day_study.g.dart';
 class DayStudy extends DayWithStudies<Study> {
   final int dayOfWeek;
   @override
-  final List<Study> studies;
+  final List<Study> lessons;
 
-  DayStudy({required this.dayOfWeek, required this.studies});
+  DayStudy({required this.dayOfWeek, required this.lessons});
 
   factory DayStudy.fromJson(Map<String, dynamic> json) => _$DayStudyFromJson(json);
 

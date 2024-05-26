@@ -1,13 +1,14 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:ratingus_mobile/entity/lesson/model/day_lesson_detail.dart';
-import 'package:ratingus_mobile/entity/lesson/model/lesson_detail.dart';
-import 'package:ratingus_mobile/entity/lesson/repo/abstract_repo.dart';
+import 'package:provider/provider.dart';
+import 'package:ratingus_mobile/entity/lesson/model/day_lesson.dart';
+import 'package:ratingus_mobile/entity/lesson/model/lesson.dart';
 import 'package:ratingus_mobile/shared/components/swiper.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 import 'package:ratingus_mobile/shared/theme/consts/icons.dart';
 import 'package:ratingus_mobile/widget/diary/diary_list_by_lesson.dart';
+
+import 'diary_provider.dart';
 
 @RoutePage()
 class DiaryByLessonPage extends StatefulWidget {
@@ -22,27 +23,14 @@ class DiaryByLessonPage extends StatefulWidget {
 }
 
 class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
-  late Future<DayLessonDetail> _dayLessonDetail;
   late int selectedLesson;
   PageController _pageController = PageController();
 
   @override
   void initState() {
     super.initState();
-    _dayLessonDetail = _fetchLessons(widget.dayLessonDetail);
     selectedLesson = widget.selectedLesson;
     _pageController = PageController(initialPage: selectedLesson);
-  }
-
-  Future<DayLessonDetail> _fetchLessons(DateTime dateTime) {
-    var lessonRepo = GetIt.I<AbstractLessonRepo>();
-    return lessonRepo.getByDay(dateTime);
-  }
-
-  Future<void> _refreshLessons(DateTime dateTime) async {
-    setState(() {
-      _dayLessonDetail = _fetchLessons(dateTime);
-    });
   }
 
   void nextLesson() {
@@ -67,7 +55,7 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
         duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
   }
 
-  void setLesson(LessonDetail selectedLessonValue) async {
+  void setLesson(Lesson selectedLessonValue) async {
     setState(() {
       selectedLesson = selectedLessonValue.timetableNumber - 1;
     });
@@ -76,6 +64,8 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
 
   @override
   Widget build(BuildContext context) {
+    final diaryProvider = Provider.of<DiaryProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.backgroundPaper,
@@ -84,10 +74,10 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
           preferredSize: const Size.fromHeight(64),
           child: LayoutBuilder(
               builder: (BuildContext context, BoxConstraints constraints) {
-            return FutureBuilder<DayLessonDetail>(
-              future: _dayLessonDetail,
+            return FutureBuilder<DayLesson>(
+              future: diaryProvider.fetchLessonsByDay(widget.dayLessonDetail),
               builder: (BuildContext context,
-                  AsyncSnapshot<DayLessonDetail> snapshot) {
+                  AsyncSnapshot<DayLesson> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
@@ -98,7 +88,7 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                         Text('Error: ${snapshot.error}'),
                         ElevatedButton(
                           onPressed: () =>
-                              _refreshLessons(widget.dayLessonDetail),
+                              diaryProvider.fetchLessonsByDay(widget.dayLessonDetail),
                           child: const Text('Повторить'),
                         ),
                       ],
@@ -107,12 +97,12 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                 } else {
                   var dayLessonDetail = snapshot.data;
                   if (dayLessonDetail == null) return const SizedBox();
-                  return Swiper<LessonDetail>(
-                    selectedValue: dayLessonDetail.studies[selectedLesson],
+                  return Swiper<Lesson>(
+                    selectedValue: dayLessonDetail.lessons[selectedLesson],
                     prev: prevLesson,
                     next: nextLesson,
                     set: setLesson,
-                    renderSelectedValue: (LessonDetail selectedValue) {
+                    renderSelectedValue: (Lesson selectedValue) {
                       return Column(
                         children: [
                           DropdownButton(
@@ -121,7 +111,7 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                                 height: 0,
                               ),
                               selectedItemBuilder: (BuildContext context) {
-                                return dayLessonDetail.studies.map((lesson) {
+                                return dayLessonDetail.lessons.map((lesson) {
                                   return Padding(
                                       padding: const EdgeInsets.only(right: 12),
                                       child: Column(
@@ -146,9 +136,9 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                                 }).toList();
                               },
                               value: selectedValue,
-                              items: dayLessonDetail.studies
+                              items: dayLessonDetail.lessons
                                   .map((lesson) =>
-                                      DropdownMenuItem<LessonDetail>(
+                                      DropdownMenuItem<Lesson>(
                                         value: lesson,
                                         child: Text(
                                           lesson.subject,
@@ -156,8 +146,8 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                                               .textTheme
                                               .displaySmall
                                               ?.copyWith(
-                                                  color: selectedValue.id ==
-                                                          lesson.id
+                                                  color: selectedValue.lessonId ==
+                                                          lesson.lessonId
                                                       ? AppColors.primaryMain
                                                       : AppColors.textPrimary),
                                         ),
@@ -173,7 +163,7 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                         ],
                       );
                     },
-                    selectValue: (LessonDetail selectedValue) {
+                    selectValue: (Lesson selectedValue) {
                       return selectedValue;
                     },
                   );
@@ -183,10 +173,10 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
           }),
         ),
       ),
-      body: FutureBuilder<DayLessonDetail>(
-        future: _dayLessonDetail,
+      body: FutureBuilder<DayLesson>(
+        future: diaryProvider.fetchLessonsByDay(widget.dayLessonDetail),
         builder:
-            (BuildContext context, AsyncSnapshot<DayLessonDetail> snapshot) {
+            (BuildContext context, AsyncSnapshot<DayLesson> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
@@ -196,7 +186,7 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                 children: [
                   Text('Error: ${snapshot.error}'),
                   ElevatedButton(
-                    onPressed: () => _refreshLessons(widget.dayLessonDetail),
+                    onPressed: () => diaryProvider.fetchLessonsByDay(widget.dayLessonDetail),
                     child: const Text('Повторить'),
                   ),
                 ],
@@ -212,11 +202,11 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                   selectedLesson = index;
                 });
               },
-              itemCount: dayLessonDetail.studies.length,
+              itemCount: dayLessonDetail.lessons.length,
               itemBuilder: (context, index) {
                 return RefreshIndicator(
                   onRefresh: () async {
-                    _refreshLessons(widget.dayLessonDetail);
+                    diaryProvider.fetchLessonsByDay(widget.dayLessonDetail);
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(12),

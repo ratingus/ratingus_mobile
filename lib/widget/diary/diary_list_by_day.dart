@@ -1,8 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:ratingus_mobile/entity/lesson/model/day_lesson_detail.dart';
+import 'package:ratingus_mobile/entity/lesson/model/day_lesson.dart';
 import 'package:ratingus_mobile/entity/lesson/model/lesson.dart';
-import 'package:ratingus_mobile/entity/lesson/model/lesson_detail.dart';
 import 'package:ratingus_mobile/entity/mark/ui/attendance.dart';
 import 'package:ratingus_mobile/entity/mark/ui/mark.dart';
 import 'package:ratingus_mobile/entity/study/model/study.dart';
@@ -11,7 +10,7 @@ import 'package:ratingus_mobile/shared/router/router.dart';
 import 'package:ratingus_mobile/widget/study/study_list_view.dart';
 
 class DiaryListByDay extends StatefulWidget {
-  final List<DayLessonDetail> lessonList;
+  final List<DayLesson> lessonList;
 
   const DiaryListByDay({super.key, required this.lessonList});
 
@@ -34,7 +33,7 @@ class _DiaryListByDayState extends State<DiaryListByDay> {
 
   @override
   Widget build(BuildContext context) {
-    Widget renderHomeWork(LessonDetail lesson) {
+    Widget renderHomeWork(Lesson lesson) {
       if (lesson.homework != null) {
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -56,7 +55,7 @@ class _DiaryListByDayState extends State<DiaryListByDay> {
       );
     }
 
-    Widget renderNote(LessonDetail lesson) {
+    Widget renderNote(Lesson lesson) {
       if (lesson.note != null) {
         return Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -77,7 +76,7 @@ class _DiaryListByDayState extends State<DiaryListByDay> {
       );
     }
 
-    return StudyListView<DayLessonDetail, LessonDetail>(
+    return StudyListView<DayLesson, Lesson>(
       list: widget.lessonList,
       renderItem: (lesson, day) => TextButton(
           style: ButtonStyle(

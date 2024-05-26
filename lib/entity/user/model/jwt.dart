@@ -10,6 +10,8 @@ class JWT {
   final String surname;
   final String patronymic;
   final String? school;
+  final int? classId;
+  final String? className;
   final String sub;
   final int iat;
   final int exp;
@@ -21,6 +23,8 @@ class JWT {
     required this.surname,
     required this.patronymic,
     required this.school,
+    required this.classId,
+    required this.className,
     required this.sub,
     required this.iat,
     required this.exp,

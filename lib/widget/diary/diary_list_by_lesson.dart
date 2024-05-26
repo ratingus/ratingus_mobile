@@ -1,9 +1,8 @@
 import 'package:appmetrica_plugin/appmetrica_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:ratingus_mobile/entity/lesson/model/day_lesson_detail.dart';
+import 'package:ratingus_mobile/entity/lesson/model/day_lesson.dart';
 import 'package:ratingus_mobile/entity/lesson/model/lesson.dart';
-import 'package:ratingus_mobile/entity/lesson/model/lesson_detail.dart';
 import 'package:ratingus_mobile/entity/mark/ui/attendance.dart';
 import 'package:ratingus_mobile/entity/mark/ui/mark.dart';
 import 'package:ratingus_mobile/entity/timetable/mock/timetable.dart';
@@ -13,7 +12,7 @@ import 'package:ratingus_mobile/shared/helpers/strings.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 
 class DiaryListByLesson extends StatefulWidget {
-  final DayLessonDetail dayLessonDetail;
+  final DayLesson dayLessonDetail;
   final int selectedLesson;
 
   const DiaryListByLesson(
@@ -25,14 +24,14 @@ class DiaryListByLesson extends StatefulWidget {
 
 class _DiaryListByLessonState extends State<DiaryListByLesson> {
   late int selectedLesson;
-  late LessonDetail lesson;
+  late Lesson lesson;
   late TimetableEntry timeTableEntry;
 
   @override
   initState() {
     super.initState();
     selectedLesson = widget.selectedLesson;
-    lesson = widget.dayLessonDetail.studies[selectedLesson];
+    lesson = widget.dayLessonDetail.lessons[selectedLesson];
     timeTableEntry =
         currentTimetable.timetableEntry[lesson.timetableNumber - 1];
   }
@@ -51,7 +50,7 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
 
   @override
   Widget build(BuildContext context) {
-    Widget renderHomeWork(LessonDetail lesson) {
+    Widget renderHomeWork(Lesson lesson) {
       if (lesson.homework != null) {
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -73,7 +72,7 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
       );
     }
 
-    Widget renderNote(LessonDetail lesson) {
+    Widget renderNote(Lesson lesson) {
       return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
