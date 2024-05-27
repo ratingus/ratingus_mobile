@@ -1,9 +1,13 @@
 import 'package:appmetrica_plugin/appmetrica_plugin.dart';
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
-import 'package:ratingus_mobile/entity/school/mock/schools.dart';
-import 'package:ratingus_mobile/entity/user/mock/user.dart';
+import 'package:ratingus_mobile/entity/auth/utils/token_notifier.dart';
+import 'package:ratingus_mobile/entity/user/model/jwt.dart';
+import 'package:ratingus_mobile/entity/user/model/profile_dto.dart';
+import 'package:ratingus_mobile/entity/user/repo/abstract_repo.dart';
+import 'package:ratingus_mobile/shared/api/api_dio.dart';
 import 'package:ratingus_mobile/shared/components/custom_modal.dart';
 import 'package:ratingus_mobile/shared/components/pressed_button.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
@@ -21,49 +25,13 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  void _showCodeModal(BuildContext context) {
-    Navigator.of(context).push(CustomModal(
-      content: Padding(
-        padding:
-            const EdgeInsets.only(top: 64, left: 16, right: 16, bottom: 16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Column(
-              children: [
-                Text(
-                  'Код приглашения',
-                  style: Theme.of(context).textTheme.displayMedium,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                buildTextFormField(
-                    onChanged: (value) {}, labelText: 'Введите код'),
-              ],
-            ),
-            TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: AppColors.primaryMain,
-              ),
-              onPressed: () {
-                AppMetrica.reportEvent('Введён код организации');
-                Navigator.pop(context);
-              },
-              child: Text(
-                'Ввести код',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: AppColors.primaryPaper,
-                    ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    ));
-  }
-
+  late final TokenNotifier _tokenNotifier;
+  final profileRepo = GetIt.I<AbstractProfileRepo>();
+  String code = "";
   final _dateController = TextEditingController();
+  final api = GetIt.I<Api>();
+  final DateFormat _dateFormatter = DateFormat('dd MMM yyyy', 'ru');
+  late Future<ProfileDto> _profileDto;
 
   DateTime? getSelectedDate() {
     try {
@@ -73,16 +41,35 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  final _dateFormatter = DateFormat('dd MMM yyyy', 'ru');
-
   @override
-  void initState() {
+  initState() {
     super.initState();
+    _profileDto = _fetchUser();
+    _tokenNotifier = GetIt.I<TokenNotifier>();
+    _tokenNotifier.addListener(_onTokenChanged);
+  }
+
+  void _onTokenChanged() {
+    setState(() {
+      _profileDto = _fetchUser();
+    });
+  }
+
+  Future<ProfileDto> _fetchUser() async {
+    final jwt = await api.decodeToken();
+    return await profileRepo.getProfile(jwt.id);
+  }
+
+  Future<void> _refreshUser() async {
+    setState(() {
+      _profileDto = _fetchUser();
+    });
   }
 
   @override
   void dispose() {
     _dateController.dispose();
+    _tokenNotifier.removeListener(_onTokenChanged);
     super.dispose();
   }
 
@@ -98,6 +85,85 @@ class _ProfilePageState extends State<ProfilePage> {
     if (picked != null) {
       _dateController.text = _dateFormatter.format(picked);
     }
+  }
+
+  void _showCodeModal(BuildContext context) {
+    handleSubmit() async {
+      AppMetrica.reportEvent('Введён код организации');
+      try {
+        AppMetrica.reportEvent(
+            'Отправлен запрос на подключение пользователя к организации');
+        await profileRepo.enterCode(code);
+        AppMetrica.reportEvent('Пользователь добавлен в организацию');
+        await _fetchUser();
+        JWT jwt = await api.decodeToken();
+        _tokenNotifier.value = jwt;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Вы добавлены в новую школу"),
+          ));
+        });
+      } catch (e) {
+        print('Error: $e');
+        AppMetrica.reportEvent(
+            'Ошибка при добавлении пользователя в организацию');
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Произошла ошибка при добавлении в организацию"),
+          ));
+        });
+      }
+    }
+
+    Navigator.of(context).push(CustomModal(
+      content: Padding(
+        padding:
+            const EdgeInsets.only(top: 64, left: 16, right: 16, bottom: 16),
+        child: Form(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Column(
+                children: [
+                  Text(
+                    'Код приглашения',
+                    style: Theme.of(context).textTheme.displayMedium,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  buildTextFormField(
+                      onFieldSubmitted: (value) {
+                        handleSubmit();
+                      },
+                      textInputAction: TextInputAction.done,
+                      onChanged: (value) {
+                        setState(() {
+                          code = value;
+                        });
+                      },
+                      labelText: 'Введите код'),
+                ],
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: AppColors.primaryMain,
+                ),
+                onPressed: handleSubmit,
+                child: Text(
+                  'Ввести код',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: AppColors.primaryPaper,
+                      ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ));
   }
 
   void _showEditModal(BuildContext context) {
@@ -142,18 +208,35 @@ class _ProfilePageState extends State<ProfilePage> {
                         ))),
               ],
             ),
-            TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: AppColors.primaryMain,
-              ),
-              onPressed: () => Navigator.pop(context),
-              child: Text(
-                'Изменить',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: AppColors.primaryPaper,
-                    ),
-              ),
-            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: AppColors.primaryMain,
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    'Изменить',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: AppColors.primaryPaper,
+                        ),
+                  ),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: AppColors.primaryPaper,
+                  ),
+                  onPressed: () => {api.logout()},
+                  child: Text(
+                    'Выйти',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: AppColors.textPrimary,
+                        ),
+                  ),
+                ),
+              ],
+            )
           ],
         ),
       ),
@@ -162,117 +245,157 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    var user = currentUser;
-    var schoolList = schools;
-
-    return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          const Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Image(
-                  image:
-                      AssetImage("assets/images/profile_empty_back_image.png"),
-                  height: 180,
-                  fit: BoxFit.fitHeight,
-                )
-              ]),
-          Positioned(
-              top: 180 - 20,
-              left: 0,
-              right: 0,
-              bottom: 2,
-              child: Card(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                ),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 6),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          PressedIconButton(
-                            onPressed: () {
-                              AppMetrica.reportEvent(
-                                  'Нажата кнопка "Ввести код"');
-                              _showCodeModal(context);
-                            },
-                            icon: addUserIcon,
-                            activeIcon: activeAddUserIcon,
-                          ),
-                          PressedIconButton(
-                            onPressed: () {
-                              _showEditModal(context);
-                            },
-                            icon: settingsIcon,
-                            activeIcon: activeSettingsIcon,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Flexible(
-                        child: ConstrainedBox(
-                            constraints: const BoxConstraints(
-                              maxHeight: 0,
-                            ),
-                            child: const Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                Positioned(
-                                  top: -128 - 12,
-                                  left: 0,
-                                  right: 0,
-                                  child: ProfileIcon(size: 128),
+    return RefreshIndicator(
+      onRefresh: () async {
+        await _refreshUser();
+      },
+      child: FutureBuilder<ProfileDto>(
+          future: _profileDto,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Ошибка: ${snapshot.error}'));
+            } else if (!snapshot.hasData || snapshot.data == null) {
+              return const Center(child: Text('Данные не найдены'));
+            } else {
+              final profile = snapshot.data!;
+              return FutureBuilder<JWT>(
+                  future: api.decodeToken(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Ошибка: ${snapshot.error}'));
+                    } else if (!snapshot.hasData || snapshot.data == null) {
+                      return const Center(child: Text('Данные не найдены'));
+                    } else {
+                      final jwt = snapshot.data!;
+                      return Stack(
+                        children: <Widget>[
+                          const Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Image(
+                                  image: AssetImage(
+                                      "assets/images/profile_empty_back_image.png"),
+                                  height: 180,
+                                  fit: BoxFit.fitHeight,
+                                )
+                              ]),
+                          Positioned(
+                              top: 180 - 20,
+                              left: 0,
+                              right: 0,
+                              bottom: 2,
+                              child: Card(
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
                                 ),
-                              ],
-                            ))),
-                    Flexible(
-                      flex: 30,
-                      child: Column(
-                        children: [
-                          Text(
-                            user.login,
-                            style: Theme.of(context)
-                                .textTheme
-                                .displayMedium
-                                ?.copyWith(color: AppColors.textPrimary),
-                          ),
-                          Text(
-                            user.getFio(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .displaySmall
-                                ?.copyWith(color: AppColors.textPrimary),
-                          ),
-                          Text(
-                            DateFormat('d MMM yyyy', 'ru')
-                                .format(user.birthdate)
-                                .toLowerCase(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
-                                ?.copyWith(color: AppColors.textHelper),
-                          ),
-                          const SizedBox(
-                            height: 12,
-                          ),
-                          Expanded(
-                              child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: SchoolTabs(schools: schoolList),
-                          )),
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 12, horizontal: 6),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          PressedIconButton(
+                                            onPressed: () {
+                                              AppMetrica.reportEvent(
+                                                  'Нажата кнопка "Ввести код"');
+                                              _showCodeModal(context);
+                                            },
+                                            icon: addUserIcon,
+                                            activeIcon: activeAddUserIcon,
+                                          ),
+                                          PressedIconButton(
+                                            onPressed: () {
+                                              _showEditModal(context);
+                                            },
+                                            icon: settingsIcon,
+                                            activeIcon: activeSettingsIcon,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Flexible(
+                                        child: ConstrainedBox(
+                                            constraints: const BoxConstraints(
+                                              maxHeight: 0,
+                                            ),
+                                            child: const Stack(
+                                              clipBehavior: Clip.none,
+                                              children: [
+                                                Positioned(
+                                                  top: -128 - 12,
+                                                  left: 0,
+                                                  right: 0,
+                                                  child: ProfileIcon(size: 128),
+                                                ),
+                                              ],
+                                            ))),
+                                    Flexible(
+                                      flex: 30,
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            profile.login,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .displayMedium
+                                                ?.copyWith(
+                                                    color:
+                                                        AppColors.textPrimary),
+                                          ),
+                                          Text(
+                                            profile.getFio(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .displaySmall
+                                                ?.copyWith(
+                                                    color:
+                                                        AppColors.textPrimary),
+                                          ),
+                                          Text(
+                                            DateFormat('d MMM yyyy', 'ru')
+                                                .format(profile.birthdate)
+                                                .toLowerCase(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge
+                                                ?.copyWith(
+                                                    color:
+                                                        AppColors.textHelper),
+                                          ),
+                                          const SizedBox(
+                                            height: 12,
+                                          ),
+                                          if (jwt.school != null)
+                                            Expanded(
+                                                child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 12),
+                                              child: SchoolTabs(
+                                                  schools: profile.schools,
+                                                  defaultSchoolId:
+                                                      int.parse(jwt.school!)),
+                                            )),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ))
                         ],
-                      ),
-                    ),
-                  ],
-                ),
-              ))
-        ],
-      ),
+                      );
+                    }
+                  });
+            }
+          }),
     );
   }
 }

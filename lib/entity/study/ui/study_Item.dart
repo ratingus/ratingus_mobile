@@ -69,14 +69,14 @@ class StudyItem extends StatelessWidget {
                                             ?.copyWith(
                                                 color: AppColors.primaryMain),
                                       ),
-                                      Text(
-                                        study.teacher.getFio(),
+                                      study.teacher != null ? Text(
+                                        study.teacher!.getFio(),
                                         style: Theme.of(context)
                                             .textTheme
                                             .titleMedium
                                             ?.copyWith(
                                                 color: AppColors.textHelper),
-                                      )
+                                      ) : const SizedBox(),
                                     ],
                                   ),
                                   if (rightSlot != null) rightSlot!

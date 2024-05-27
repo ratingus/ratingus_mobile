@@ -1,10 +1,13 @@
 import 'package:appmetrica_plugin/appmetrica_plugin.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
-import 'package:ratingus_mobile/pages/auth/layout.dart';
+import 'package:ratingus_mobile/entity/auth/model/user_register.dart';
+import 'package:ratingus_mobile/entity/auth/repo/abstract_repo.dart';
 import 'package:ratingus_mobile/shared/router/router.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
+
 
 class RegistrationForm extends StatefulWidget {
   const RegistrationForm({super.key});
@@ -17,12 +20,13 @@ class _RegistrationFormState extends State<RegistrationForm> {
   String? surname;
   String? name;
   String? patronymic;
-  DateTime? birthDate;
+  String? birthdate;
   String? login;
   String? password;
   bool _passwordVisible = false;
   final _formKey = GlobalKey<FormState>();
   String? errorMessage;
+  final authRepo = GetIt.I<AbstractAuthRepo>();
 
   _buildValidator(String fieldName) => (String? value) {
         if (value == null || value.isEmpty) {
@@ -44,13 +48,24 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
   handleSubmit() {
     debugPrint('login: $login, password: $password');
-    if (login == 'Логин' && password == 'admin') {
-      isAuthorized = true;
-      AppMetrica.reportEvent('Пользователь зарегистрировался');
-      context.router.popAndPush(const LayoutRoute());
-    } else {
-      setState(() {
-        errorMessage = 'Не удалось зарегистрироваться';
+    if (login != null && password != null) {
+      authRepo
+          .register(UserRegister(
+        login: login!,
+        password: password!,
+        name: name!,
+        surname: surname!,
+        patronymic: patronymic!,
+        birthDate: birthdate!
+      ))
+          .then((value) => {
+      AppMetrica.reportEvent('Пользователь зарегистрировался'),
+        context.router.popAndPush(const LayoutRoute())
+      })
+          .catchError((e) {
+        setState(() {
+          errorMessage = 'Не удалось зарегистрироваться';
+        });
       });
     }
   }
@@ -84,6 +99,9 @@ class _RegistrationFormState extends State<RegistrationForm> {
     );
     if (picked != null) {
       _dateController.text = _dateFormatter.format(picked);
+      setState(() {
+        birthdate = DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").format(picked);
+      });
     }
   }
 
@@ -268,6 +286,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
 buildTextFormField({
   validator,
   void Function(String)? onChanged,
+  void Function(String)? onFieldSubmitted,
   labelText,
   obscureText,
   suffixIcon,
@@ -280,6 +299,7 @@ buildTextFormField({
       controller: controller,
       readOnly: readOnly ?? false,
       validator: validator,
+      onFieldSubmitted: onFieldSubmitted,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       onChanged: onChanged ?? (val) {},
       keyboardType: textInputType ?? TextInputType.text,

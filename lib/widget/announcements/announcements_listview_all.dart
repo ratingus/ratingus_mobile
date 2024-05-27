@@ -5,6 +5,7 @@ import 'package:ratingus_mobile/entity/announcement/repo/abstract_repo.dart';
 import 'package:ratingus_mobile/entity/announcement/ui/announcement_list_item.dart';
 
 import 'package:ratingus_mobile/entity/announcement/mock/announcements.dart';
+import 'package:ratingus_mobile/entity/auth/utils/token_notifier.dart';
 
 class AnnouncementsListViewAll extends StatefulWidget {
   const AnnouncementsListViewAll({super.key});
@@ -15,11 +16,26 @@ class AnnouncementsListViewAll extends StatefulWidget {
 
 class _AnnouncementsListViewAllState extends State<AnnouncementsListViewAll> {
   late Future<List<Announcement>> _announcementsFuture;
+  late final TokenNotifier _tokenNotifier;
 
   @override
   void initState() {
     super.initState();
     _announcementsFuture = _fetchAnnouncements();
+    _tokenNotifier = GetIt.I<TokenNotifier>();
+    _tokenNotifier.addListener(_onTokenChanged);
+  }
+
+  @override
+  void dispose() {
+    _tokenNotifier.removeListener(_onTokenChanged);
+    super.dispose();
+  }
+
+  void _onTokenChanged() {
+    setState(() {
+      _announcementsFuture = _fetchAnnouncements();
+    });
   }
 
   Future<List<Announcement>> _fetchAnnouncements() {

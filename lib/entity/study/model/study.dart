@@ -5,16 +5,20 @@ part 'study.g.dart';
 
 @JsonSerializable()
 class Study {
-  final int studyId;
+  final int teacherSubjectId;
   final int timetableNumber;
   final String subject;
-  final Teacher teacher;
+  final Teacher? teacher;
+  final DateTime startTime;
+  final DateTime endTime;
 
   Study({
-    required this.studyId,
+    required this.teacherSubjectId,
     required this.timetableNumber,
     required this.subject,
     required this.teacher,
+    required this.startTime,
+    required this.endTime,
   });
 
   factory Study.fromJson(Map<String, dynamic> json) => _$StudyFromJson(json);

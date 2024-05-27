@@ -38,16 +38,18 @@ DateTime getAcademicDateByWeek(int weekOfYear) {
 }
 
 int getAcademicWeekOfYear(DateTime date) {
-  int weekOfYear = ((date.difference(getAcademicDate(date)).inDays) / 7).ceil();
+  int weekOfYear = ((date.difference(getAcademicDate(date)).inDays) / 7).ceil() + 1;
 
   return weekOfYear;
 }
 
 DateTime getAcademicDate(DateTime date) {
   DateTime startOfAcademicDate = DateTime(date.year, 9, 1);
+  startOfAcademicDate.add(Duration(days: -startOfAcademicDate.weekday + 1));
 
   if (date.add(const Duration(days: 7)).isBefore(startOfAcademicDate)) {
     startOfAcademicDate = DateTime(date.year - 1, 9, 1);
+    startOfAcademicDate.add(Duration(days: -startOfAcademicDate.weekday + 1));
   }
   return startOfAcademicDate;
 }

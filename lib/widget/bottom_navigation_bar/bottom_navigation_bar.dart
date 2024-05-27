@@ -1,68 +1,139 @@
 import 'package:appmetrica_plugin/appmetrica_plugin.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:ratingus_mobile/entity/auth/utils/token_notifier.dart';
+import 'package:ratingus_mobile/entity/user/model/role.dart';
+import 'package:ratingus_mobile/shared/api/api_dio.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 import 'package:ratingus_mobile/shared/theme/consts/icons.dart';
 
-class RatingusBottomNavigationBar extends StatelessWidget {
+class RatingusBottomNavigationBar extends StatefulWidget {
   final void Function(int, {bool notify}) onTap;
+
   const RatingusBottomNavigationBar({super.key, required this.onTap});
+
+  @override
+  State<RatingusBottomNavigationBar> createState() =>
+      _RatingusBottomNavigationBarState();
+}
+
+class _RatingusBottomNavigationBarState
+    extends State<RatingusBottomNavigationBar> {
+  late final TokenNotifier _tokenNotifier;
+  final api = GetIt.I<Api>();
+  UserRole _role = UserRole.guest;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _tokenNotifier = GetIt.I<TokenNotifier>();
+    _tokenNotifier.addListener(_onTokenChanged);
+    api.decodeToken().then((jwt) => {
+      _role = jwt.role,
+      _tokenNotifier.refreshToken()
+    });
+  }
+
+  @override
+  void dispose() {
+    _tokenNotifier.removeListener(_onTokenChanged);
+    super.dispose();
+  }
+
+  void _onTokenChanged() {
+    api.decodeToken().then((jwt) {
+      setState(() {
+        _role = jwt.role;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
         surfaceTintColor: AppColors.backgroundPaper,
-        height: 45,
+        height: 60,
         child: SizedBox(
           child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                TextButton(
-                  style: ButtonStyle(
-                    padding: MaterialStateProperty.all<EdgeInsets>(
-                        const EdgeInsets.all(0)),
+                if (_role.value == UserRole.student.value) ...[
+                  TextButton(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all<EdgeInsets>(
+                          const EdgeInsets.all(0)),
+                    ),
+                    onPressed: () {
+                      AppMetrica.reportEvent('Посещение объявлений');
+                      widget.onTap(0);
+                    },
+                    child: Column(
+                      children: [
+                        announcementIcon,
+                        const Text('Объявления',
+                            style: TextStyle(
+                                color: AppColors.textPrimary,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500))
+                      ],
+                    ),
                   ),
-                  onPressed: () {
-                    AppMetrica.reportEvent('Посещение объявлений');
-                    onTap(0);
-                  },
-                  child: announcementIcon,
-                ),
-                Container(
-                  color: AppColors.backgroundMain,
-                  width: 1,
-                ),
-                TextButton(
-                  style: ButtonStyle(
-                    padding: MaterialStateProperty.all<EdgeInsets>(
-                        const EdgeInsets.all(0)),
+                  Container(
+                    color: AppColors.backgroundMain,
+                    width: 1,
                   ),
-                  onPressed: () {
-                    AppMetrica.reportEvent('Посещение дневника');
-                    onTap(1);
-                  },
-                  child: diaryIcon,
-                ),
-                Container(
-                  color: AppColors.backgroundMain,
-                  width: 1,
-                ),
-                TextButton(
-                  style: ButtonStyle(
-                    padding: MaterialStateProperty.all<EdgeInsets>(
-                        const EdgeInsets.all(0)),
+                  TextButton(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all<EdgeInsets>(
+                          const EdgeInsets.all(0)),
+                    ),
+                    onPressed: () {
+                      AppMetrica.reportEvent('Посещение дневника');
+                      widget.onTap(1);
+                    },
+                    child: Column(
+                      children: [
+                        diaryIcon,
+                        const Text('Дневник',
+                            style: TextStyle(
+                                color: AppColors.textPrimary,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500))
+                      ],
+                    ),
                   ),
-                  onPressed: () {
-                    AppMetrica.reportEvent('Посещение расписания');
-                    onTap(2);
-                  },
-                  child: calendarIcon,
-                ),
-                Container(
-                  color: AppColors.backgroundMain,
-                  width: 1,
-                ),
+                  Container(
+                    color: AppColors.backgroundMain,
+                    width: 1,
+                  ),
+                  TextButton(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.all<EdgeInsets>(
+                          const EdgeInsets.all(0)),
+                    ),
+                    onPressed: () {
+                      AppMetrica.reportEvent('Посещение расписания');
+                      widget.onTap(2);
+                    },
+                    child: Column(
+                      children: [
+                        calendarIcon,
+                        const Text('Расписание',
+                            style: TextStyle(
+                                color: AppColors.textPrimary,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500))
+                      ],
+                    ),
+                  ),
+                  Container(
+                    color: AppColors.backgroundMain,
+                    width: 1,
+                  )
+                ],
                 TextButton(
                   style: ButtonStyle(
                     padding: MaterialStateProperty.all<EdgeInsets>(
@@ -70,9 +141,18 @@ class RatingusBottomNavigationBar extends StatelessWidget {
                   ),
                   onPressed: () {
                     AppMetrica.reportEvent('Посещение профиля');
-                    onTap(3);
-                    },
-                  child: profileIcon,
+                    widget.onTap(3);
+                  },
+                  child: Column(
+                    children: [
+                      profileIcon,
+                      const Text('Профиль',
+                          style: TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500))
+                    ],
+                  ),
                 )
               ]),
         ));

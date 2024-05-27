@@ -7,6 +7,7 @@ part of 'day_lesson.dart';
 // **************************************************************************
 
 DayLesson _$DayLessonFromJson(Map<String, dynamic> json) => DayLesson(
+      dayOfWeek: (json['dayOfWeek'] as num).toInt(),
       dateTime: DateTime.parse(json['dateTime'] as String),
       studies: (json['studies'] as List<dynamic>)
           .map((e) => Lesson.fromJson(e as Map<String, dynamic>))
@@ -14,6 +15,7 @@ DayLesson _$DayLessonFromJson(Map<String, dynamic> json) => DayLesson(
     );
 
 Map<String, dynamic> _$DayLessonToJson(DayLesson instance) => <String, dynamic>{
+      'dayOfWeek': instance.dayOfWeek,
       'dateTime': instance.dateTime.toIso8601String(),
       'studies': instance.studies,
     };
