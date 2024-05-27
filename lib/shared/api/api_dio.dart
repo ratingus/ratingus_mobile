@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:ratingus_mobile/entity/auth/utils/token_notifier.dart';
 import 'package:ratingus_mobile/entity/user/model/jwt.dart';
 import 'package:ratingus_mobile/shared/router/router.dart';
 
@@ -10,7 +9,8 @@ class Api {
   final Dio dio = Dio();
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
-  static const basePath = 'http://192.168.0.191:5000';
+  // static const basePath = 'http://192.168.0.191:5000';
+  static const basePath = 'https://ratingus.fun/spring-api';
 
   void init() {
     dio.interceptors.add(InterceptorsWrapper(
