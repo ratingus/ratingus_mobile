@@ -2,7 +2,7 @@ import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
-import 'package:ratingus_mobile/entity/user/model/jwt.dart';
+import 'package:ratingus_mobile/entity/auth/utils/token_notifier.dart';
 import 'package:ratingus_mobile/shared/api/api_dio.dart';
 
 import 'package:ratingus_mobile/widget/study/study_list_view.dart';
@@ -27,27 +27,57 @@ class CalendarPage extends StatefulWidget {
   State<CalendarPage> createState() => _CalendarPageState();
 }
 class _CalendarPageState extends State<CalendarPage> {
+  late final TokenNotifier _tokenNotifier;
   late Future<List<DayStudy>> _studyList;
   late Future<List<ClassItem>> _classesInSchool;
-  late ClassItem _selectedClass;
+  ClassItem? _selectedClass;
   final api = GetIt.I<Api>();
 
   @override
-  void initState() {
-    super.initState();
-    _getClassFromToken();
-    _studyList = _fetchStudies();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _getClassFromToken().then((clazz) {
+      _studyList = _fetchStudies(clazz);
+    });
     _classesInSchool = _fetchClasses();
   }
 
-  Future<void> _getClassFromToken() async {
-    var jwt = await api.decodeToken();
-    _selectedClass = ClassItem(id: jwt.classId!, name: jwt.className!);
+  @override
+  void initState()  {
+    super.initState();
+     _getClassFromToken().then((clazz) {
+       _refreshStudies(clazz);
+       _refreshClasses();
+     });
+     _tokenNotifier = GetIt.I<TokenNotifier>();
+    _tokenNotifier.addListener(_onTokenChanged);
   }
 
-  Future<List<DayStudy>> _fetchStudies() async {
+  @override
+  void dispose() {
+    _tokenNotifier.removeListener(_onTokenChanged);
+    super.dispose();
+  }
+
+  void _onTokenChanged() {
+      _getClassFromToken().then((clazz) {
+        _refreshStudies(clazz);
+        _refreshClasses();
+    });
+  }
+
+  Future<ClassItem> _getClassFromToken() async {
+    var jwt = await api.decodeToken();
+    var clazz = ClassItem(id: jwt.classId!, name: jwt.className!);
+    setState(() {
+      _selectedClass = clazz;
+    });
+    return clazz;
+  }
+
+  Future<List<DayStudy>> _fetchStudies(ClassItem selectedClass) async {
     var studyRepo = GetIt.I<AbstractStudyRepo>();
-    return studyRepo.getByClass(_selectedClass.id);
+    return studyRepo.getByClass(selectedClass.id);
   }
 
   Future<List<ClassItem>> _fetchClasses() async {
@@ -55,15 +85,14 @@ class _CalendarPageState extends State<CalendarPage> {
     return await classRepo.getAll();
   }
 
-
   Future<void> _refreshClasses() async {
     setState(() {
       _classesInSchool = _fetchClasses();
     });
   }
-  Future<void> _refreshStudies() async {
+  Future<void> _refreshStudies(ClassItem clazz) async {
     setState(() {
-      _studyList = _fetchStudies();
+      _studyList = _fetchStudies(clazz);
     });
   }
 
@@ -108,7 +137,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   ),
                 ) : DropdownButton<String>(
                   hint: const Text('Выберите класс'),
-                  value: _selectedClass.name,
+                  value: _selectedClass != null ? _selectedClass!.name : 'Выберите класс',
                   icon: arrowDown,
                   underline: const SizedBox(
                     height: 0,
@@ -138,7 +167,7 @@ class _CalendarPageState extends State<CalendarPage> {
                           .where((classItem) => classItem.name == newValue)
                           .firstOrNull!;
                     });
-                    _refreshStudies();
+                    _refreshStudies(_selectedClass!);
                   },
                 );
               }
@@ -148,8 +177,9 @@ class _CalendarPageState extends State<CalendarPage> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          await _refreshStudies();
+          await _refreshStudies(_selectedClass!);
           await _refreshClasses();
+          await _getClassFromToken();
         },
         child: FutureBuilder<List<DayStudy>>(
           future: _studyList,
@@ -163,7 +193,9 @@ class _CalendarPageState extends State<CalendarPage> {
                   children: [
                     Text('Error: ${snapshot.error}'),
                     ElevatedButton(
-                      onPressed: _refreshStudies,
+                      onPressed: () {
+                        _refreshStudies(_selectedClass!);
+                      },
                       child: const Text('Повторить'),
                     ),
                   ],

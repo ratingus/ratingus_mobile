@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:ratingus_mobile/entity/lesson/model/day_lesson.dart';
 import 'package:ratingus_mobile/entity/lesson/model/lesson.dart';
 import 'package:ratingus_mobile/entity/lesson/repo/abstract_repo.dart';
-import 'package:ratingus_mobile/shared/helpers/datetime.dart';
 
 class DiaryProvider with ChangeNotifier {
   final AbstractLessonRepo _lessonRepo;
@@ -37,9 +36,10 @@ class DiaryProvider with ChangeNotifier {
       _dayLessons = await _lessonRepo.getByWeek(dateTime);
     } catch (e) {
       _dayLessons = null;
+    } finally {
+      _isDayLessonsLoading = false;
+      notifyListeners();
     }
-    _isDayLessonsLoading = false;
-    notifyListeners();
   }
 
   Future<void> fetchLessonsByDay(DateTime dateTime) async {

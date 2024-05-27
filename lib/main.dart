@@ -8,6 +8,7 @@ import 'package:ratingus_mobile/entity/study/repo/http_repo.dart';
 import 'package:ratingus_mobile/entity/user/repo/http_repo.dart';
 import 'package:ratingus_mobile/shared/api/api_dio.dart';
 
+import 'entity/auth/utils/token_notifier.dart';
 import 'entity/class/repo/abstract_repo.dart';
 import 'entity/class/repo/http_repo.dart';
 import 'entity/lesson/repo/http_repo.dart';
@@ -32,6 +33,8 @@ void main() async {
   final api = Api();
   api.init();
   GetIt.I.registerSingleton<Api>(api);
+
+  GetIt.I.registerSingleton<TokenNotifier>(TokenNotifier(GetIt.I<Api>()));
 
   GetIt.I.registerSingleton<AbstractProfileRepo>(HttpProfileRepo());
   GetIt.I.registerSingleton<AbstractAuthRepo>(HttpAuthRepo());

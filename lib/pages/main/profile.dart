@@ -3,6 +3,7 @@ import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
+import 'package:ratingus_mobile/entity/auth/utils/token_notifier.dart';
 import 'package:ratingus_mobile/entity/user/model/jwt.dart';
 import 'package:ratingus_mobile/entity/user/model/profile_dto.dart';
 import 'package:ratingus_mobile/entity/user/repo/abstract_repo.dart';
@@ -24,6 +25,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  late final TokenNotifier _tokenNotifier;
   final profileRepo = GetIt.I<AbstractProfileRepo>();
   String code = "";
   final _dateController = TextEditingController();
@@ -43,6 +45,14 @@ class _ProfilePageState extends State<ProfilePage> {
   initState() {
     super.initState();
     _profileDto = _fetchUser();
+    _tokenNotifier = GetIt.I<TokenNotifier>();
+    _tokenNotifier.addListener(_onTokenChanged);
+  }
+
+  void _onTokenChanged() {
+    setState(() {
+      _profileDto = _fetchUser();
+    });
   }
 
   Future<ProfileDto> _fetchUser() async {
@@ -88,6 +98,8 @@ class _ProfilePageState extends State<ProfilePage> {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           Navigator.pop(context);
         });
+        JWT jwt = await api.decodeToken();
+        _tokenNotifier.value = jwt;
       } catch (e) {
         print('Error: $e');
         AppMetrica.reportEvent(

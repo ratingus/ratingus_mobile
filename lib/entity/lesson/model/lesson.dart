@@ -7,7 +7,7 @@ part 'lesson.g.dart';
 
 @JsonSerializable()
 class Lesson extends Study {
-  final int? scheduleId;
+  final int scheduleId;
   final int? lessonId;
   final int? studentLessonId;
   final String? mark;
@@ -18,7 +18,7 @@ class Lesson extends Study {
   Lesson({
     this.mark,
     this.attendance,
-    this.scheduleId,
+    required this.scheduleId,
     this.lessonId,
     this.studentLessonId,
     required super.teacherSubjectId,

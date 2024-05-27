@@ -1,8 +1,10 @@
 import 'package:appmetrica_plugin/appmetrica_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:ratingus_mobile/entity/auth/utils/token_notifier.dart';
 import 'package:ratingus_mobile/entity/class/ui/class_item.dart';
 import 'package:ratingus_mobile/entity/school/model/school.dart';
+import 'package:ratingus_mobile/entity/user/model/jwt.dart';
 import 'package:ratingus_mobile/entity/user/repo/abstract_repo.dart';
 import 'package:ratingus_mobile/shared/api/api_dio.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
@@ -19,8 +21,10 @@ class SchoolTabs extends StatefulWidget {
 
 class _SchoolTabsState extends State<SchoolTabs>
     with SingleTickerProviderStateMixin {
+  late final TokenNotifier _tokenNotifier;
   late int _selectedSchoolIndex;
   final profileRepo = GetIt.I<AbstractProfileRepo>();
+  final api = GetIt.I<Api>();
 
   @override
   void initState() {
@@ -29,6 +33,7 @@ class _SchoolTabsState extends State<SchoolTabs>
     if (_selectedSchoolIndex == -1) {
       _selectedSchoolIndex = 0;
     }
+    _tokenNotifier = GetIt.I<TokenNotifier>();
   }
 
   @override
@@ -52,6 +57,8 @@ class _SchoolTabsState extends State<SchoolTabs>
                   _selectedSchoolIndex = index;
                 });
                 await profileRepo.changeSchool(widget.schools[index].id);
+                JWT jwt = await api.decodeToken();
+                _tokenNotifier.value = jwt;
                 AppMetrica.reportEvent('Пользователь сменил школу');
               },
               child: Text(
@@ -76,7 +83,7 @@ class _SchoolTabsState extends State<SchoolTabs>
                 ),
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                   child: Row(
                     children: [ClassListItem(classItem: widget.schools[index].classDto)],
                   ),

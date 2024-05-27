@@ -1,4 +1,3 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
@@ -31,9 +30,6 @@ class Api {
       },
       onResponse:
           (Response response, ResponseInterceptorHandler handler) async {
-        if (response.statusCode == 403) {
-          GetIt.I<AppRouter>().replace(const LoginRoute());
-        } else {
           final setCookie = response.headers['Set-Cookie'];
           if (setCookie != null && setCookie.isNotEmpty) {
             final token = _extractTokenFromSetCookie(setCookie.first);
@@ -41,9 +37,19 @@ class Api {
             if (token != null) {
               await secureStorage.write(key: 'token', value: token);
             }
-          }
           return handler.next(response);
         }
+      },
+      onError: (
+          DioException error,
+          ErrorInterceptorHandler handler,
+          ) async {
+        print("error: ${error.response}");
+        print("error: ${error.response?.statusCode}");
+        if (error.response?.statusCode == 403) {
+          GetIt.I<AppRouter>().popAndPush(const LoginRoute());
+        }
+        return handler.next(error);
       },
     ));
   }

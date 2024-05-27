@@ -11,7 +11,7 @@ Lesson _$LessonFromJson(Map<String, dynamic> json) => Lesson(
       attendance: json['attendance'] == null
           ? null
           : Attendance.fromJson(json['attendance'] as String),
-      scheduleId: (json['scheduleId'] as num?)?.toInt(),
+      scheduleId: (json['scheduleId'] as num).toInt(),
       lessonId: (json['lessonId'] as num?)?.toInt(),
       studentLessonId: (json['studentLessonId'] as num?)?.toInt(),
       teacherSubjectId: (json['teacherSubjectId'] as num).toInt(),
