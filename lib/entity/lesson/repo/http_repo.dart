@@ -14,7 +14,9 @@ class HttpLessonRepo extends AbstractLessonRepo {
     try {
       final response = await api.dio.get('/diary/week?week=$week');
       print('Response: ${response.data}');
-      return response.data;
+      return (response.data as List<dynamic>)
+          .map((e) => DayLesson.fromJson(e as Map<String, dynamic>))
+          .toList();
     } catch (e) {
       print('Error: $e');
       rethrow;

@@ -1,13 +1,8 @@
-import 'package:appmetrica_plugin/appmetrica_plugin.dart';
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 
 import 'package:ratingus_mobile/widget/diary/diary_list_by_week.dart';
-
-import 'package:ratingus_mobile/entity/lesson/model/day_lesson.dart';
-import 'package:ratingus_mobile/entity/lesson/repo/abstract_repo.dart';
 
 import 'package:ratingus_mobile/shared/helpers/datetime.dart';
 import 'package:ratingus_mobile/shared/components/date_selector.dart';
@@ -55,12 +50,14 @@ class _DiaryByWeekPageState extends State<DiaryByWeekPage> {
     setState(() {
       weekOfYear = getAcademicWeekOfYear(selectedDate);
     });
-    _pageController.jumpToPage(weekOfYear - 1);
+    _pageController.jumpToPage(weekOfYear);
   }
 
   @override
   Widget build(BuildContext context) {
     final diaryProvider = Provider.of<DiaryProvider>(context);
+    final dayLessons = diaryProvider.dayLessons;
+    final isDayLessonsLoading = diaryProvider.isDayLessonsLoading;
 
     return Scaffold(
       appBar: AppBar(
@@ -96,42 +93,28 @@ class _DiaryByWeekPageState extends State<DiaryByWeekPage> {
         itemBuilder: (context, index) {
           return RefreshIndicator(
             onRefresh: () async {
-              diaryProvider.fetchLessons(getAcademicDateByWeek(weekOfYear));
+              await diaryProvider.fetchLessons(getAcademicDateByWeek(weekOfYear));
             },
-            child: FutureBuilder<List<DayLesson>>(
-              future: diaryProvider.fetchLessons(getAcademicDateByWeek(weekOfYear)),
-              builder: (BuildContext context,
-                  AsyncSnapshot<List<DayLesson>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(
+            child: isDayLessonsLoading ? const Center(child: CircularProgressIndicator()) : dayLessons == null ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Error: ${snapshot.error}'),
+                        const Text('Расписания ещё нет или его не удалось получить'),
                         ElevatedButton(
                           onPressed: () => diaryProvider.fetchLessons(getAcademicDateByWeek(weekOfYear)),
                           child: const Text('Повторить'),
                         ),
                       ],
                     ),
-                  );
-                } else {
-                  var lessonList = snapshot.data;
-                  if (lessonList == null) return const SizedBox();
-                  return Center(
+                  ) : Center(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 2),
                       child: DiaryListByWeek(
-                        lessonList: lessonList,
+                        lessonList: dayLessons,
                       ),
                     ),
-                  );
-                }
-              },
-            ),
-          );
+                  )
+            );
         },
       ),
     );

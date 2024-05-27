@@ -8,7 +8,7 @@ class Study {
   final int studyId;
   final int timetableNumber;
   final String subject;
-  final Teacher teacher;
+  final Teacher? teacher;
   final DateTime startTime;
   final DateTime endTime;
 

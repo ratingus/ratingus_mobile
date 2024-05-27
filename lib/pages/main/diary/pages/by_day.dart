@@ -62,7 +62,8 @@ class _DiaryByDayPageState extends State<DiaryByDayPage> {
   @override
   Widget build(BuildContext context) {
     final diaryProvider = Provider.of<DiaryProvider>(context);
-
+    final dayLesson = diaryProvider.dayLesson;
+    final isDayLessonLoading = diaryProvider.isDayLessonLoading;
 
     return Scaffold(
       appBar: AppBar(
@@ -109,39 +110,26 @@ class _DiaryByDayPageState extends State<DiaryByDayPage> {
               onRefresh: () async {
                 await diaryProvider.fetchLessonsByDay(selectedDay);
               },
-              child: FutureBuilder<DayLesson>(
-                future: diaryProvider.fetchLessonsByDay(selectedDay),
-                builder:
-                    (BuildContext context, AsyncSnapshot<DayLesson> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(
+              child: dayLesson == null ? Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Error: ${snapshot.error}'),
+                          const Text('Расписания ещё нет или его не удалось получить'),
                           ElevatedButton(
                             onPressed: () => diaryProvider.fetchLessonsByDay(selectedDay),
                             child: const Text('Повторить'),
                           ),
                         ],
                       ),
-                    );
-                  } else {
-                    var dayLesson = snapshot.data;
-                    if (dayLesson == null) return const SizedBox();
-                    return Center(
+                    ) : isDayLessonLoading ? const Center(child: CircularProgressIndicator()) :  Center(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 2),
                         child: DiaryListByDay(
                           lessonList: [dayLesson],
                         ),
                       ),
-                    );
-                  }
-                },
-              ));
+                    )
+              );
         },
       ),
     );

@@ -10,7 +10,9 @@ Study _$StudyFromJson(Map<String, dynamic> json) => Study(
       studyId: (json['studyId'] as num).toInt(),
       timetableNumber: (json['timetableNumber'] as num).toInt(),
       subject: json['subject'] as String,
-      teacher: Teacher.fromJson(json['teacher'] as Map<String, dynamic>),
+      teacher: json['teacher'] == null
+          ? null
+          : Teacher.fromJson(json['teacher'] as Map<String, dynamic>),
       startTime: DateTime.parse(json['startTime'] as String),
       endTime: DateTime.parse(json['endTime'] as String),
     );

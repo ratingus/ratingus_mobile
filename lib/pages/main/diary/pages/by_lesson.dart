@@ -1,7 +1,6 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:ratingus_mobile/entity/lesson/model/day_lesson.dart';
 import 'package:ratingus_mobile/entity/lesson/model/lesson.dart';
 import 'package:ratingus_mobile/shared/components/swiper.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
@@ -65,175 +64,170 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
   @override
   Widget build(BuildContext context) {
     final diaryProvider = Provider.of<DiaryProvider>(context);
+    final dayLesson = diaryProvider.dayLesson;
+    final isDayLessonLoading = diaryProvider.isDayLessonLoading;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.backgroundPaper,
-        toolbarHeight: 0,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(64),
-          child: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-            return FutureBuilder<DayLesson>(
-              future: diaryProvider.fetchLessonsByDay(widget.dayLessonDetail),
-              builder: (BuildContext context,
-                  AsyncSnapshot<DayLesson> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(
+        appBar: AppBar(
+            backgroundColor: AppColors.backgroundPaper,
+            toolbarHeight: 0,
+            bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(64),
+                child: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    return dayLesson == null
+                        ? const Center(child: CircularProgressIndicator())
+                        : isDayLessonLoading
+                            ? Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                        'Расписания ещё нет или его не удалось получить'),
+                                    ElevatedButton(
+                                      onPressed: () =>
+                                          diaryProvider.fetchLessonsByDay(
+                                              widget.dayLessonDetail),
+                                      child: const Text('Повторить'),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Swiper<Lesson>(
+                                selectedValue:
+                                    dayLesson.lessons[selectedLesson],
+                                prev: prevLesson,
+                                next: nextLesson,
+                                set: setLesson,
+                                renderSelectedValue: (Lesson selectedValue) {
+                                  return Column(
+                                    children: [
+                                      DropdownButton(
+                                          icon: arrowDown,
+                                          underline: const SizedBox(
+                                            height: 0,
+                                          ),
+                                          selectedItemBuilder:
+                                              (BuildContext context) {
+                                            return dayLesson.lessons
+                                                .map((lesson) {
+                                              return Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 12),
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                        lesson.subject,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .displaySmall,
+                                                      ),
+                                                      Text(
+                                                        selectedValue.teacher
+                                                            .getFio(),
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .titleSmall
+                                                            ?.copyWith(
+                                                                color: AppColors
+                                                                    .textHelper),
+                                                      ),
+                                                    ],
+                                                  ));
+                                            }).toList();
+                                          },
+                                          value: selectedValue,
+                                          items: dayLesson.lessons
+                                              .map((lesson) =>
+                                                  DropdownMenuItem<Lesson>(
+                                                    value: lesson,
+                                                    child: Text(
+                                                      lesson.subject,
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .displaySmall
+                                                          ?.copyWith(
+                                                              color: selectedValue
+                                                                          .lessonId ==
+                                                                      lesson
+                                                                          .lessonId
+                                                                  ? AppColors
+                                                                      .primaryMain
+                                                                  : AppColors
+                                                                      .textPrimary),
+                                                    ),
+                                                  ))
+                                              .toList(),
+                                          onChanged: (newLesson) {
+                                            setState(() {
+                                              if (newLesson != null) {
+                                                setLesson(newLesson);
+                                              }
+                                            });
+                                          }),
+                                    ],
+                                  );
+                                },
+                                selectValue: (Lesson selectedValue) {
+                                  return selectedValue;
+                                },
+                              );
+                  },
+                ))),
+        body: dayLesson == null
+            ? const Center(child: CircularProgressIndicator())
+            : isDayLessonLoading
+                ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Error: ${snapshot.error}'),
+                        const Text(
+                            'Расписания ещё нет или его не удалось получить'),
                         ElevatedButton(
-                          onPressed: () =>
-                              diaryProvider.fetchLessonsByDay(widget.dayLessonDetail),
+                          onPressed: () => diaryProvider
+                              .fetchLessonsByDay(widget.dayLessonDetail),
                           child: const Text('Повторить'),
                         ),
                       ],
                     ),
-                  );
-                } else {
-                  var dayLessonDetail = snapshot.data;
-                  if (dayLessonDetail == null) return const SizedBox();
-                  return Swiper<Lesson>(
-                    selectedValue: dayLessonDetail.lessons[selectedLesson],
-                    prev: prevLesson,
-                    next: nextLesson,
-                    set: setLesson,
-                    renderSelectedValue: (Lesson selectedValue) {
-                      return Column(
-                        children: [
-                          DropdownButton(
-                              icon: arrowDown,
-                              underline: const SizedBox(
-                                height: 0,
-                              ),
-                              selectedItemBuilder: (BuildContext context) {
-                                return dayLessonDetail.lessons.map((lesson) {
-                                  return Padding(
-                                      padding: const EdgeInsets.only(right: 12),
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            lesson.subject,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .displaySmall,
-                                          ),
-                                          Text(
-                                            selectedValue.teacher.getFio(),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleSmall
-                                                ?.copyWith(
-                                                    color:
-                                                        AppColors.textHelper),
-                                          ),
-                                        ],
-                                      ));
-                                }).toList();
-                              },
-                              value: selectedValue,
-                              items: dayLessonDetail.lessons
-                                  .map((lesson) =>
-                                      DropdownMenuItem<Lesson>(
-                                        value: lesson,
-                                        child: Text(
-                                          lesson.subject,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .displaySmall
-                                              ?.copyWith(
-                                                  color: selectedValue.lessonId ==
-                                                          lesson.lessonId
-                                                      ? AppColors.primaryMain
-                                                      : AppColors.textPrimary),
-                                        ),
-                                      ))
-                                  .toList(),
-                              onChanged: (newLesson) {
-                                setState(() {
-                                  if (newLesson != null) {
-                                    setLesson(newLesson);
-                                  }
-                                });
-                              }),
-                        ],
-                      );
+                  )
+                : PageView.builder(
+                    controller: _pageController,
+                    onPageChanged: (int index) {
+                      setState(() {
+                        selectedLesson = index;
+                      });
                     },
-                    selectValue: (Lesson selectedValue) {
-                      return selectedValue;
-                    },
-                  );
-                }
-              },
-            );
-          }),
-        ),
-      ),
-      body: FutureBuilder<DayLesson>(
-        future: diaryProvider.fetchLessonsByDay(widget.dayLessonDetail),
-        builder:
-            (BuildContext context, AsyncSnapshot<DayLesson> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Error: ${snapshot.error}'),
-                  ElevatedButton(
-                    onPressed: () => diaryProvider.fetchLessonsByDay(widget.dayLessonDetail),
-                    child: const Text('Повторить'),
-                  ),
-                ],
-              ),
-            );
-          } else {
-            var dayLessonDetail = snapshot.data;
-            if (dayLessonDetail == null) return const SizedBox();
-            return PageView.builder(
-              controller: _pageController,
-              onPageChanged: (int index) {
-                setState(() {
-                  selectedLesson = index;
-                });
-              },
-              itemCount: dayLessonDetail.lessons.length,
-              itemBuilder: (context, index) {
-                return RefreshIndicator(
-                  onRefresh: () async {
-                    diaryProvider.fetchLessonsByDay(widget.dayLessonDetail);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Card(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
+                    itemCount: dayLesson.lessons.length,
+                    itemBuilder: (context, index) {
+                      return RefreshIndicator(
+                        onRefresh: () async {
+                          diaryProvider
+                              .fetchLessonsByDay(widget.dayLessonDetail);
+                        },
                         child: Padding(
                           padding: const EdgeInsets.all(12),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              DiaryListByLesson(
-                                dayLessonDetail: dayLessonDetail,
-                                selectedLesson: index,
+                          child: Card(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
+                              child: Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    DiaryListByLesson(
+                                      dayLessonDetail: dayLesson,
+                                      selectedLesson: index,
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            );
-          }
-        },
-      ),
-    );
+                      );
+                    },
+                  ));
   }
 }
