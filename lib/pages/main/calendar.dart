@@ -136,7 +136,10 @@ class _CalendarPageState extends State<CalendarPage> {
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: _refreshStudies,
+        onRefresh: () async {
+          await _refreshStudies();
+          await _refreshClasses();
+        },
         child: FutureBuilder<List<DayStudy>>(
           future: _studyList,
           builder: (BuildContext context, AsyncSnapshot<List<DayStudy>> snapshot) {
