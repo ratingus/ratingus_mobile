@@ -69,6 +69,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void dispose() {
     _dateController.dispose();
+    _tokenNotifier.removeListener(_onTokenChanged);
     super.dispose();
   }
 

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:ratingus_mobile/entity/auth/utils/token_notifier.dart';
 import 'package:ratingus_mobile/entity/user/model/jwt.dart';
 import 'package:ratingus_mobile/shared/router/router.dart';
 

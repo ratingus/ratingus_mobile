@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:ratingus_mobile/entity/user/model/role.dart';
 
 part 'jwt.g.dart';
 
@@ -10,6 +11,7 @@ class JWT {
   final String surname;
   final String patronymic;
   final String? school;
+  final UserRole role;
   final int? classId;
   final String? className;
   final String sub;
@@ -25,6 +27,7 @@ class JWT {
     required this.school,
     required this.classId,
     required this.className,
+    required this.role,
     required this.sub,
     required this.iat,
     required this.exp,

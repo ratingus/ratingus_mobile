@@ -43,6 +43,12 @@ class _DiaryByWeekPageState extends State<DiaryByWeekPage> {
     });
   }
 
+  @override
+  void dispose() {
+    _tokenNotifier.removeListener(_onTokenChanged);
+    super.dispose();
+  }
+
   Future<List<DayLesson>> _fetchDayLessons() {
     return diaryRepo.getByWeek(getAcademicDateByWeek(weekOfYear));
   }

@@ -12,6 +12,7 @@ class UserRole {
 
   const UserRole._(this.value,this.text);
 
+  static const UserRole guest = UserRole._('GUEST', 'Гость');
   static const UserRole student = UserRole._('STUDENT', 'Ученик');
   static const UserRole teacher = UserRole._('TEACHER', 'Учитель');
   static const UserRole localAdmin = UserRole._('LOCAL_ADMIN', 'Локальный админ');

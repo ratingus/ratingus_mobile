@@ -32,11 +32,11 @@ class AppRouter extends _$AppRouter {
             children: [
               AutoRoute(
                   page: AnnouncementsRoute.page,
-                  path: 'announcements',
-                  initial: true),
+                  path: 'announcements'),
               DiaryRoutes.routes,
               AutoRoute(page: CalendarRoute.page, path: 'calendar'),
-              AutoRoute(page: ProfileRoute.page, path: 'profile'),
+              AutoRoute(page: ProfileRoute.page, path: 'profile',
+                  initial: true),
             ],
           ),
           AuthRoutes.routes,

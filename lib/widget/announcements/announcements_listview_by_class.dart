@@ -4,7 +4,10 @@ import 'package:get_it/get_it.dart';
 import 'package:ratingus_mobile/entity/announcement/model/announcement_model.dart';
 import 'package:ratingus_mobile/entity/announcement/repo/abstract_repo.dart';
 import 'package:ratingus_mobile/entity/announcement/ui/announcement_list_item.dart';
+import 'package:ratingus_mobile/entity/auth/utils/token_notifier.dart';
 import 'package:ratingus_mobile/entity/user/mock/user.dart';
+import 'package:ratingus_mobile/entity/user/model/jwt.dart';
+import 'package:ratingus_mobile/shared/api/api_dio.dart';
 
 class AnnouncementsListViewByClass extends StatefulWidget {
   const AnnouncementsListViewByClass({super.key});
@@ -15,17 +18,33 @@ class AnnouncementsListViewByClass extends StatefulWidget {
 
 class _AnnouncementsListViewByClassState extends State<AnnouncementsListViewByClass> {
   late Future<List<Announcement>> _announcementsFuture;
+  late final TokenNotifier _tokenNotifier;
+  final api = GetIt.I<Api>();
 
   @override
   void initState() {
     super.initState();
     _announcementsFuture = _fetchAnnouncements();
+    _tokenNotifier = GetIt.I<TokenNotifier>();
+    _tokenNotifier.addListener(_onTokenChanged);
   }
 
-  Future<List<Announcement>> _fetchAnnouncements() {
-    int userClassId = currentUser.classId.id;
+  @override
+  void dispose() {
+    _tokenNotifier.removeListener(_onTokenChanged);
+    super.dispose();
+  }
+
+  void _onTokenChanged() {
+    setState(() {
+      _announcementsFuture = _fetchAnnouncements();
+    });
+  }
+
+  Future<List<Announcement>> _fetchAnnouncements() async {
+    JWT jwt = await api.decodeToken();
     var announcementRepo = GetIt.I<AbstractAnnouncementRepo>();
-    return announcementRepo.getByClass(userClassId);
+    return announcementRepo.getByClass(jwt.classId!);
   }
 
   Future<void> _refreshAnnouncements() async {

@@ -8,6 +8,7 @@ import 'package:ratingus_mobile/entity/study/repo/http_repo.dart';
 import 'package:ratingus_mobile/entity/user/repo/http_repo.dart';
 import 'package:ratingus_mobile/shared/api/api_dio.dart';
 
+import 'entity/announcement/repo/http_repo.dart';
 import 'entity/auth/utils/token_notifier.dart';
 import 'entity/class/repo/abstract_repo.dart';
 import 'entity/class/repo/http_repo.dart';
@@ -38,7 +39,7 @@ void main() async {
 
   GetIt.I.registerSingleton<AbstractProfileRepo>(HttpProfileRepo());
   GetIt.I.registerSingleton<AbstractAuthRepo>(HttpAuthRepo());
-  GetIt.I.registerSingleton<AbstractAnnouncementRepo>(MockAnnouncementRepo());
+  GetIt.I.registerSingleton<AbstractAnnouncementRepo>(HttpAnnouncementRepo());
   GetIt.I.registerSingleton<AbstractStudyRepo>(HttpStudyRepo());
   GetIt.I.registerSingleton<AbstractClassRepo>(HttpClassRepo());
   GetIt.I.registerSingleton<AbstractLessonRepo>(HttpLessonRepo());

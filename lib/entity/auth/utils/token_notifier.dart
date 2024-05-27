@@ -13,6 +13,7 @@ class TokenNotifier extends ValueNotifier<JWT?> {
     try {
       value = await api.decodeToken();
     } catch (e) {
+      // Обработка ошибок
     }
   }
 
