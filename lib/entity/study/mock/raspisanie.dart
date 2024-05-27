@@ -8,7 +8,7 @@ final raspisanie = <DayStudy>[
     studies: [
       Study(
         timetableNumber: 1,
-        studyId: 1,
+        teacherSubjectId: 1,
         subject: "Русский язык",
         teacher: Teacher(
             id: 0,
@@ -16,10 +16,12 @@ final raspisanie = <DayStudy>[
             surname: "Фёдорова",
             patronymic: "Оскарльдовна"
         ),
+        startTime: DateTime(2024, 10, 11, 8, 0),
+        endTime: DateTime(2024, 10, 11, 8, 40),
       ),
       Study(
         timetableNumber: 2,
-        studyId: 1,
+        teacherSubjectId: 1,
         subject: "Русский язык",
         teacher: Teacher(
             id: 0,
@@ -27,10 +29,12 @@ final raspisanie = <DayStudy>[
             surname: "Фёдорова",
             patronymic: "Оскарльдовна"
         ),
+        startTime: DateTime(2024, 10, 11, 8, 50),
+        endTime: DateTime(2024, 10, 11, 9, 30),
       ),
       Study(
         timetableNumber: 3,
-        studyId: 2,
+        teacherSubjectId: 2,
         subject: "Химия",
         teacher: Teacher(
             id: 1,
@@ -38,6 +42,8 @@ final raspisanie = <DayStudy>[
             surname: "Фёдорова",
             patronymic: "Олеговна"
         ),
+        startTime: DateTime(2024, 10, 11, 9, 45),
+        endTime: DateTime(2024, 10, 11, 10, 25),
       ),
     ]
   ),
@@ -46,7 +52,7 @@ final raspisanie = <DayStudy>[
       studies: [
         Study(
           timetableNumber: 1,
-          studyId: 1,
+          teacherSubjectId: 1,
           subject: "Русский язык",
           teacher: Teacher(
               id: 0,
@@ -54,10 +60,12 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Оскарльдовна"
           ),
+          startTime: DateTime(2024, 10, 11, 8, 0),
+          endTime: DateTime(2024, 10, 11, 8, 40),
         ),
         Study(
           timetableNumber: 2,
-          studyId: 1,
+          teacherSubjectId: 1,
           subject: "Русский язык",
           teacher: Teacher(
               id: 0,
@@ -65,10 +73,12 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Оскарльдовна"
           ),
+          startTime: DateTime(2024, 10, 11, 8, 50),
+          endTime: DateTime(2024, 10, 11, 9, 30),
         ),
         Study(
           timetableNumber: 3,
-          studyId: 2,
+          teacherSubjectId: 2,
           subject: "Химия",
           teacher: Teacher(
               id: 1,
@@ -76,6 +86,8 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Олеговна"
           ),
+          startTime: DateTime(2024, 10, 11, 9, 45),
+          endTime: DateTime(2024, 10, 11, 10, 25),
         ),
       ]
   ),
@@ -84,7 +96,7 @@ final raspisanie = <DayStudy>[
       studies: [
         Study(
           timetableNumber: 1,
-          studyId: 1,
+          teacherSubjectId: 1,
           subject: "Русский язык",
           teacher: Teacher(
               id: 0,
@@ -92,10 +104,12 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Оскарльдовна"
           ),
+          startTime: DateTime(2024, 10, 11, 8, 0),
+          endTime: DateTime(2024, 10, 11, 8, 40),
         ),
         Study(
           timetableNumber: 2,
-          studyId: 1,
+          teacherSubjectId: 1,
           subject: "Русский язык",
           teacher: Teacher(
               id: 0,
@@ -103,10 +117,12 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Оскарльдовна"
           ),
+          startTime: DateTime(2024, 10, 11, 8, 50),
+          endTime: DateTime(2024, 10, 11, 9, 30),
         ),
         Study(
           timetableNumber: 3,
-          studyId: 2,
+          teacherSubjectId: 2,
           subject: "Химия",
           teacher: Teacher(
               id: 1,
@@ -114,6 +130,8 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Олеговна"
           ),
+          startTime: DateTime(2024, 10, 11, 9, 45),
+          endTime: DateTime(2024, 10, 11, 10, 25),
         ),
       ]
   ),
@@ -122,7 +140,7 @@ final raspisanie = <DayStudy>[
       studies: [
         Study(
           timetableNumber: 1,
-          studyId: 1,
+          teacherSubjectId: 1,
           subject: "Русский язык",
           teacher: Teacher(
               id: 0,
@@ -130,10 +148,12 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Оскарльдовна"
           ),
+          startTime: DateTime(2024, 10, 11, 8, 0),
+          endTime: DateTime(2024, 10, 11, 8, 40),
         ),
         Study(
           timetableNumber: 2,
-          studyId: 1,
+          teacherSubjectId: 1,
           subject: "Русский язык",
           teacher: Teacher(
               id: 0,
@@ -141,10 +161,12 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Оскарльдовна"
           ),
+          startTime: DateTime(2024, 10, 11, 8, 50),
+          endTime: DateTime(2024, 10, 11, 9, 30),
         ),
         Study(
           timetableNumber: 3,
-          studyId: 2,
+          teacherSubjectId: 2,
           subject: "Химия",
           teacher: Teacher(
               id: 1,
@@ -152,6 +174,8 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Олеговна"
           ),
+          startTime: DateTime(2024, 10, 11, 9, 45),
+          endTime: DateTime(2024, 10, 11, 10, 25),
         ),
       ]
   ),
@@ -160,7 +184,7 @@ final raspisanie = <DayStudy>[
       studies: [
         Study(
           timetableNumber: 1,
-          studyId: 1,
+          teacherSubjectId: 1,
           subject: "Русский язык",
           teacher: Teacher(
               id: 0,
@@ -168,10 +192,12 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Оскарльдовна"
           ),
+          startTime: DateTime(2024, 10, 11, 8, 0),
+          endTime: DateTime(2024, 10, 11, 8, 40),
         ),
         Study(
           timetableNumber: 2,
-          studyId: 1,
+          teacherSubjectId: 1,
           subject: "Русский язык",
           teacher: Teacher(
               id: 0,
@@ -179,10 +205,12 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Оскарльдовна"
           ),
+          startTime: DateTime(2024, 10, 11, 8, 50),
+          endTime: DateTime(2024, 10, 11, 9, 30),
         ),
         Study(
           timetableNumber: 3,
-          studyId: 2,
+          teacherSubjectId: 2,
           subject: "Химия",
           teacher: Teacher(
               id: 1,
@@ -190,6 +218,8 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Олеговна"
           ),
+          startTime: DateTime(2024, 10, 11, 9, 45),
+          endTime: DateTime(2024, 10, 11, 10, 25),
         ),
       ]
   ),
@@ -198,7 +228,7 @@ final raspisanie = <DayStudy>[
       studies: [
         Study(
           timetableNumber: 1,
-          studyId: 1,
+          teacherSubjectId: 1,
           subject: "Русский язык",
           teacher: Teacher(
               id: 0,
@@ -206,10 +236,12 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Оскарльдовна"
           ),
+          startTime: DateTime(2024, 10, 11, 8, 0),
+          endTime: DateTime(2024, 10, 11, 8, 40),
         ),
         Study(
           timetableNumber: 2,
-          studyId: 1,
+          teacherSubjectId: 1,
           subject: "Русский язык",
           teacher: Teacher(
               id: 0,
@@ -217,10 +249,12 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Оскарльдовна"
           ),
+          startTime: DateTime(2024, 10, 11, 8, 50),
+          endTime: DateTime(2024, 10, 11, 9, 30),
         ),
         Study(
           timetableNumber: 3,
-          studyId: 2,
+          teacherSubjectId: 2,
           subject: "Химия",
           teacher: Teacher(
               id: 1,
@@ -228,7 +262,9 @@ final raspisanie = <DayStudy>[
               surname: "Фёдорова",
               patronymic: "Олеговна"
           ),
+          startTime: DateTime(2024, 10, 11, 9, 45),
+          endTime: DateTime(2024, 10, 11, 10, 25),
         ),
       ]
-  )
+  ),
 ];

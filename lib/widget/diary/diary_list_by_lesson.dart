@@ -1,8 +1,11 @@
+import 'package:appmetrica_plugin/appmetrica_plugin.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
-import 'package:ratingus_mobile/entity/lesson/model/day_lesson_detail.dart';
+import 'package:ratingus_mobile/entity/lesson/model/day_lesson.dart';
 import 'package:ratingus_mobile/entity/lesson/model/lesson.dart';
-import 'package:ratingus_mobile/entity/lesson/model/lesson_detail.dart';
+import 'package:ratingus_mobile/entity/lesson/model/write_note_dto.dart';
+import 'package:ratingus_mobile/entity/lesson/repo/abstract_repo.dart';
 import 'package:ratingus_mobile/entity/mark/ui/attendance.dart';
 import 'package:ratingus_mobile/entity/mark/ui/mark.dart';
 import 'package:ratingus_mobile/entity/timetable/mock/timetable.dart';
@@ -12,7 +15,7 @@ import 'package:ratingus_mobile/shared/helpers/strings.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 
 class DiaryListByLesson extends StatefulWidget {
-  final DayLessonDetail dayLessonDetail;
+  final DayLesson dayLessonDetail;
   final int selectedLesson;
 
   const DiaryListByLesson(
@@ -24,7 +27,7 @@ class DiaryListByLesson extends StatefulWidget {
 
 class _DiaryListByLessonState extends State<DiaryListByLesson> {
   late int selectedLesson;
-  late LessonDetail lesson;
+  late Lesson lesson;
   late TimetableEntry timeTableEntry;
 
   @override
@@ -50,7 +53,7 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
 
   @override
   Widget build(BuildContext context) {
-    Widget renderHomeWork(LessonDetail lesson) {
+    Widget renderHomeWork(Lesson lesson) {
       if (lesson.homework != null) {
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -72,7 +75,8 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
       );
     }
 
-    Widget renderNote(LessonDetail lesson) {
+    Widget renderNote(Lesson lesson) {
+      final diaryRepo = GetIt.I<AbstractLessonRepo>();
       return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,6 +84,15 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
             TextFormField(
               maxLines: null,
               initialValue: lesson.note,
+              onFieldSubmitted: (value) async {
+                await diaryRepo.writeNote(WriteNoteDto(
+                    scheduleId: lesson.scheduleId,
+                    lessonId: lesson.lessonId,
+                    lessonStudentId: lesson.studentLessonId,
+                    text: value,
+                    date: lesson.startTime));
+                AppMetrica.reportEvent('Оставлена заметка в дневнике');
+              },
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(12),
                 border: const OutlineInputBorder().copyWith(
@@ -100,7 +113,7 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              capitalize(DateFormat('MMMM', 'ru')
+              capitalize(DateFormat('EEEE', 'ru')
                   .format(widget.dayLessonDetail.dateTime)),
               style: Theme.of(context)
                   .textTheme

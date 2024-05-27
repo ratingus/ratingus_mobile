@@ -1,12 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:ratingus_mobile/entity/lesson/model/day_lesson.dart';
 import 'package:ratingus_mobile/entity/lesson/model/lesson.dart';
 import 'package:ratingus_mobile/entity/mark/ui/attendance.dart';
 import 'package:ratingus_mobile/entity/mark/ui/mark.dart';
-import 'package:ratingus_mobile/entity/study/model/study.dart';
 import 'package:ratingus_mobile/entity/study/ui/study_item.dart';
+import 'package:ratingus_mobile/pages/main/diary/pages/diary_provider.dart';
 import 'package:ratingus_mobile/shared/helpers/datetime.dart';
 import 'package:ratingus_mobile/shared/helpers/strings.dart';
 import 'package:ratingus_mobile/shared/router/router.dart';
@@ -31,10 +32,12 @@ class DiaryListByWeek extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final diaryProvider = Provider.of<DiaryProvider>(context);
     return StudyListView<DayLesson, Lesson>(
       list: lessonList,
       renderDay: (currentDay) => TextButton(
           onPressed: () {
+            diaryProvider.fetchLessonsByDay(currentDay.dateTime);
             AutoRouter.of(context)
                 .push(DiaryByDayRoute(date: currentDay.dateTime));
           },
@@ -55,10 +58,14 @@ class DiaryListByWeek extends StatelessWidget {
       renderItem: (lesson, day) => TextButton(
           onPressed: () {
             AutoRouter.of(context).push(DiaryByLessonRoute(
-                dayLessonDetail: day.dateTime, selectedLesson: lesson.timetableNumber - 1));
+                day: day, selectedLesson: day.studies.indexOf(lesson),
+                onRefetch: () async {
+                  Provider.of<DiaryProvider>(context, listen: false)
+                      .fetchLessonsByDay(day.dateTime);
+                }));
           },
           child:
-              StudyItem(study: lesson as Study, rightSlot: markSlot(lesson))),
+              StudyItem(study: lesson, rightSlot: markSlot(lesson))),
     );
   }
 }

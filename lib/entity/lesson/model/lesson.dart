@@ -7,18 +7,28 @@ part 'lesson.g.dart';
 
 @JsonSerializable()
 class Lesson extends Study {
-  final int id;
+  final int scheduleId;
+  final int? lessonId;
+  final int? studentLessonId;
   final String? mark;
   final Attendance? attendance;
+  final String? homework;
+  final String? note;
 
   Lesson({
     this.mark,
     this.attendance,
-    required this.id,
-    required super.studyId,
-    required super.timetableNumber,
+    required this.scheduleId,
+    this.lessonId,
+    this.studentLessonId,
+    required super.teacherSubjectId,
     required super.subject,
-    required super.teacher,
+    super.teacher,
+    required super.timetableNumber,
+    required super.startTime,
+    required super.endTime,
+    this.homework,
+    this.note,
   });
 
   factory Lesson.fromJson(Map<String, dynamic> json) => _$LessonFromJson(json);

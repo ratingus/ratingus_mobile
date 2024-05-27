@@ -27,7 +27,7 @@ class AnnouncementListItem extends StatelessWidget {
                 children: [
                   Text(
                     DateFormat('d MMM HH:mm', 'ru')
-                        .format(announcement.date)
+                        .format(announcement.createDate)
                         .toLowerCase(),
                     style: const TextStyle(color: AppColors.textHelper),
                   ),
@@ -43,7 +43,7 @@ class AnnouncementListItem extends StatelessWidget {
                 ],
               ),
               Text(
-                announcement.fullName,
+                announcement.creator.getFio(),
                 style: Theme.of(context)
                     .textTheme
                     .bodyLarge
@@ -51,14 +51,16 @@ class AnnouncementListItem extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
-                child: Row(
+                child: Wrap(
+                  spacing: 4.0,
+                  runSpacing: 4.0,
                   children: announcement.classes.map((classItem) {
                     return ClassListItem(classItem: classItem);
                   }).toList(),
                 ),
               ),
               Text(
-                announcement.title,
+                announcement.name,
                 style: Theme.of(context).textTheme.displaySmall,
               ),
               announcement.content != null

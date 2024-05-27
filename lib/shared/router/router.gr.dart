@@ -49,8 +49,9 @@ abstract class _$AppRouter extends RootStackRouter {
         routeData: routeData,
         child: DiaryByLessonPage(
           key: args.key,
-          dayLessonDetail: args.dayLessonDetail,
+          day: args.day,
           selectedLesson: args.selectedLesson,
+          onRefetch: args.onRefetch,
         ),
       );
     },
@@ -184,15 +185,17 @@ class DiaryByDayRouteArgs {
 class DiaryByLessonRoute extends PageRouteInfo<DiaryByLessonRouteArgs> {
   DiaryByLessonRoute({
     Key? key,
-    required DateTime dayLessonDetail,
+    required DayLesson day,
     required int selectedLesson,
+    required Future<void> Function() onRefetch,
     List<PageRouteInfo>? children,
   }) : super(
           DiaryByLessonRoute.name,
           args: DiaryByLessonRouteArgs(
             key: key,
-            dayLessonDetail: dayLessonDetail,
+            day: day,
             selectedLesson: selectedLesson,
+            onRefetch: onRefetch,
           ),
           initialChildren: children,
         );
@@ -206,19 +209,22 @@ class DiaryByLessonRoute extends PageRouteInfo<DiaryByLessonRouteArgs> {
 class DiaryByLessonRouteArgs {
   const DiaryByLessonRouteArgs({
     this.key,
-    required this.dayLessonDetail,
+    required this.day,
     required this.selectedLesson,
+    required this.onRefetch,
   });
 
   final Key? key;
 
-  final DateTime dayLessonDetail;
+  final DayLesson day;
 
   final int selectedLesson;
 
+  final Future<void> Function() onRefetch;
+
   @override
   String toString() {
-    return 'DiaryByLessonRouteArgs{key: $key, dayLessonDetail: $dayLessonDetail, selectedLesson: $selectedLesson}';
+    return 'DiaryByLessonRouteArgs{key: $key, day: $day, selectedLesson: $selectedLesson, onRefetch: $onRefetch}';
   }
 }
 

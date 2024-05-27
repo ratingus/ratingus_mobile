@@ -1,3 +1,5 @@
+import 'package:ratingus_mobile/entity/class/model/class_model.dart';
+
 class User {
   final int id;
   final String login;
@@ -5,7 +7,7 @@ class User {
   final String surname;
   final String patronymic;
   final int schoolId;
-  final int classId;
+  final ClassItem classId;
   final DateTime birthdate;
 
   User(

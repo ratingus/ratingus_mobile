@@ -1,13 +1,15 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:ratingus_mobile/entity/lesson/mock/diary.dart';
+import 'package:provider/provider.dart';
 import 'package:ratingus_mobile/shared/components/date_selector.dart';
 import 'package:ratingus_mobile/shared/helpers/datetime.dart';
 import 'package:ratingus_mobile/shared/helpers/strings.dart';
 import 'package:ratingus_mobile/shared/router/router.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 import 'package:ratingus_mobile/widget/diary/diary_list_by_day.dart';
+
+import 'diary_provider.dart';
 
 @RoutePage()
 class DiaryByDayPage extends StatefulWidget {
@@ -29,6 +31,7 @@ class _DiaryByDayPageState extends State<DiaryByDayPage> {
     selectedDay = widget.date;
     _pageController = PageController(initialPage: selectedDay.weekday);
   }
+
 
   void nextDayOfWeek() {
     setState(() {
@@ -57,6 +60,10 @@ class _DiaryByDayPageState extends State<DiaryByDayPage> {
 
   @override
   Widget build(BuildContext context) {
+    final diaryProvider = Provider.of<DiaryProvider>(context);
+    final dayLesson = diaryProvider.dayLesson;
+    final isDayLessonLoading = diaryProvider.isDayLessonLoading;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.backgroundPaper,
@@ -82,7 +89,7 @@ class _DiaryByDayPageState extends State<DiaryByDayPage> {
       ),
       body: PageView.builder(
         controller: _pageController,
-        onPageChanged: (int index) {
+        onPageChanged: (int index) async {
           setState(() {
             if (index == 0) {
               AutoRouter.of(context).popAndPush(DiaryByDayRoute(
@@ -95,17 +102,34 @@ class _DiaryByDayPageState extends State<DiaryByDayPage> {
                   selectedDay.add(Duration(days: index - selectedDay.weekday));
             }
           });
+          await diaryProvider.fetchLessonsByDay(selectedDay);
         },
         itemCount: 8,
         itemBuilder: (context, index) {
-          final currentDayLesson = getCurrentDayDiary(selectedDay);
-          return Center(
-              child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2),
-            child: DiaryListByDay(
-              lessonList: [currentDayLesson],
-            ),
-          ));
+          return RefreshIndicator(
+              onRefresh: () async {
+                await diaryProvider.fetchLessonsByDay(selectedDay);
+              },
+              child: dayLesson == null ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('Расписания ещё нет или его не удалось получить'),
+                          ElevatedButton(
+                            onPressed: () => diaryProvider.fetchLessonsByDay(selectedDay),
+                            child: const Text('Повторить'),
+                          ),
+                        ],
+                      ),
+                    ) : isDayLessonLoading ? const Center(child: CircularProgressIndicator()) :  Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2),
+                        child: DiaryListByDay(
+                          lessonList: [dayLesson],
+                        ),
+                      ),
+                    )
+              );
         },
       ),
     );

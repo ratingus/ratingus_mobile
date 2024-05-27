@@ -1,33 +1,33 @@
 import 'package:ratingus_mobile/entity/class/model/class_model.dart';
+import 'package:ratingus_mobile/entity/user/model/teacher.dart';
 
 class Announcement {
-  final String fullName;
-  final DateTime date;
+  final int id;
   final int views;
+  final Teacher creator;
+  final DateTime createDate;
   final List<ClassItem> classes;
-  final String title;
+  final String name;
   final String? content;
 
   Announcement({
-    required this.fullName,
-    required this.date,
+    required this.id,
     required this.views,
+    required this.creator,
+    required this.createDate,
     required this.classes,
-    required this.title,
+    required this.name,
     this.content,
   });
 
   factory Announcement.fromJson(Map<String, dynamic> json) {
-    var classList = json['classes'] as List;
-    List<ClassItem> classesList =
-        classList.map((i) => ClassItem.fromJson(i)).toList();
-
     return Announcement(
-      fullName: json['fullName'],
-      date: DateTime.parse(json['date']),
+      id: json['id'],
       views: json['views'],
-      classes: classesList,
-      title: json['title'],
+      creator: Teacher.fromJson(json['creator']),
+      createDate: DateTime.parse(json['createDate']),
+      classes: (json['classes'] as List).map((e) => ClassItem.fromJson(e)).toList(),
+      name: json['name'],
       content: json['content'],
     );
   }
