@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:ratingus_mobile/entity/lesson/model/day_lesson.dart';
 import 'package:ratingus_mobile/pages/layout.dart';
 import 'package:ratingus_mobile/pages/main/announcements.dart';
 import 'package:ratingus_mobile/pages/auth/guard.dart';

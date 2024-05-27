@@ -32,7 +32,7 @@ class StudyListView<Day extends DayWithStudies<Study>, Study>
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (BuildContext context, int index) {
-                            return renderItem(currentDay.lessons[index], currentDay);
+                            return renderItem(currentDay.studies[index], currentDay);
                           },
                           separatorBuilder: (BuildContext context, int index) {
                             return const Divider(
@@ -40,7 +40,7 @@ class StudyListView<Day extends DayWithStudies<Study>, Study>
                               color: Colors.transparent,
                             );
                           },
-                          itemCount: currentDay.lessons.length)
+                          itemCount: currentDay.studies.length)
                     ],
                   )));
         },

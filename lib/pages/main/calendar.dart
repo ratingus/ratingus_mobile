@@ -95,7 +95,18 @@ class _CalendarPageState extends State<CalendarPage> {
               } else {
                 var classesInSchool = snapshot.data;
                 if (classesInSchool == null) return const SizedBox();
-                return DropdownButton<String>(
+                return classesInSchool.isEmpty ? Text(
+                  "Классы не найдены",
+                  style: Theme.of(context).textTheme.displaySmall,
+                ) : classesInSchool.length == 1 ? Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: Center(
+                    child: Text(
+                      classesInSchool[0].name,
+                      style: Theme.of(context).textTheme.displaySmall,
+                    ),
+                  ),
+                ) : DropdownButton<String>(
                   hint: const Text('Выберите класс'),
                   value: _selectedClass.name,
                   icon: arrowDown,

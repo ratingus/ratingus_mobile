@@ -49,7 +49,7 @@ abstract class _$AppRouter extends RootStackRouter {
         routeData: routeData,
         child: DiaryByLessonPage(
           key: args.key,
-          dayLessonDetail: args.dayLessonDetail,
+          day: args.day,
           selectedLesson: args.selectedLesson,
         ),
       );
@@ -184,14 +184,14 @@ class DiaryByDayRouteArgs {
 class DiaryByLessonRoute extends PageRouteInfo<DiaryByLessonRouteArgs> {
   DiaryByLessonRoute({
     Key? key,
-    required DateTime dayLessonDetail,
+    required DayLesson day,
     required int selectedLesson,
     List<PageRouteInfo>? children,
   }) : super(
           DiaryByLessonRoute.name,
           args: DiaryByLessonRouteArgs(
             key: key,
-            dayLessonDetail: dayLessonDetail,
+            day: day,
             selectedLesson: selectedLesson,
           ),
           initialChildren: children,
@@ -206,19 +206,19 @@ class DiaryByLessonRoute extends PageRouteInfo<DiaryByLessonRouteArgs> {
 class DiaryByLessonRouteArgs {
   const DiaryByLessonRouteArgs({
     this.key,
-    required this.dayLessonDetail,
+    required this.day,
     required this.selectedLesson,
   });
 
   final Key? key;
 
-  final DateTime dayLessonDetail;
+  final DayLesson day;
 
   final int selectedLesson;
 
   @override
   String toString() {
-    return 'DiaryByLessonRouteArgs{key: $key, dayLessonDetail: $dayLessonDetail, selectedLesson: $selectedLesson}';
+    return 'DiaryByLessonRouteArgs{key: $key, day: $day, selectedLesson: $selectedLesson}';
   }
 }
 

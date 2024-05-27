@@ -5,10 +5,10 @@ import 'package:ratingus_mobile/entity/user/model/teacher.dart';
 final raspisanie = <DayStudy>[
   DayStudy(
     dayOfWeek: DateTime.monday,
-    lessons: [
+    studies: [
       Study(
         timetableNumber: 1,
-        studyId: 1,
+        teacherSubjectId: 1,
         subject: "Русский язык",
         teacher: Teacher(
             id: 0,
@@ -21,7 +21,7 @@ final raspisanie = <DayStudy>[
       ),
       Study(
         timetableNumber: 2,
-        studyId: 1,
+        teacherSubjectId: 1,
         subject: "Русский язык",
         teacher: Teacher(
             id: 0,
@@ -34,7 +34,7 @@ final raspisanie = <DayStudy>[
       ),
       Study(
         timetableNumber: 3,
-        studyId: 2,
+        teacherSubjectId: 2,
         subject: "Химия",
         teacher: Teacher(
             id: 1,
@@ -49,10 +49,10 @@ final raspisanie = <DayStudy>[
   ),
   DayStudy(
       dayOfWeek: DateTime.tuesday,
-      lessons: [
+      studies: [
         Study(
           timetableNumber: 1,
-          studyId: 1,
+          teacherSubjectId: 1,
           subject: "Русский язык",
           teacher: Teacher(
               id: 0,
@@ -65,7 +65,7 @@ final raspisanie = <DayStudy>[
         ),
         Study(
           timetableNumber: 2,
-          studyId: 1,
+          teacherSubjectId: 1,
           subject: "Русский язык",
           teacher: Teacher(
               id: 0,
@@ -78,7 +78,7 @@ final raspisanie = <DayStudy>[
         ),
         Study(
           timetableNumber: 3,
-          studyId: 2,
+          teacherSubjectId: 2,
           subject: "Химия",
           teacher: Teacher(
               id: 1,
@@ -93,10 +93,10 @@ final raspisanie = <DayStudy>[
   ),
   DayStudy(
       dayOfWeek: DateTime.wednesday,
-      lessons: [
+      studies: [
         Study(
           timetableNumber: 1,
-          studyId: 1,
+          teacherSubjectId: 1,
           subject: "Русский язык",
           teacher: Teacher(
               id: 0,
@@ -109,7 +109,7 @@ final raspisanie = <DayStudy>[
         ),
         Study(
           timetableNumber: 2,
-          studyId: 1,
+          teacherSubjectId: 1,
           subject: "Русский язык",
           teacher: Teacher(
               id: 0,
@@ -122,7 +122,7 @@ final raspisanie = <DayStudy>[
         ),
         Study(
           timetableNumber: 3,
-          studyId: 2,
+          teacherSubjectId: 2,
           subject: "Химия",
           teacher: Teacher(
               id: 1,
@@ -137,10 +137,10 @@ final raspisanie = <DayStudy>[
   ),
   DayStudy(
       dayOfWeek: DateTime.thursday,
-      lessons: [
+      studies: [
         Study(
           timetableNumber: 1,
-          studyId: 1,
+          teacherSubjectId: 1,
           subject: "Русский язык",
           teacher: Teacher(
               id: 0,
@@ -153,7 +153,7 @@ final raspisanie = <DayStudy>[
         ),
         Study(
           timetableNumber: 2,
-          studyId: 1,
+          teacherSubjectId: 1,
           subject: "Русский язык",
           teacher: Teacher(
               id: 0,
@@ -166,7 +166,7 @@ final raspisanie = <DayStudy>[
         ),
         Study(
           timetableNumber: 3,
-          studyId: 2,
+          teacherSubjectId: 2,
           subject: "Химия",
           teacher: Teacher(
               id: 1,
@@ -181,10 +181,10 @@ final raspisanie = <DayStudy>[
   ),
   DayStudy(
       dayOfWeek: DateTime.friday,
-      lessons: [
+      studies: [
         Study(
           timetableNumber: 1,
-          studyId: 1,
+          teacherSubjectId: 1,
           subject: "Русский язык",
           teacher: Teacher(
               id: 0,
@@ -197,7 +197,7 @@ final raspisanie = <DayStudy>[
         ),
         Study(
           timetableNumber: 2,
-          studyId: 1,
+          teacherSubjectId: 1,
           subject: "Русский язык",
           teacher: Teacher(
               id: 0,
@@ -210,7 +210,7 @@ final raspisanie = <DayStudy>[
         ),
         Study(
           timetableNumber: 3,
-          studyId: 2,
+          teacherSubjectId: 2,
           subject: "Химия",
           teacher: Teacher(
               id: 1,
@@ -225,10 +225,10 @@ final raspisanie = <DayStudy>[
   ),
   DayStudy(
       dayOfWeek: DateTime.saturday,
-      lessons: [
+      studies: [
         Study(
           timetableNumber: 1,
-          studyId: 1,
+          teacherSubjectId: 1,
           subject: "Русский язык",
           teacher: Teacher(
               id: 0,
@@ -241,7 +241,7 @@ final raspisanie = <DayStudy>[
         ),
         Study(
           timetableNumber: 2,
-          studyId: 1,
+          teacherSubjectId: 1,
           subject: "Русский язык",
           teacher: Teacher(
               id: 0,
@@ -254,7 +254,7 @@ final raspisanie = <DayStudy>[
         ),
         Study(
           timetableNumber: 3,
-          studyId: 2,
+          teacherSubjectId: 2,
           subject: "Химия",
           teacher: Teacher(
               id: 1,

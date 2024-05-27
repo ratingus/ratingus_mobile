@@ -25,6 +25,7 @@ class _DiaryByWeekPageState extends State<DiaryByWeekPage> {
   @override
   void initState() {
     super.initState();
+    print("base week of year = $weekOfYear");
     _pageController = PageController(initialPage: weekOfYear);
   }
 
@@ -87,13 +88,13 @@ class _DiaryByWeekPageState extends State<DiaryByWeekPage> {
           setState(() {
             weekOfYear = index + 1;
           });
-          diaryProvider.fetchLessons(getAcademicDateByWeek(weekOfYear));
+          diaryProvider.fetchDayLessons(getAcademicDateByWeek(weekOfYear));
         },
         itemCount: 52, // Maximum number of weeks in a year - 53
         itemBuilder: (context, index) {
           return RefreshIndicator(
             onRefresh: () async {
-              await diaryProvider.fetchLessons(getAcademicDateByWeek(weekOfYear));
+              await diaryProvider.fetchDayLessons(getAcademicDateByWeek(weekOfYear));
             },
             child: isDayLessonsLoading ? const Center(child: CircularProgressIndicator()) : dayLessons == null ? Center(
                     child: Column(
@@ -101,7 +102,7 @@ class _DiaryByWeekPageState extends State<DiaryByWeekPage> {
                       children: [
                         const Text('Расписания ещё нет или его не удалось получить'),
                         ElevatedButton(
-                          onPressed: () => diaryProvider.fetchLessons(getAcademicDateByWeek(weekOfYear)),
+                          onPressed: () => diaryProvider.fetchDayLessons(getAcademicDateByWeek(weekOfYear)),
                           child: const Text('Повторить'),
                         ),
                       ],

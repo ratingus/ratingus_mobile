@@ -1,7 +1,10 @@
 import 'package:appmetrica_plugin/appmetrica_plugin.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:ratingus_mobile/entity/class/ui/class_item.dart';
 import 'package:ratingus_mobile/entity/school/model/school.dart';
+import 'package:ratingus_mobile/entity/user/repo/abstract_repo.dart';
+import 'package:ratingus_mobile/shared/api/api_dio.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 
 class SchoolTabs extends StatefulWidget {
@@ -17,6 +20,7 @@ class SchoolTabs extends StatefulWidget {
 class _SchoolTabsState extends State<SchoolTabs>
     with SingleTickerProviderStateMixin {
   late int _selectedSchoolIndex;
+  final profileRepo = GetIt.I<AbstractProfileRepo>();
 
   @override
   void initState() {
@@ -43,11 +47,12 @@ class _SchoolTabsState extends State<SchoolTabs>
                   minimumSize: const Size(0, 30),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   alignment: Alignment.centerLeft),
-              onPressed: () {
+              onPressed: () async {
                 setState(() {
-                  AppMetrica.reportEvent('Пользователь сменил школу');
                   _selectedSchoolIndex = index;
                 });
+                await profileRepo.changeSchool(widget.schools[index].id);
+                AppMetrica.reportEvent('Пользователь сменил школу');
               },
               child: Text(
                 widget.schools[index].name,

@@ -1,3 +1,3 @@
 abstract class DayWithStudies<Study> {
-  List<Study> get lessons;
+  List<Study> get studies;
 }

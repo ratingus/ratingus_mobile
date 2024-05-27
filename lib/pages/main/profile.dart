@@ -29,6 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final _dateController = TextEditingController();
   final api = GetIt.I<Api>();
   final DateFormat _dateFormatter = DateFormat('dd MMM yyyy', 'ru');
+  late Future<ProfileDto> _profileDto;
 
   DateTime? getSelectedDate() {
     try {
@@ -38,9 +39,21 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  @override
+  initState() {
+    super.initState();
+    _profileDto = _fetchUser();
+  }
+
   Future<ProfileDto> _fetchUser() async {
     final jwt = await api.decodeToken();
-    return profileRepo.getProfile(jwt.id);
+    return await profileRepo.getProfile(jwt.id);
+  }
+
+  Future<void> _refreshUser() async {
+    setState(() {
+      _profileDto = _fetchUser();
+    });
   }
 
   @override
@@ -67,7 +80,8 @@ class _ProfilePageState extends State<ProfilePage> {
     handleSubmit() async {
       AppMetrica.reportEvent('Введён код организации');
       try {
-        AppMetrica.reportEvent('Отправлен запрос на подключение пользователя к организации');
+        AppMetrica.reportEvent(
+            'Отправлен запрос на подключение пользователя к организации');
         await profileRepo.enterCode(code);
         AppMetrica.reportEvent('Пользователь добавлен в организацию');
         await _fetchUser();
@@ -76,7 +90,8 @@ class _ProfilePageState extends State<ProfilePage> {
         });
       } catch (e) {
         print('Error: $e');
-        AppMetrica.reportEvent('Ошибка при добавлении пользователя в организацию');
+        AppMetrica.reportEvent(
+            'Ошибка при добавлении пользователя в организацию');
         WidgetsBinding.instance.addPostFrameCallback((_) {
           Navigator.pop(context);
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -89,48 +104,49 @@ class _ProfilePageState extends State<ProfilePage> {
     Navigator.of(context).push(CustomModal(
       content: Padding(
         padding:
-        const EdgeInsets.only(top: 64, left: 16, right: 16, bottom: 16),
+            const EdgeInsets.only(top: 64, left: 16, right: 16, bottom: 16),
         child: Form(
           child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Column(
-              children: [
-                Text(
-                  'Код приглашения',
-                  style: Theme.of(context).textTheme.displayMedium,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                buildTextFormField(
-                    onFieldSubmitted: (value) {
-                      handleSubmit();
-                    },
-                    textInputAction: TextInputAction.done,
-                    onChanged: (value) {
-                      setState(() {
-                        code = value;
-                      });
-                    }, labelText: 'Введите код'),
-              ],
-            ),
-            TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: AppColors.primaryMain,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Column(
+                children: [
+                  Text(
+                    'Код приглашения',
+                    style: Theme.of(context).textTheme.displayMedium,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  buildTextFormField(
+                      onFieldSubmitted: (value) {
+                        handleSubmit();
+                      },
+                      textInputAction: TextInputAction.done,
+                      onChanged: (value) {
+                        setState(() {
+                          code = value;
+                        });
+                      },
+                      labelText: 'Введите код'),
+                ],
               ),
-              onPressed: handleSubmit,
-              child: Text(
-                'Ввести код',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: AppColors.primaryPaper,
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: AppColors.primaryMain,
+                ),
+                onPressed: handleSubmit,
+                child: Text(
+                  'Ввести код',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: AppColors.primaryPaper,
+                      ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
     ));
   }
 
@@ -138,7 +154,7 @@ class _ProfilePageState extends State<ProfilePage> {
     Navigator.of(context).push(CustomModal(
       content: Padding(
         padding:
-        const EdgeInsets.only(top: 64, left: 16, right: 16, bottom: 16),
+            const EdgeInsets.only(top: 64, left: 16, right: 16, bottom: 16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
@@ -184,8 +200,8 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Text(
                 'Изменить',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: AppColors.primaryPaper,
-                ),
+                      color: AppColors.primaryPaper,
+                    ),
               ),
             ),
           ],
@@ -197,142 +213,154 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: _fetchUser,
+      onRefresh: () async {
+        await _refreshUser();
+      },
       child: FutureBuilder<ProfileDto>(
-        future: _fetchUser(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Ошибка: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data == null) {
-            return const Center(child: Text('Данные не найдены'));
-          } else {
-            final profile = snapshot.data!;
-            return FutureBuilder<JWT>(
-    future: api.decodeToken(),
-    builder: (context, snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-    return const Center(child: CircularProgressIndicator());
-    } else if (snapshot.hasError) {
-    return Center(child: Text('Ошибка: ${snapshot.error}'));
-    } else if (!snapshot.hasData || snapshot.data == null) {
-    return const Center(child: Text('Данные не найдены'));
-    } else {
-    final jwt = snapshot.data!;
-    return Stack(
-              children: <Widget>[
-                const Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Image(
-                        image: AssetImage(
-                            "assets/images/profile_empty_back_image.png"),
-                        height: 180,
-                        fit: BoxFit.fitHeight,
-                      )
-                    ]),
-                Positioned(
-                    top: 180 - 20,
-                    left: 0,
-                    right: 0,
-                    bottom: 2,
-                    child: Card(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 12, horizontal: 6),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                PressedIconButton(
-                                  onPressed: () {
-                                    AppMetrica.reportEvent(
-                                        'Нажата кнопка "Ввести код"');
-                                    _showCodeModal(context);
-                                  },
-                                  icon: addUserIcon,
-                                  activeIcon: activeAddUserIcon,
+          future: _profileDto,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Ошибка: ${snapshot.error}'));
+            } else if (!snapshot.hasData || snapshot.data == null) {
+              return const Center(child: Text('Данные не найдены'));
+            } else {
+              final profile = snapshot.data!;
+              return FutureBuilder<JWT>(
+                  future: api.decodeToken(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Ошибка: ${snapshot.error}'));
+                    } else if (!snapshot.hasData || snapshot.data == null) {
+                      return const Center(child: Text('Данные не найдены'));
+                    } else {
+                      final jwt = snapshot.data!;
+                      return Stack(
+                        children: <Widget>[
+                          const Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Image(
+                                  image: AssetImage(
+                                      "assets/images/profile_empty_back_image.png"),
+                                  height: 180,
+                                  fit: BoxFit.fitHeight,
+                                )
+                              ]),
+                          Positioned(
+                              top: 180 - 20,
+                              left: 0,
+                              right: 0,
+                              bottom: 2,
+                              child: Card(
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
                                 ),
-                                PressedIconButton(
-                                  onPressed: () {
-                                    _showEditModal(context);
-                                  },
-                                  icon: settingsIcon,
-                                  activeIcon: activeSettingsIcon,
-                                ),
-                              ],
-                            ),
-                          ),
-                          Flexible(
-                              child: ConstrainedBox(
-                                  constraints: const BoxConstraints(
-                                    maxHeight: 0,
-                                  ),
-                                  child: const Stack(
-                                    clipBehavior: Clip.none,
-                                    children: [
-                                      Positioned(
-                                        top: -128 - 12,
-                                        left: 0,
-                                        right: 0,
-                                        child: ProfileIcon(size: 128),
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 12, horizontal: 6),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          PressedIconButton(
+                                            onPressed: () {
+                                              AppMetrica.reportEvent(
+                                                  'Нажата кнопка "Ввести код"');
+                                              _showCodeModal(context);
+                                            },
+                                            icon: addUserIcon,
+                                            activeIcon: activeAddUserIcon,
+                                          ),
+                                          PressedIconButton(
+                                            onPressed: () {
+                                              _showEditModal(context);
+                                            },
+                                            icon: settingsIcon,
+                                            activeIcon: activeSettingsIcon,
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ))),
-                          Flexible(
-                            flex: 30,
-                            child: Column(
-                              children: [
-                                Text(
-                                  profile.login,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .displayMedium
-                                      ?.copyWith(
-                                      color: AppColors.textPrimary),
+                                    ),
+                                    Flexible(
+                                        child: ConstrainedBox(
+                                            constraints: const BoxConstraints(
+                                              maxHeight: 0,
+                                            ),
+                                            child: const Stack(
+                                              clipBehavior: Clip.none,
+                                              children: [
+                                                Positioned(
+                                                  top: -128 - 12,
+                                                  left: 0,
+                                                  right: 0,
+                                                  child: ProfileIcon(size: 128),
+                                                ),
+                                              ],
+                                            ))),
+                                    Flexible(
+                                      flex: 30,
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            profile.login,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .displayMedium
+                                                ?.copyWith(
+                                                    color:
+                                                        AppColors.textPrimary),
+                                          ),
+                                          Text(
+                                            profile.getFio(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .displaySmall
+                                                ?.copyWith(
+                                                    color:
+                                                        AppColors.textPrimary),
+                                          ),
+                                          Text(
+                                            DateFormat('d MMM yyyy', 'ru')
+                                                .format(profile.birthdate)
+                                                .toLowerCase(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge
+                                                ?.copyWith(
+                                                    color:
+                                                        AppColors.textHelper),
+                                          ),
+                                          const SizedBox(
+                                            height: 12,
+                                          ),
+                                          Expanded(
+                                              child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 12),
+                                            child: SchoolTabs(
+                                                schools: profile.schools,
+                                                defaultSchoolId:
+                                                    int.parse(jwt.school!)),
+                                          )),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  profile.getFio(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .displaySmall
-                                      ?.copyWith(
-                                      color: AppColors.textPrimary),
-                                ),
-                                Text(
-                                  DateFormat('d MMM yyyy', 'ru')
-                                      .format(profile.birthdate)
-                                      .toLowerCase(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleLarge
-                                      ?.copyWith(
-                                      color: AppColors.textHelper),
-                                ),
-                                const SizedBox(
-                                  height: 12,
-                                ),
-                                Expanded(
-                                    child: Padding(
-                                      padding:
-                                      const EdgeInsets.symmetric(horizontal: 12),
-                                      child: SchoolTabs(schools: profile.schools, defaultSchoolId: int.parse(jwt.school!)),
-                                    )),
-                              ],
-                            ),
-                          ),
+                              ))
                         ],
-                      ),
-                    ))
-              ],
-            );
-          }});
-    }}),
+                      );
+                    }
+                  });
+            }
+          }),
     );
   }
 }

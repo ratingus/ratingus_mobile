@@ -5,7 +5,7 @@ part 'study.g.dart';
 
 @JsonSerializable()
 class Study {
-  final int studyId;
+  final int teacherSubjectId;
   final int timetableNumber;
   final String subject;
   final Teacher? teacher;
@@ -13,7 +13,7 @@ class Study {
   final DateTime endTime;
 
   Study({
-    required this.studyId,
+    required this.teacherSubjectId,
     required this.timetableNumber,
     required this.subject,
     required this.teacher,

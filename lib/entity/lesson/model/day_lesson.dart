@@ -10,9 +10,9 @@ class DayLesson extends DayWithStudies<Lesson> {
   final int dayOfWeek;
   final DateTime dateTime;
   @override
-  final List<Lesson> lessons;
+  final List<Lesson> studies;
 
-  DayLesson({required this.dayOfWeek, required this.dateTime, required this.lessons});
+  DayLesson({required this.dayOfWeek, required this.dateTime, required this.studies});
 
   factory DayLesson.fromJson(Map<String, dynamic> json) => _$DayLessonFromJson(json);
 

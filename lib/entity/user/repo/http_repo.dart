@@ -9,6 +9,7 @@ class HttpProfileRepo extends AbstractProfileRepo {
   @override
   Future<void> changeSchool(int schoolId) async {
     try {
+      print("schoolId: $schoolId");
       await api.dio.post('/profile/change-school', data: { 'id': schoolId });
     } catch (e) {
       print('Error: $e');

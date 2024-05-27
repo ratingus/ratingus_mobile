@@ -1,33 +1,32 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:ratingus_mobile/entity/mark/model/attendance.dart';
+import 'package:ratingus_mobile/entity/study/model/study.dart';
 import 'package:ratingus_mobile/entity/user/model/teacher.dart';
 
 part 'lesson.g.dart';
 
 @JsonSerializable()
-class Lesson {
-  final String? mark;
-  final Attendance? attendance;
-  final int scheduleId;
+class Lesson extends Study {
+  final int? scheduleId;
   final int? lessonId;
   final int? studentLessonId;
-  final int teacherSubjectId;
-  final String subject;
-  final Teacher teacher;
-  final int timetableNumber;
+  final String? mark;
+  final Attendance? attendance;
   final String? homework;
   final String? note;
 
   Lesson({
     this.mark,
     this.attendance,
-    required this.scheduleId,
+    this.scheduleId,
     this.lessonId,
     this.studentLessonId,
-    required this.teacherSubjectId,
-    required this.subject,
-    required this.teacher,
-    required this.timetableNumber,
+    required super.teacherSubjectId,
+    required super.subject,
+    super.teacher,
+    required super.timetableNumber,
+    required super.startTime,
+    required super.endTime,
     this.homework,
     this.note,
   });

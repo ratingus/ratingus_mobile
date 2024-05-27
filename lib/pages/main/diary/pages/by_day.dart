@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:ratingus_mobile/entity/lesson/model/day_lesson.dart';
 import 'package:ratingus_mobile/shared/components/date_selector.dart';
 import 'package:ratingus_mobile/shared/helpers/datetime.dart';
 import 'package:ratingus_mobile/shared/helpers/strings.dart';
@@ -90,7 +89,7 @@ class _DiaryByDayPageState extends State<DiaryByDayPage> {
       ),
       body: PageView.builder(
         controller: _pageController,
-        onPageChanged: (int index) {
+        onPageChanged: (int index) async {
           setState(() {
             if (index == 0) {
               AutoRouter.of(context).popAndPush(DiaryByDayRoute(
@@ -103,6 +102,7 @@ class _DiaryByDayPageState extends State<DiaryByDayPage> {
                   selectedDay.add(Duration(days: index - selectedDay.weekday));
             }
           });
+          await diaryProvider.fetchLessonsByDay(selectedDay);
         },
         itemCount: 8,
         itemBuilder: (context, index) {

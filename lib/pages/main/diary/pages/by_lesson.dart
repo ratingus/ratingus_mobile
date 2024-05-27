@@ -1,6 +1,7 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ratingus_mobile/entity/lesson/model/day_lesson.dart';
 import 'package:ratingus_mobile/entity/lesson/model/lesson.dart';
 import 'package:ratingus_mobile/shared/components/swiper.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
@@ -11,11 +12,11 @@ import 'diary_provider.dart';
 
 @RoutePage()
 class DiaryByLessonPage extends StatefulWidget {
-  final DateTime dayLessonDetail;
+  final DayLesson day;
   final int selectedLesson;
 
   const DiaryByLessonPage(
-      {super.key, required this.dayLessonDetail, required this.selectedLesson});
+      {super.key, required this.day, required this.selectedLesson});
 
   @override
   State<DiaryByLessonPage> createState() => _DiaryByLessonPageState();
@@ -34,7 +35,7 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
 
   void nextLesson() {
     setState(() {
-      if (selectedLesson < 2) {
+      if (selectedLesson < widget.day.studies.length) {
         selectedLesson++;
       }
     });
@@ -54,9 +55,9 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
         duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
   }
 
-  void setLesson(Lesson selectedLessonValue) async {
+  void setLesson(Lesson lesson) async {
     setState(() {
-      selectedLesson = selectedLessonValue.timetableNumber - 1;
+      selectedLesson = widget.day.studies.indexOf(lesson);
     });
     _pageController.jumpToPage(selectedLesson);
   }
@@ -82,8 +83,6 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    const Text(
-                                        'Расписания ещё нет или его не удалось получить'),
                                     ElevatedButton(
                                       onPressed: () =>
                                           diaryProvider.fetchLessonsByDay(
@@ -95,7 +94,7 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                               )
                             : Swiper<Lesson>(
                                 selectedValue:
-                                    dayLesson.lessons[selectedLesson],
+                                    dayLesson.studies[selectedLesson],
                                 prev: prevLesson,
                                 next: nextLesson,
                                 set: setLesson,
@@ -109,7 +108,7 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                                           ),
                                           selectedItemBuilder:
                                               (BuildContext context) {
-                                            return dayLesson.lessons
+                                            return dayLesson.studies
                                                 .map((lesson) {
                                               return Padding(
                                                   padding:
@@ -123,8 +122,9 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                                                             .textTheme
                                                             .displaySmall,
                                                       ),
+                                                      selectedValue.teacher != null ?
                                                       Text(
-                                                        selectedValue.teacher
+                                                        selectedValue.teacher!
                                                             .getFio(),
                                                         style: Theme.of(context)
                                                             .textTheme
@@ -132,13 +132,13 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                                                             ?.copyWith(
                                                                 color: AppColors
                                                                     .textHelper),
-                                                      ),
+                                                      ) : const SizedBox()
                                                     ],
                                                   ));
                                             }).toList();
                                           },
                                           value: selectedValue,
-                                          items: dayLesson.lessons
+                                          items: dayLesson.studies
                                               .map((lesson) =>
                                                   DropdownMenuItem<Lesson>(
                                                     value: lesson,
@@ -149,9 +149,9 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                                                           .displaySmall
                                                           ?.copyWith(
                                                               color: selectedValue
-                                                                          .lessonId ==
+                                                                          .scheduleId ==
                                                                       lesson
-                                                                          .lessonId
+                                                                          .scheduleId
                                                                   ? AppColors
                                                                       .primaryMain
                                                                   : AppColors
@@ -165,6 +165,9 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                                                 setLesson(newLesson);
                                               }
                                             });
+                                            if (newLesson != null) {
+                                              diaryProvider.fetchLesson(newLesson.startTime);
+                                            }
                                           }),
                                     ],
                                   );
@@ -199,7 +202,7 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                         selectedLesson = index;
                       });
                     },
-                    itemCount: dayLesson.lessons.length,
+                    itemCount: dayLesson.studies.length,
                     itemBuilder: (context, index) {
                       return RefreshIndicator(
                         onRefresh: () async {

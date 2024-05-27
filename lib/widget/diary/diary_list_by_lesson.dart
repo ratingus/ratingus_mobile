@@ -31,7 +31,7 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
   initState() {
     super.initState();
     selectedLesson = widget.selectedLesson;
-    lesson = widget.dayLessonDetail.lessons[selectedLesson];
+    lesson = widget.dayLessonDetail.studies[selectedLesson];
     timeTableEntry =
         currentTimetable.timetableEntry[lesson.timetableNumber - 1];
   }

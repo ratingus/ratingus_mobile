@@ -11,6 +11,8 @@ class HttpLessonRepo extends AbstractLessonRepo {
   @override
   Future<List<DayLesson>> getByWeek(DateTime date) async {
     int week = getAcademicWeekOfYear(date);
+    print("week = $week");
+    print("date = $date");
     try {
       final response = await api.dio.get('/diary/week?week=$week');
       print('Response: ${response.data}');

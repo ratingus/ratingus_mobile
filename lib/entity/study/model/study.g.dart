@@ -7,7 +7,7 @@ part of 'study.dart';
 // **************************************************************************
 
 Study _$StudyFromJson(Map<String, dynamic> json) => Study(
-      studyId: (json['studyId'] as num).toInt(),
+      teacherSubjectId: (json['teacherSubjectId'] as num).toInt(),
       timetableNumber: (json['timetableNumber'] as num).toInt(),
       subject: json['subject'] as String,
       teacher: json['teacher'] == null
@@ -18,7 +18,7 @@ Study _$StudyFromJson(Map<String, dynamic> json) => Study(
     );
 
 Map<String, dynamic> _$StudyToJson(Study instance) => <String, dynamic>{
-      'studyId': instance.studyId,
+      'teacherSubjectId': instance.teacherSubjectId,
       'timetableNumber': instance.timetableNumber,
       'subject': instance.subject,
       'teacher': instance.teacher,
