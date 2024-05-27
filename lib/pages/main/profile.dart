@@ -96,11 +96,14 @@ class _ProfilePageState extends State<ProfilePage> {
         await profileRepo.enterCode(code);
         AppMetrica.reportEvent('Пользователь добавлен в организацию');
         await _fetchUser();
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          Navigator.pop(context);
-        });
         JWT jwt = await api.decodeToken();
         _tokenNotifier.value = jwt;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Вы добавлены в новую школу"),
+          ));
+        });
       } catch (e) {
         print('Error: $e');
         AppMetrica.reportEvent(
@@ -216,23 +219,20 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Text(
                     'Изменить',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: AppColors.primaryPaper,
-                    ),
+                          color: AppColors.primaryPaper,
+                        ),
                   ),
                 ),
-
                 TextButton(
                   style: TextButton.styleFrom(
                     backgroundColor: AppColors.primaryPaper,
                   ),
-                  onPressed: () => {
-                    api.logout()
-                  },
+                  onPressed: () => {api.logout()},
                   child: Text(
                     'Выйти',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: AppColors.textPrimary,
-                    ),
+                          color: AppColors.textPrimary,
+                        ),
                   ),
                 ),
               ],
@@ -373,15 +373,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                           const SizedBox(
                                             height: 12,
                                           ),
-                                          Expanded(
-                                              child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 12),
-                                            child: SchoolTabs(
-                                                schools: profile.schools,
-                                                defaultSchoolId:
-                                                    int.parse(jwt.school!)),
-                                          )),
+                                          if (jwt.school != null)
+                                            Expanded(
+                                                child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 12),
+                                              child: SchoolTabs(
+                                                  schools: profile.schools,
+                                                  defaultSchoolId:
+                                                      int.parse(jwt.school!)),
+                                            )),
                                         ],
                                       ),
                                     ),

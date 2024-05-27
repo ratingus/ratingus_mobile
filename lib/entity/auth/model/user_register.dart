@@ -9,7 +9,7 @@ class UserRegister {
   final String name;
   final String surname;
   final String patronymic;
-  final DateTime birthdate;
+  final String birthDate;
 
   UserRegister(
       {
@@ -18,7 +18,7 @@ class UserRegister {
         required this.name,
         required this.surname,
         required this.patronymic,
-        required this.birthdate});
+        required this.birthDate});
 
   factory UserRegister.fromJson(Map<String, dynamic> json) => _$UserRegisterFromJson(json);
 

@@ -12,7 +12,7 @@ UserRegister _$UserRegisterFromJson(Map<String, dynamic> json) => UserRegister(
       name: json['name'] as String,
       surname: json['surname'] as String,
       patronymic: json['patronymic'] as String,
-      birthdate: DateTime.parse(json['birthdate'] as String),
+      birthDate: json['birthDate'] as String,
     );
 
 Map<String, dynamic> _$UserRegisterToJson(UserRegister instance) =>
@@ -22,5 +22,5 @@ Map<String, dynamic> _$UserRegisterToJson(UserRegister instance) =>
       'name': instance.name,
       'surname': instance.surname,
       'patronymic': instance.patronymic,
-      'birthdate': instance.birthdate.toIso8601String(),
+      'birthDate': instance.birthDate,
     };

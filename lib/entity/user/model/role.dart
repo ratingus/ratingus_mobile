@@ -20,6 +20,8 @@ class UserRole {
 
   static UserRole fromString(String value) {
     switch (value) {
+      case 'GUEST':
+        return guest;
       case 'STUDENT':
         return student;
       case 'TEACHER':

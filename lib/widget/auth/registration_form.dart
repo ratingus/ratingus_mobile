@@ -20,7 +20,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
   String? surname;
   String? name;
   String? patronymic;
-  DateTime? birthDate;
+  String? birthdate;
   String? login;
   String? password;
   bool _passwordVisible = false;
@@ -56,7 +56,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
         name: name!,
         surname: surname!,
         patronymic: patronymic!,
-        birthdate: birthDate!
+        birthDate: birthdate!
       ))
           .then((value) => {
       AppMetrica.reportEvent('Пользователь зарегистрировался'),
@@ -99,6 +99,9 @@ class _RegistrationFormState extends State<RegistrationForm> {
     );
     if (picked != null) {
       _dateController.text = _dateFormatter.format(picked);
+      setState(() {
+        birthdate = DateFormat("yyyy-MM-ddTHH:mm:ss.SSS").format(picked);
+      });
     }
   }
 
