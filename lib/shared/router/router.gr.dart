@@ -51,6 +51,7 @@ abstract class _$AppRouter extends RootStackRouter {
           key: args.key,
           day: args.day,
           selectedLesson: args.selectedLesson,
+          onRefetch: args.onRefetch,
         ),
       );
     },
@@ -186,6 +187,7 @@ class DiaryByLessonRoute extends PageRouteInfo<DiaryByLessonRouteArgs> {
     Key? key,
     required DayLesson day,
     required int selectedLesson,
+    required Future<void> Function() onRefetch,
     List<PageRouteInfo>? children,
   }) : super(
           DiaryByLessonRoute.name,
@@ -193,6 +195,7 @@ class DiaryByLessonRoute extends PageRouteInfo<DiaryByLessonRouteArgs> {
             key: key,
             day: day,
             selectedLesson: selectedLesson,
+            onRefetch: onRefetch,
           ),
           initialChildren: children,
         );
@@ -208,6 +211,7 @@ class DiaryByLessonRouteArgs {
     this.key,
     required this.day,
     required this.selectedLesson,
+    required this.onRefetch,
   });
 
   final Key? key;
@@ -216,9 +220,11 @@ class DiaryByLessonRouteArgs {
 
   final int selectedLesson;
 
+  final Future<void> Function() onRefetch;
+
   @override
   String toString() {
-    return 'DiaryByLessonRouteArgs{key: $key, day: $day, selectedLesson: $selectedLesson}';
+    return 'DiaryByLessonRouteArgs{key: $key, day: $day, selectedLesson: $selectedLesson, onRefetch: $onRefetch}';
   }
 }
 

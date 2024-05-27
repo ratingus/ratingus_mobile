@@ -35,7 +35,6 @@ class _DiaryListByDayState extends State<DiaryListByDay> {
 
   @override
   Widget build(BuildContext context) {
-    final diaryProvider = Provider.of<DiaryProvider>(context);
     Widget renderHomeWork(Lesson lesson) {
       if (lesson.homework != null) {
         return Column(
@@ -88,7 +87,12 @@ class _DiaryListByDayState extends State<DiaryListByDay> {
           onPressed: ()  {
             AutoRouter.of(context).push(DiaryByLessonRoute(
                 selectedLesson: day.studies.indexOf(lesson),
-                day: day));
+                day: day,
+              onRefetch: () async {
+                Provider.of<DiaryProvider>(context, listen: false)
+                    .fetchLessonsByDay(day.dateTime);
+              }
+            ));
           },
           child: StudyItem(
             study: lesson as Study,

@@ -1,6 +1,5 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:ratingus_mobile/entity/lesson/model/day_lesson.dart';
 import 'package:ratingus_mobile/entity/lesson/model/lesson.dart';
 import 'package:ratingus_mobile/shared/components/swiper.dart';
@@ -8,15 +7,14 @@ import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 import 'package:ratingus_mobile/shared/theme/consts/icons.dart';
 import 'package:ratingus_mobile/widget/diary/diary_list_by_lesson.dart';
 
-import 'diary_provider.dart';
-
 @RoutePage()
 class DiaryByLessonPage extends StatefulWidget {
   final DayLesson day;
   final int selectedLesson;
+  final Future<void> Function() onRefetch;
 
   const DiaryByLessonPage(
-      {super.key, required this.day, required this.selectedLesson});
+      {super.key, required this.day, required this.selectedLesson, required this.onRefetch});
 
   @override
   State<DiaryByLessonPage> createState() => _DiaryByLessonPageState();
@@ -35,7 +33,7 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
 
   void nextLesson() {
     setState(() {
-      if (selectedLesson < widget.day.studies.length) {
+      if (selectedLesson < widget.day.studies.length - 1) {
         selectedLesson++;
       }
     });
@@ -64,10 +62,6 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
 
   @override
   Widget build(BuildContext context) {
-    final diaryProvider = Provider.of<DiaryProvider>(context);
-    final dayLesson = diaryProvider.dayLesson;
-    final isDayLessonLoading = diaryProvider.isDayLessonLoading;
-
     return Scaffold(
         appBar: AppBar(
             backgroundColor: AppColors.backgroundPaper,
@@ -76,25 +70,9 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                 preferredSize: const Size.fromHeight(64),
                 child: LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
-                    return dayLesson == null
-                        ? const Center(child: CircularProgressIndicator())
-                        : isDayLessonLoading
-                            ? Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    ElevatedButton(
-                                      onPressed: () =>
-                                          diaryProvider.fetchLessonsByDay(
-                                              widget.dayLessonDetail),
-                                      child: const Text('Повторить'),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : Swiper<Lesson>(
+                    return Swiper<Lesson>(
                                 selectedValue:
-                                    dayLesson.studies[selectedLesson],
+                                    widget.day.studies[selectedLesson],
                                 prev: prevLesson,
                                 next: nextLesson,
                                 set: setLesson,
@@ -108,7 +86,7 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                                           ),
                                           selectedItemBuilder:
                                               (BuildContext context) {
-                                            return dayLesson.studies
+                                            return widget.day.studies
                                                 .map((lesson) {
                                               return Padding(
                                                   padding:
@@ -138,7 +116,7 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                                             }).toList();
                                           },
                                           value: selectedValue,
-                                          items: dayLesson.studies
+                                          items: widget.day.studies
                                               .map((lesson) =>
                                                   DropdownMenuItem<Lesson>(
                                                     value: lesson,
@@ -165,9 +143,6 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                                                 setLesson(newLesson);
                                               }
                                             });
-                                            if (newLesson != null) {
-                                              diaryProvider.fetchLesson(newLesson.startTime);
-                                            }
                                           }),
                                     ],
                                   );
@@ -178,37 +153,17 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                               );
                   },
                 ))),
-        body: dayLesson == null
-            ? const Center(child: CircularProgressIndicator())
-            : isDayLessonLoading
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                            'Расписания ещё нет или его не удалось получить'),
-                        ElevatedButton(
-                          onPressed: () => diaryProvider
-                              .fetchLessonsByDay(widget.dayLessonDetail),
-                          child: const Text('Повторить'),
-                        ),
-                      ],
-                    ),
-                  )
-                : PageView.builder(
+        body: PageView.builder(
                     controller: _pageController,
                     onPageChanged: (int index) {
                       setState(() {
                         selectedLesson = index;
                       });
                     },
-                    itemCount: dayLesson.studies.length,
+                    itemCount: widget.day.studies.length,
                     itemBuilder: (context, index) {
                       return RefreshIndicator(
-                        onRefresh: () async {
-                          diaryProvider
-                              .fetchLessonsByDay(widget.dayLessonDetail);
-                        },
+                        onRefresh: widget.onRefetch,
                         child: Padding(
                           padding: const EdgeInsets.all(12),
                           child: Card(
@@ -220,7 +175,7 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     DiaryListByLesson(
-                                      dayLessonDetail: dayLesson,
+                                      dayLessonDetail: widget.day,
                                       selectedLesson: index,
                                     ),
                                   ],
