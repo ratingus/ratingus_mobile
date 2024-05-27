@@ -205,18 +205,38 @@ class _ProfilePageState extends State<ProfilePage> {
                         ))),
               ],
             ),
-            TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: AppColors.primaryMain,
-              ),
-              onPressed: () => Navigator.pop(context),
-              child: Text(
-                'Изменить',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: AppColors.primaryMain,
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    'Изменить',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       color: AppColors.primaryPaper,
                     ),
-              ),
-            ),
+                  ),
+                ),
+
+                TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: AppColors.primaryPaper,
+                  ),
+                  onPressed: () => {
+                    api.logout()
+                  },
+                  child: Text(
+                    'Выйти',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                ),
+              ],
+            )
           ],
         ),
       ),

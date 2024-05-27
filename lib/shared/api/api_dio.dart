@@ -83,4 +83,9 @@ class Api {
     }
     return true;
   }
+
+  logout() {
+    secureStorage.delete(key: 'token');
+    GetIt.I<AppRouter>().popAndPush(const LoginRoute());
+  }
 }
