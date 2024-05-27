@@ -106,7 +106,13 @@ class _DiaryByWeekPageState extends State<DiaryByWeekPage> {
         },
         itemCount: 52, // Maximum number of weeks in a year - 53
         itemBuilder: (context, index) {
-          return FutureBuilder<List<DayLesson>>(
+          return RefreshIndicator(
+              onRefresh: () async {
+                setState(() {
+                  _dayLessons = _fetchDayLessons();
+                });
+          },
+          child: FutureBuilder<List<DayLesson>>(
             future: _dayLessons,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -143,7 +149,7 @@ class _DiaryByWeekPageState extends State<DiaryByWeekPage> {
                 return const Center(child: Text('Нет данных'));
               }
             },
-          );
+          ));
         },
       ),
     );
