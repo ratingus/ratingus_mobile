@@ -9,8 +9,9 @@ class Api {
   final Dio dio = Dio();
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
-  // static const basePath = 'http://192.168.0.191:5000';
-  static const basePath = 'https://ratingus.fun/spring-api';
+  static const basePath = 'http://192.168.0.191:5000';
+
+  // static const basePath = 'https://ratingus.fun/spring-api';
 
   void init() {
     dio.interceptors.add(InterceptorsWrapper(
@@ -20,31 +21,39 @@ class Api {
       ) async {
         options.path = basePath + options.path;
 
+        print("start req");
         final token = await secureStorage.read(key: 'token');
         if (await isTokenExpired()) {
+          print("token expired!");
           options.headers['Authorization'] = 'Bearer  ';
         } else {
+          print("token okay!");
           options.headers['Authorization'] = 'Bearer $token';
         }
 
+        print("req go!");
         return handler.next(options);
       },
       onResponse:
           (Response response, ResponseInterceptorHandler handler) async {
-          final setCookie = response.headers['Set-Cookie'];
-          if (setCookie != null && setCookie.isNotEmpty) {
-            final token = _extractTokenFromSetCookie(setCookie.first);
-            print("token: $token");
-            if (token != null) {
-              await secureStorage.write(key: 'token', value: token);
-            }
-          return handler.next(response);
+        print("start resp!");
+        final setCookie = response.headers['Set-Cookie'];
+        if (setCookie != null && setCookie.isNotEmpty) {
+          final token = _extractTokenFromSetCookie(setCookie.first);
+          print("token: $token");
+          if (token != null) {
+            print("await secure!");
+            await secureStorage.write(key: 'token', value: token);
+            print("success secure!");
+          }
         }
+        print("lets go!!");
+        return handler.next(response);
       },
       onError: (
-          DioException error,
-          ErrorInterceptorHandler handler,
-          ) async {
+        DioException error,
+        ErrorInterceptorHandler handler,
+      ) async {
         print("error: ${error.response}");
         print("error: ${error.response?.statusCode}");
         if (error.response?.statusCode == 403) {

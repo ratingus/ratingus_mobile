@@ -18,10 +18,9 @@ class HttpProfileRepo extends AbstractProfileRepo {
   }
 
   @override
-  Future<ProfileDto> getProfile(int userId) async {
+  Future<ProfileDto> getProfile() async {
     try {
-      final response = await api.dio.get('/profile/$userId');
-      print(response.data);
+      final response = await api.dio.get('/profile');
       return ProfileDto.fromJson(response.data);
     } catch (e) {
       print('Error: $e');
