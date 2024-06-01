@@ -31,8 +31,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
   _buildValidator(String fieldName) => (String? value) {
         if (value == null || value.isEmpty) {
           return 'Заполните поле';
-        } else if (value.length <= 3) {
-          return 'Минимум 4 символа';
         }
         return null;
       };
@@ -40,8 +38,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
   String? Function(String?) patronymicValidator = (String? value) {
     if (value == null || value.isEmpty) {
       return null;
-    } else if (value.length <= 3) {
-      return 'Минимум 4 символа';
     }
     return null;
   };
