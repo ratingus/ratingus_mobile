@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:ratingus_mobile/entity/auth/utils/token_notifier.dart';
 import 'package:ratingus_mobile/entity/class/model/class_model.dart';
@@ -9,16 +10,19 @@ import 'package:ratingus_mobile/shared/api/api_dio.dart';
 class CalendarPageViewModel {
   final TokenNotifier _tokenNotifier;
   final Api api;
-  late Future<List<DayStudy>> _studyList;
-  late Future<List<ClassItem>> _classesInSchool;
+  final ValueNotifier<List<DayStudy>> _studyList = ValueNotifier([]);
+  final ValueNotifier<List<ClassItem>> _classesInSchool = ValueNotifier([]);
   ClassItem? _selectedClass;
 
   CalendarPageViewModel(this._tokenNotifier, this.api) {
     _tokenNotifier.addListener(_onTokenChanged);
-    getClassFromToken().then((clazz) {
-      _studyList = fetchStudies(clazz);
-    });
-    _classesInSchool = fetchClasses();
+    _initData();
+  }
+
+  Future<void> _initData() async {
+    var clazz = await getClassFromToken();
+    await refreshStudies(clazz);
+    await refreshClasses();
   }
 
   void dispose() {
@@ -39,26 +43,28 @@ class CalendarPageViewModel {
     return clazz;
   }
 
-  Future<List<DayStudy>> fetchStudies(ClassItem selectedClass) async {
+  Future<void> fetchStudies(ClassItem selectedClass) async {
     var studyRepo = GetIt.I<AbstractStudyRepo>();
-    return studyRepo.getByClass(selectedClass.id);
+    var list = await studyRepo.getByClass(selectedClass.id);
+    _studyList.value = list;
   }
 
-  Future<List<ClassItem>> fetchClasses() async {
+  Future<void> fetchClasses() async {
     var classRepo = GetIt.I<AbstractClassRepo>();
-    return await classRepo.getAll();
+    var classes = await classRepo.getAll();
+    _classesInSchool.value = classes;
   }
 
   Future<void> refreshClasses() async {
-    _classesInSchool = fetchClasses();
+    await fetchClasses();
   }
 
   Future<void> refreshStudies(ClassItem clazz) async {
-    _studyList = fetchStudies(clazz);
+    await fetchStudies(clazz);
   }
 
-  Future<List<DayStudy>> get studyList => _studyList;
-  Future<List<ClassItem>> get classesInSchool => _classesInSchool;
+  ValueNotifier<List<DayStudy>> get studyList => _studyList;
+  ValueNotifier<List<ClassItem>> get classesInSchool => _classesInSchool;
   ClassItem? get selectedClass => _selectedClass;
 
   setSelectedClass(ClassItem classInSchool) {

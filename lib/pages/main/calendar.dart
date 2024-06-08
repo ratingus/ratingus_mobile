@@ -51,30 +51,16 @@ class _CalendarPageState extends State<CalendarPage> {
         toolbarHeight: 0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(48),
-          child: FutureBuilder<List<ClassItem>>(
-            future: viewModel.classesInSchool,
-            builder: (BuildContext context, AsyncSnapshot<List<ClassItem>> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: viewModel.refreshClasses,
-                        child: const Text('Повторить'),
-                      ),
-                    ],
-                  ),
-                );
-              } else {
-                var classesInSchool = snapshot.data;
-                if (classesInSchool == null) return const SizedBox();
-                return classesInSchool.isEmpty ? Text(
+          child: ValueListenableBuilder<List<ClassItem>>(
+            valueListenable: viewModel.classesInSchool,
+            builder: (BuildContext context, List<ClassItem> classesInSchool, Widget? child) {
+              if (classesInSchool.isEmpty) {
+                return Text(
                   "Классы не найдены",
                   style: Theme.of(context).textTheme.displaySmall,
-                ) : classesInSchool.length == 1 ? Padding(
+                );
+              } else if (classesInSchool.length == 1) {
+                return Padding(
                   padding: const EdgeInsets.only(right: 10),
                   child: Center(
                     child: Text(
@@ -82,7 +68,9 @@ class _CalendarPageState extends State<CalendarPage> {
                       style: Theme.of(context).textTheme.displaySmall,
                     ),
                   ),
-                ) : DropdownButton<String>(
+                );
+              } else {
+                return DropdownButton<String>(
                   hint: const Text('Выберите класс'),
                   value: viewModel.selectedClass != null ? viewModel.selectedClass!.name : 'Выберите класс',
                   icon: arrowDown,
@@ -128,29 +116,12 @@ class _CalendarPageState extends State<CalendarPage> {
           await viewModel.refreshClasses();
           await viewModel.getClassFromToken();
         },
-        child: FutureBuilder<List<DayStudy>>(
-          future: viewModel.studyList,
-          builder: (BuildContext context, AsyncSnapshot<List<DayStudy>> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Error: ${snapshot.error}'),
-                    ElevatedButton(
-                      onPressed: () {
-                        viewModel.refreshStudies(viewModel.selectedClass!);
-                      },
-                      child: const Text('Повторить'),
-                    ),
-                  ],
-                ),
-              );
+        child: ValueListenableBuilder<List<DayStudy>>(
+          valueListenable: viewModel.studyList,
+          builder: (BuildContext context, List<DayStudy> studyList, Widget? child) {
+            if (studyList.isEmpty) {
+              return const Center(child: Text('No data'));
             } else {
-              var studyList = snapshot.data;
-              if (studyList == null) return const SizedBox();
               return StudyListView<DayStudy, Study>(
                 list: studyList,
                 renderDay: (currentStudyDay) => Text(
