@@ -42,105 +42,110 @@ class _RatingusBottomNavigationBarState
         surfaceTintColor: AppColors.backgroundPaper,
         height: 60,
         child: SizedBox(
-          child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                if (viewModel.role.value == UserRole.student.value) ...[
-                  TextButton(
-                    style: ButtonStyle(
-                      padding: MaterialStateProperty.all<EdgeInsets>(
-                          const EdgeInsets.all(0)),
-                    ),
-                    onPressed: () {
-                      AppMetrica.reportEvent('Посещение объявлений');
-                      widget.onTap(0);
-                    },
-                    child: Column(
-                      children: [
-                        announcementIcon,
-                        const Text('Объявления',
-                            style: TextStyle(
-                                color: AppColors.textPrimary,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w500))
-                      ],
-                    ),
-                  ),
-                  Container(
-                    color: AppColors.backgroundMain,
-                    width: 1,
-                  ),
-                  TextButton(
-                    style: ButtonStyle(
-                      padding: MaterialStateProperty.all<EdgeInsets>(
-                          const EdgeInsets.all(0)),
-                    ),
-                    onPressed: () {
-                      AppMetrica.reportEvent('Посещение дневника');
-                      widget.onTap(1);
-                    },
-                    child: Column(
-                      children: [
-                        diaryIcon,
-                        const Text('Дневник',
-                            style: TextStyle(
-                                color: AppColors.textPrimary,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w500))
-                      ],
-                    ),
-                  ),
-                  Container(
-                    color: AppColors.backgroundMain,
-                    width: 1,
-                  ),
-                  TextButton(
-                    style: ButtonStyle(
-                      padding: MaterialStateProperty.all<EdgeInsets>(
-                          const EdgeInsets.all(0)),
-                    ),
-                    onPressed: () {
-                      AppMetrica.reportEvent('Посещение расписания');
-                      widget.onTap(2);
-                    },
-                    child: Column(
-                      children: [
-                        calendarIcon,
-                        const Text('Расписание',
-                            style: TextStyle(
-                                color: AppColors.textPrimary,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w500))
-                      ],
-                    ),
-                  ),
-                  Container(
-                    color: AppColors.backgroundMain,
-                    width: 1,
-                  )
-                ],
-                TextButton(
-                  style: ButtonStyle(
-                    padding: MaterialStateProperty.all<EdgeInsets>(
-                        const EdgeInsets.all(0)),
-                  ),
-                  onPressed: () {
-                    AppMetrica.reportEvent('Посещение профиля');
-                    widget.onTap(3);
-                  },
-                  child: Column(
-                    children: [
-                      profileIcon,
-                      const Text('Профиль',
-                          style: TextStyle(
-                              color: AppColors.textPrimary,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500))
+          child: ValueListenableBuilder<UserRole>(
+            valueListenable: viewModel.role,
+            builder: (BuildContext context, UserRole role, Widget? child) {
+              return Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    if (role.value == UserRole.student.value) ...[
+                      TextButton(
+                        style: ButtonStyle(
+                          padding: MaterialStateProperty.all<EdgeInsets>(
+                              const EdgeInsets.all(0)),
+                        ),
+                        onPressed: () {
+                          AppMetrica.reportEvent('Посещение объявлений');
+                          widget.onTap(0);
+                        },
+                        child: Column(
+                          children: [
+                            announcementIcon,
+                            const Text('Объявления',
+                                style: TextStyle(
+                                    color: AppColors.textPrimary,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500))
+                          ],
+                        ),
+                      ),
+                      Container(
+                        color: AppColors.backgroundMain,
+                        width: 1,
+                      ),
+                      TextButton(
+                        style: ButtonStyle(
+                          padding: MaterialStateProperty.all<EdgeInsets>(
+                              const EdgeInsets.all(0)),
+                        ),
+                        onPressed: () {
+                          AppMetrica.reportEvent('Посещение дневника');
+                          widget.onTap(1);
+                        },
+                        child: Column(
+                          children: [
+                            diaryIcon,
+                            const Text('Дневник',
+                                style: TextStyle(
+                                    color: AppColors.textPrimary,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500))
+                          ],
+                        ),
+                      ),
+                      Container(
+                        color: AppColors.backgroundMain,
+                        width: 1,
+                      ),
+                      TextButton(
+                        style: ButtonStyle(
+                          padding: MaterialStateProperty.all<EdgeInsets>(
+                              const EdgeInsets.all(0)),
+                        ),
+                        onPressed: () {
+                          AppMetrica.reportEvent('Посещение расписания');
+                          widget.onTap(2);
+                        },
+                        child: Column(
+                          children: [
+                            calendarIcon,
+                            const Text('Расписание',
+                                style: TextStyle(
+                                    color: AppColors.textPrimary,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500))
+                          ],
+                        ),
+                      ),
+                      Container(
+                        color: AppColors.backgroundMain,
+                        width: 1,
+                      )
                     ],
-                  ),
-                )
-              ]),
+                    TextButton(
+                      style: ButtonStyle(
+                        padding: MaterialStateProperty.all<EdgeInsets>(
+                            const EdgeInsets.all(0)),
+                      ),
+                      onPressed: () {
+                        AppMetrica.reportEvent('Посещение профиля');
+                        widget.onTap(3);
+                      },
+                      child: Column(
+                        children: [
+                          profileIcon,
+                          const Text('Профиль',
+                              style: TextStyle(
+                                  color: AppColors.textPrimary,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w500))
+                        ],
+                      ),
+                    )
+                  ]);
+            },
+          ),
         ));
   }
 }
