@@ -46,7 +46,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
   handleSubmit() {
     debugPrint('login: $login, password: $password');
-    if (login != null && password != null) {
+    if (isWatchRules && login != null && password != null && name != null && surname != null && birthdate != null) {
       authRepo
           .register(UserRegister(
         login: login!,
@@ -65,6 +65,16 @@ class _RegistrationFormState extends State<RegistrationForm> {
           errorMessage = 'Не удалось зарегистрироваться';
         });
       });
+    } else {
+      if (isWatchRules == false) {
+        setState(() {
+        errorMessage = 'Необходимо принять пользовательское соглашение';
+      });
+      } else {
+        setState(() {
+        errorMessage = 'Необходимо заполнить все поля';
+    });
+      }
     }
   }
 
@@ -216,6 +226,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                         value: isWatchRules,
                         onChanged: (value) => {
                               setState(() {
+                                errorMessage = null;
                                 isWatchRules = value ?? false;
                               })
                             }),

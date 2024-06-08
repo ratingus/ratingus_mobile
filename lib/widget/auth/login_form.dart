@@ -52,6 +52,10 @@ class _LoginFormState extends State<LoginForm> {
           errorMessage = 'Нет такого пользователя или пароль неправильный';
         });
       });
+    } else {
+      setState(() {
+        errorMessage = 'Заполните все поля';
+      });
     }
   }
 
