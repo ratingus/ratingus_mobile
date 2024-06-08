@@ -1,5 +1,6 @@
 import 'package:appmetrica_plugin/appmetrica_plugin.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
@@ -7,6 +8,7 @@ import 'package:ratingus_mobile/entity/auth/model/user_register.dart';
 import 'package:ratingus_mobile/entity/auth/repo/abstract_repo.dart';
 import 'package:ratingus_mobile/shared/router/router.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class RegistrationForm extends StatefulWidget {
@@ -238,6 +240,15 @@ class _RegistrationFormState extends State<RegistrationForm> {
                                   ?.copyWith(
                                     color: AppColors.primaryMain,
                                   ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () async {
+                                  var url = Uri(path: 'privacy.pdf', host: 'ratingus.fun', scheme: 'https');
+                                  if (await canLaunchUrl(url)) {
+                                    await launchUrl(url);
+                                  } else {
+                                    throw 'Could not launch ${url.path}';
+                                  }
+                                },
                             ),
                           ],
                         )))
