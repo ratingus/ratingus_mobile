@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:ratingus_mobile/entity/auth/utils/token_notifier.dart';
+import 'package:ratingus_mobile/entity/user/model/edit_profile_dto.dart';
 import 'package:ratingus_mobile/entity/user/model/jwt.dart';
 import 'package:ratingus_mobile/entity/user/model/profile_dto.dart';
 import 'package:ratingus_mobile/entity/user/repo/abstract_repo.dart';
@@ -169,6 +170,10 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _showEditModal(BuildContext context) {
+    String? name;
+    String? surname;
+    String? patronymic;
+
     Navigator.of(context).push(CustomModal(
       content: (BuildContext context) => Padding(
         padding:
@@ -185,16 +190,16 @@ class _ProfilePageState extends State<ProfilePage> {
                 const SizedBox(
                   height: 10,
                 ),
-                buildTextFormField(onChanged: (value) {}, labelText: 'Фамилия'),
+                buildTextFormField(onChanged: (value) => surname = value, labelText: 'Фамилия'),
                 const SizedBox(
                   height: 10,
                 ),
-                buildTextFormField(onChanged: (value) {}, labelText: 'Имя'),
+                buildTextFormField(onChanged: (value) => name = value, labelText: 'Имя'),
                 const SizedBox(
                   height: 10,
                 ),
                 buildTextFormField(
-                    onChanged: (value) {}, labelText: 'Отчество'),
+                    onChanged: (value) => patronymic = value, labelText: 'Отчество'),
                 const SizedBox(
                   height: 10,
                 ),
@@ -217,7 +222,27 @@ class _ProfilePageState extends State<ProfilePage> {
                   style: TextButton.styleFrom(
                     backgroundColor: AppColors.primaryMain,
                   ),
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () async {
+                    print('_dateController.text');
+                    print(_dateController.text);
+                    await profileRepo.editProfile(
+                        EditProfileDto(
+                            birthDate: _dateController.text == ''
+                                ? null
+                                : (){
+                              DateFormat format = DateFormat('d MMM yyyy', 'ru');
+                              DateTime date = format.parse(_dateController.text);
+                              return date.toIso8601String();
+                            }(),
+                          name: name,
+                          surname: surname,
+                          patronymic: patronymic,
+                        )
+                    );
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      Navigator.pop(context);
+                    });
+                  },
                   child: Text(
                     'Изменить',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
