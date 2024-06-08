@@ -7,6 +7,8 @@ import 'package:ratingus_mobile/shared/api/api_dio.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 import 'package:ratingus_mobile/shared/theme/consts/icons.dart';
 
+import 'bottom_navigation_bar_viewmodel.dart';
+
 class RatingusBottomNavigationBar extends StatefulWidget {
   final void Function(int, {bool notify}) onTap;
 
@@ -19,34 +21,18 @@ class RatingusBottomNavigationBar extends StatefulWidget {
 
 class _RatingusBottomNavigationBarState
     extends State<RatingusBottomNavigationBar> {
-  late final TokenNotifier _tokenNotifier;
-  final api = GetIt.I<Api>();
-  UserRole _role = UserRole.guest;
+  late final BottomNavigationBarViewModel viewModel;
 
   @override
   void initState() {
     super.initState();
-
-    _tokenNotifier = GetIt.I<TokenNotifier>();
-    _tokenNotifier.addListener(_onTokenChanged);
-    api.decodeToken().then((jwt) => {
-      _role = jwt.role,
-      _tokenNotifier.refreshToken()
-    });
+    viewModel = BottomNavigationBarViewModel(GetIt.I<TokenNotifier>(), GetIt.I<Api>());
   }
 
   @override
   void dispose() {
-    _tokenNotifier.removeListener(_onTokenChanged);
+    viewModel.dispose();
     super.dispose();
-  }
-
-  void _onTokenChanged() {
-    api.decodeToken().then((jwt) {
-      setState(() {
-        _role = jwt.role;
-      });
-    });
   }
 
   @override
@@ -60,7 +46,7 @@ class _RatingusBottomNavigationBarState
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                if (_role.value == UserRole.student.value) ...[
+                if (viewModel.role.value == UserRole.student.value) ...[
                   TextButton(
                     style: ButtonStyle(
                       padding: MaterialStateProperty.all<EdgeInsets>(
