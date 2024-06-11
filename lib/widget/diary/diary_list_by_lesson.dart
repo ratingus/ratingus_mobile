@@ -17,9 +17,10 @@ import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 class DiaryListByLesson extends StatefulWidget {
   final DayLesson dayLessonDetail;
   final int selectedLesson;
+  final Future<void> Function() onRefetch;
 
   const DiaryListByLesson(
-      {super.key, required this.dayLessonDetail, required this.selectedLesson});
+      {super.key, required this.onRefetch, required this.dayLessonDetail, required this.selectedLesson});
 
   @override
   State<DiaryListByLesson> createState() => _DiaryListByLessonState();
@@ -29,14 +30,40 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
   late int selectedLesson;
   late Lesson lesson;
   late TimetableEntry timeTableEntry;
+  final diaryRepo = GetIt.I<AbstractLessonRepo>();
+  final myFocusNode = FocusNode();
+  late TextEditingController myController;
 
   @override
   initState() {
     super.initState();
     selectedLesson = widget.selectedLesson;
     lesson = widget.dayLessonDetail.studies[selectedLesson];
+    myController = TextEditingController(text: lesson.note);
     timeTableEntry =
         currentTimetable.timetableEntry[lesson.timetableNumber - 1];
+    myFocusNode.addListener(addNote);
+  }
+
+  @override
+  void dispose() {
+    myFocusNode.removeListener(addNote);
+    myController.dispose();
+    super.dispose();
+  }
+
+  addNote() async {
+    if (!myFocusNode.hasFocus) {
+      String value = myController.text;
+      await diaryRepo.writeNote(WriteNoteDto(
+          scheduleId: lesson.scheduleId,
+          lessonId: lesson.lessonId,
+          lessonStudentId: lesson.studentLessonId,
+          text: value,
+          date: lesson.startTime));
+      widget.onRefetch();
+      AppMetrica.reportEvent('Оставлена заметка в дневнике');
+    }
   }
 
   markSlot(Lesson lesson) {
@@ -76,23 +103,14 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
     }
 
     Widget renderNote(Lesson lesson) {
-      final diaryRepo = GetIt.I<AbstractLessonRepo>();
       return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextFormField(
+              focusNode: myFocusNode,
               maxLines: null,
-              initialValue: lesson.note,
-              onFieldSubmitted: (value) async {
-                await diaryRepo.writeNote(WriteNoteDto(
-                    scheduleId: lesson.scheduleId,
-                    lessonId: lesson.lessonId,
-                    lessonStudentId: lesson.studentLessonId,
-                    text: value,
-                    date: lesson.startTime));
-                AppMetrica.reportEvent('Оставлена заметка в дневнике');
-              },
+              controller: myController,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(12),
                 border: const OutlineInputBorder().copyWith(

@@ -27,6 +27,7 @@ dependencies:
   flutter_dotenv: ^5.1.0
   flutter_secure_storage: ^4.2.1
   jwt_decoder: ^2.0.1
+  url_launcher: ^6.3.0
 
 dev_dependencies:
   flutter_test:

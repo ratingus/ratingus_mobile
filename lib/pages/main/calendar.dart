@@ -19,6 +19,8 @@ import 'package:ratingus_mobile/shared/helpers/strings.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 import 'package:ratingus_mobile/shared/theme/consts/icons.dart';
 
+import 'calendar_viewmodel.dart';
+
 @RoutePage()
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
@@ -26,76 +28,21 @@ class CalendarPage extends StatefulWidget {
   @override
   State<CalendarPage> createState() => _CalendarPageState();
 }
-class _CalendarPageState extends State<CalendarPage> {
-  late final TokenNotifier _tokenNotifier;
-  late Future<List<DayStudy>> _studyList;
-  late Future<List<ClassItem>> _classesInSchool;
-  ClassItem? _selectedClass;
-  final api = GetIt.I<Api>();
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _getClassFromToken().then((clazz) {
-      _studyList = _fetchStudies(clazz);
-    });
-    _classesInSchool = _fetchClasses();
-  }
+class _CalendarPageState extends State<CalendarPage> {
+  late final CalendarPageViewModel viewModel;
 
   @override
   void initState()  {
     super.initState();
-     _getClassFromToken().then((clazz) {
-       _refreshStudies(clazz);
-       _refreshClasses();
-     });
-     _tokenNotifier = GetIt.I<TokenNotifier>();
-    _tokenNotifier.addListener(_onTokenChanged);
+    viewModel = CalendarPageViewModel(GetIt.I<TokenNotifier>(), GetIt.I<Api>());
   }
 
   @override
   void dispose() {
-    _tokenNotifier.removeListener(_onTokenChanged);
+    viewModel.dispose();
     super.dispose();
   }
-
-  void _onTokenChanged() {
-      _getClassFromToken().then((clazz) {
-        _refreshStudies(clazz);
-        _refreshClasses();
-    });
-  }
-
-  Future<ClassItem> _getClassFromToken() async {
-    var jwt = await api.decodeToken();
-    var clazz = ClassItem(id: jwt.classId!, name: jwt.className!);
-    setState(() {
-      _selectedClass = clazz;
-    });
-    return clazz;
-  }
-
-  Future<List<DayStudy>> _fetchStudies(ClassItem selectedClass) async {
-    var studyRepo = GetIt.I<AbstractStudyRepo>();
-    return studyRepo.getByClass(selectedClass.id);
-  }
-
-  Future<List<ClassItem>> _fetchClasses() async {
-    var classRepo = GetIt.I<AbstractClassRepo>();
-    return await classRepo.getAll();
-  }
-
-  Future<void> _refreshClasses() async {
-    setState(() {
-      _classesInSchool = _fetchClasses();
-    });
-  }
-  Future<void> _refreshStudies(ClassItem clazz) async {
-    setState(() {
-      _studyList = _fetchStudies(clazz);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,30 +51,16 @@ class _CalendarPageState extends State<CalendarPage> {
         toolbarHeight: 0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(48),
-          child: FutureBuilder<List<ClassItem>>(
-            future: _classesInSchool,
-            builder: (BuildContext context, AsyncSnapshot<List<ClassItem>> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: _refreshClasses,
-                        child: const Text('Повторить'),
-                      ),
-                    ],
-                  ),
-                );
-              } else {
-                var classesInSchool = snapshot.data;
-                if (classesInSchool == null) return const SizedBox();
-                return classesInSchool.isEmpty ? Text(
+          child: ValueListenableBuilder<List<ClassItem>>(
+            valueListenable: viewModel.classesInSchool,
+            builder: (BuildContext context, List<ClassItem> classesInSchool, Widget? child) {
+              if (classesInSchool.isEmpty) {
+                return Text(
                   "Классы не найдены",
                   style: Theme.of(context).textTheme.displaySmall,
-                ) : classesInSchool.length == 1 ? Padding(
+                );
+              } else if (classesInSchool.length == 1) {
+                return Padding(
                   padding: const EdgeInsets.only(right: 10),
                   child: Center(
                     child: Text(
@@ -135,9 +68,11 @@ class _CalendarPageState extends State<CalendarPage> {
                       style: Theme.of(context).textTheme.displaySmall,
                     ),
                   ),
-                ) : DropdownButton<String>(
+                );
+              } else {
+                return DropdownButton<String>(
                   hint: const Text('Выберите класс'),
-                  value: _selectedClass != null ? _selectedClass!.name : 'Выберите класс',
+                  value: viewModel.selectedClass != null ? viewModel.selectedClass!.name : 'Выберите класс',
                   icon: arrowDown,
                   underline: const SizedBox(
                     height: 0,
@@ -163,11 +98,11 @@ class _CalendarPageState extends State<CalendarPage> {
                   }).toList(),
                   onChanged: (String? newValue) {
                     setState(() {
-                      _selectedClass = classesInSchool
+                      viewModel.setSelectedClass(classesInSchool
                           .where((classItem) => classItem.name == newValue)
-                          .firstOrNull!;
+                          .firstOrNull!);
                     });
-                    _refreshStudies(_selectedClass!);
+                    viewModel.refreshStudies(viewModel.selectedClass!);
                   },
                 );
               }
@@ -177,33 +112,16 @@ class _CalendarPageState extends State<CalendarPage> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          await _refreshStudies(_selectedClass!);
-          await _refreshClasses();
-          await _getClassFromToken();
+          await viewModel.refreshStudies(viewModel.selectedClass!);
+          await viewModel.refreshClasses();
+          await viewModel.getClassFromToken();
         },
-        child: FutureBuilder<List<DayStudy>>(
-          future: _studyList,
-          builder: (BuildContext context, AsyncSnapshot<List<DayStudy>> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Error: ${snapshot.error}'),
-                    ElevatedButton(
-                      onPressed: () {
-                        _refreshStudies(_selectedClass!);
-                      },
-                      child: const Text('Повторить'),
-                    ),
-                  ],
-                ),
-              );
+        child: ValueListenableBuilder<List<DayStudy>>(
+          valueListenable: viewModel.studyList,
+          builder: (BuildContext context, List<DayStudy> studyList, Widget? child) {
+            if (studyList.isEmpty) {
+              return const Center(child: Text('No data'));
             } else {
-              var studyList = snapshot.data;
-              if (studyList == null) return const SizedBox();
               return StudyListView<DayStudy, Study>(
                 list: studyList,
                 renderDay: (currentStudyDay) => Text(

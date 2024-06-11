@@ -10,14 +10,14 @@ class Attendance {
 
   const Attendance._(this.value);
 
-  static const Attendance was = Attendance._('Был');
+  static const Attendance late = Attendance._('Опоздал');
   static const Attendance validAbsent = Attendance._('Уважительная причина');
   static const Attendance invalidAbsent = Attendance._('Неуважительная причина');
 
   static Attendance fromString(String value) {
     switch (value) {
-      case 'Был':
-        return was;
+      case 'Опоздал':
+        return late;
       case 'Уважительная причина':
         return validAbsent;
       case 'Неуважительная причина':

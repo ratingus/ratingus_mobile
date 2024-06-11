@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CustomModal extends ModalRoute<void> {
-  final Widget content;
+  final Function(BuildContext context) content;
 
   CustomModal({required this.content});
 
@@ -31,8 +31,8 @@ class CustomModal extends ModalRoute<void> {
       ) {
     return Material(
       type: MaterialType.card,
-      child: SafeArea(
-        child: _buildOverlayContent(context),
+      child: Scaffold(
+        body: _buildOverlayContent(context),
       ),
     );
   }
@@ -40,7 +40,7 @@ class CustomModal extends ModalRoute<void> {
   Widget _buildOverlayContent(BuildContext context) {
     return Stack(
       children: <Widget>[
-        Center(child: content),
+        Center(child: content(context)),
         Positioned(
           right: 10,
           top: 10,

@@ -20,7 +20,9 @@ class StudyItem extends StatelessWidget {
     final timeTableEntry =
         currentTimetable.timetableEntry[study.timetableNumber - 1];
 
-    return Container(
+    return Opacity(
+        opacity: study.teacherSubjectId == -1 ? 0.6 : 1.0,
+        child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           color: AppColors.backgroundMain,
@@ -87,6 +89,6 @@ class StudyItem extends StatelessWidget {
                           )),
                     ))
               ],
-            )));
+            ))));
   }
 }

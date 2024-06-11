@@ -15,7 +15,6 @@ import 'entity/class/repo/http_repo.dart';
 import 'entity/lesson/repo/http_repo.dart';
 import 'entity/study/repo/abstract_repo.dart';
 import 'entity/announcement/repo/abstract_repo.dart';
-import 'entity/announcement/repo/mock_repo.dart';
 import 'entity/lesson/repo/abstract_repo.dart';
 
 import 'entity/user/repo/abstract_repo.dart';
