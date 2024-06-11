@@ -175,6 +175,7 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     DiaryListByLesson(
+                                      onRefetch: widget.onRefetch,
                                       dayLessonDetail: widget.day,
                                       selectedLesson: index,
                                     ),
