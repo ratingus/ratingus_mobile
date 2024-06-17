@@ -9,12 +9,10 @@ class HttpStudyRepo extends AbstractStudyRepo {
   Future<List<DayStudy>> getByClass(int classId) async {
     try {
       final response = await api.dio.get('/schedule/$classId');
-      print('Response: ${response.data}');
       return (response.data["dayLessons"] as List<dynamic>)
           .map((e) => DayStudy.fromJson(e as Map<String, dynamic>))
           .toList();
     } catch (e) {
-      print('Error: $e');
       rethrow;
     }
   }

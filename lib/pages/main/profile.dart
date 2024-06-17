@@ -107,7 +107,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ));
         });
       } catch (e) {
-        print('Error: $e');
+        debugPrint('Error: $e');
         AppMetrica.reportEvent(
             'Ошибка при добавлении пользователя в организацию');
         WidgetsBinding.instance.addPostFrameCallback((_) {

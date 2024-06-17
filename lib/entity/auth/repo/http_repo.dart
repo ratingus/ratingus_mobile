@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 import 'package:ratingus_mobile/entity/auth/model/user_login.dart';
 import 'package:ratingus_mobile/entity/auth/model/user_register.dart';
@@ -11,9 +12,9 @@ class HttpAuthRepo extends AbstractAuthRepo {
   Future<void> login(UserLogin userLogin) async {
     try {
       final response = await api.dio.post('/auth/login', data: userLogin.toJson());
-      print('Response: ${response.data}');
+      debugPrint('Response: ${response.data}');
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
       rethrow;
     }
   }
@@ -22,9 +23,9 @@ class HttpAuthRepo extends AbstractAuthRepo {
   Future<void> register(UserRegister userRegister) async {
     try {
       final response = await api.dio.post('/auth/register', data: userRegister.toJson());
-      print('Response: ${response.data}');
+      debugPrint('Response: ${response.data}');
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
       rethrow;
     }
   }
