@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -30,8 +32,8 @@ class _DiaryByDayPageState extends State<DiaryByDayPage> {
     super.initState();
     selectedDay = widget.date;
     _pageController = PageController(initialPage: selectedDay.weekday);
+    Provider.of<DiaryProvider>(context, listen: false).fetchLessonsByDay(selectedDay);
   }
-
 
   void nextDayOfWeek() {
     setState(() {
@@ -61,8 +63,16 @@ class _DiaryByDayPageState extends State<DiaryByDayPage> {
   @override
   Widget build(BuildContext context) {
     final diaryProvider = Provider.of<DiaryProvider>(context);
+    final dayLessons = diaryProvider.dayLessons;
     final dayLesson = diaryProvider.dayLesson;
     final isDayLessonLoading = diaryProvider.isDayLessonLoading;
+
+    int maxDaysInWeek = 0;
+    for (int i = 0; i < (dayLessons?.length ?? 0); i++) {
+        if (dayLessons![i].studies.length > maxDaysInWeek) {
+          maxDaysInWeek = dayLessons.length;
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -93,18 +103,20 @@ class _DiaryByDayPageState extends State<DiaryByDayPage> {
           setState(() {
             if (index == 0) {
               AutoRouter.of(context).popAndPush(DiaryByDayRoute(
-                  date: selectedDay.subtract(const Duration(days: 2))));
-            } else if (index == 7) {
+                  date: selectedDay.subtract(Duration(days: (8 - maxDaysInWeek)))));
+            } else if (index == (maxDaysInWeek + 1)) {
               AutoRouter.of(context).popAndPush(DiaryByDayRoute(
-                  date: selectedDay.add(const Duration(days: 2))));
+                  date: selectedDay.add(Duration(days: (8 - maxDaysInWeek)))));
             } else {
               selectedDay =
                   selectedDay.add(Duration(days: index - selectedDay.weekday));
             }
           });
-          await diaryProvider.fetchLessonsByDay(selectedDay);
+          if (index > 0 && index < (maxDaysInWeek + 1)) {
+            await diaryProvider.fetchLessonsByDay(selectedDay);
+          }
         },
-        itemCount: 8,
+        itemCount: maxDaysInWeek + 2,
         itemBuilder: (context, index) {
           return RefreshIndicator(
               onRefresh: () async {

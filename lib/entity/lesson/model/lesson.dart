@@ -13,7 +13,7 @@ class Lesson extends Study {
   final String? mark;
   final Attendance? attendance;
   final String? homework;
-  final String? note;
+  late final String? note;
 
   Lesson({
     this.mark,

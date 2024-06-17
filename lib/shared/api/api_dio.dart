@@ -59,6 +59,7 @@ class Api {
         print("error: ${error.response?.statusCode}");
         if (error.response?.statusCode == 403) {
           GetIt.I<AppRouter>().popAndPush(const LoginRoute());
+          await secureStorage.delete(key: 'token');
         }
         return handler.next(error);
       },
