@@ -24,7 +24,7 @@ class HttpAnnouncementRepo extends AbstractAnnouncementRepo {
   @override
   Future<List<Announcement>> getByClass(int classId) async {
     try {
-      final response = await api.dio.get('/announcements/$classId');
+      final response = await api.dio.get('/announcements?classId=$classId');
       debugPrint('Response: ${response.data}');
       return (response.data as List<dynamic>)
           .map((e) => Announcement.fromJson(e as Map<String, dynamic>))
