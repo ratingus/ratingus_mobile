@@ -53,6 +53,9 @@ class _SchoolTabsState extends State<SchoolTabs>
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   alignment: Alignment.centerLeft),
               onPressed: () async {
+                if (_selectedSchoolIndex == index) {
+                  return;
+                }
                 setState(() {
                   _selectedSchoolIndex = index;
                 });
@@ -76,7 +79,7 @@ class _SchoolTabsState extends State<SchoolTabs>
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ),
-            Container(
+            widget.schools[index].classDto != null ? Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   color: AppColors.backgroundMain,
@@ -85,9 +88,9 @@ class _SchoolTabsState extends State<SchoolTabs>
                   padding:
                   const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                   child: Row(
-                    children: [ClassListItem(classItem: widget.schools[index].classDto)],
+                    children: [ClassListItem(classItem: widget.schools[index].classDto!)],
                   ),
-                )),
+                )) : const SizedBox(),
           ],
         );
       },
