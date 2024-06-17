@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:ratingus_mobile/entity/auth/utils/token_notifier.dart';
-import 'package:ratingus_mobile/entity/lesson/model/day_lesson.dart';
 import 'package:ratingus_mobile/entity/lesson/repo/abstract_repo.dart';
 
 import 'package:ratingus_mobile/widget/diary/diary_list_by_week.dart';
@@ -35,8 +34,10 @@ class _DiaryByWeekPageState extends State<DiaryByWeekPage> {
 
     _tokenNotifier = GetIt.I<TokenNotifier>();
     _tokenNotifier.addListener(_onTokenChanged);
-    final diaryProvider = Provider.of<DiaryProvider>(context, listen: false);
-    diaryProvider.fetchDayLessons(getAcademicDateByWeek(weekOfYear));
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<DiaryProvider>(context, listen: false).fetchDayLessons(getAcademicDateByWeek(weekOfYear));
+    });
   }
 
   void _onTokenChanged() {
@@ -107,6 +108,7 @@ class _DiaryByWeekPageState extends State<DiaryByWeekPage> {
       body: PageView.builder(
         controller: _pageController,
         onPageChanged: (int index) {
+          final diaryProvider = Provider.of<DiaryProvider>(context, listen: false);
           diaryProvider.fetchDayLessons(getAcademicDateByWeek(index));
           setState(() {
             weekOfYear = index;
@@ -116,36 +118,34 @@ class _DiaryByWeekPageState extends State<DiaryByWeekPage> {
         itemBuilder: (context, index) {
           return RefreshIndicator(
               onRefresh: () async {
-                setState(() {
-                  diaryProvider.fetchDayLessons(getAcademicDateByWeek(weekOfYear));
-                });
-          },
-          child: isDayLessonsLoading ? const Center(child: CircularProgressIndicator()) :
+                final diaryProvider = Provider.of<DiaryProvider>(context, listen: false);
+                diaryProvider.fetchDayLessons(getAcademicDateByWeek(weekOfYear));
+              },
+              child: isDayLessonsLoading ? const Center(child: CircularProgressIndicator()) :
               dayLessons == null ?
-                 Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('Расписания ещё нет или его не удалось получить'),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            diaryProvider.fetchDayLessons(getAcademicDateByWeek(weekOfYear));
-                          });
-                        },
-                        child: const Text('Повторить'),
-                      ),
-                    ],
-                  ),
-                ) : dayLessons.isNotEmpty ? Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: dayLessons.isNotEmpty ? DiaryListByWeek(
-                      lessonList: dayLessons,
-                    ) :
-                      const Text('В этот день нет ни одного занятия'),
-                  ),
-                ) : const Center(child: Text('Нет данных')));
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Расписания ещё нет или его не удалось получить'),
+                    ElevatedButton(
+                      onPressed: () {
+                        final diaryProvider = Provider.of<DiaryProvider>(context, listen: false);
+                        diaryProvider.fetchDayLessons(getAcademicDateByWeek(weekOfYear));
+                      },
+                      child: const Text('Повторить'),
+                    ),
+                  ],
+                ),
+              ) : dayLessons.isNotEmpty ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: dayLessons.isNotEmpty ? DiaryListByWeek(
+                    lessonList: dayLessons,
+                  ) :
+                  const Text('В этот день нет ни одного занятия'),
+                ),
+              ) : const Center(child: Text('Нет данных')));
         },
       ),
     );

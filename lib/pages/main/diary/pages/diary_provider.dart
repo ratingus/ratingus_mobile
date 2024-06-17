@@ -48,7 +48,6 @@ class DiaryProvider with ChangeNotifier {
     notifyListeners();
     try {
       await fetchDayLessons(dateTime);
-      print(dateTime);
 
       if (_dayLessons == null) {
         _dayLesson = null;
@@ -77,10 +76,7 @@ class DiaryProvider with ChangeNotifier {
     _isLessonLoading = true;
     notifyListeners();
     try {
-      if (_dayLesson == null) {
-        await fetchLessonsByDay(dateTime);
-      }
-      if ((dayLesson?.dateTime != null && isSameDate(dayLesson!.dateTime, date) == false)) {
+      if (_dayLesson == null || (dayLesson?.dateTime != null && isSameDate(dayLesson!.dateTime, date) == false)) {
         await fetchLessonsByDay(dateTime);
       }
       _lesson = _dayLesson!.studies[lessonNumber];
@@ -92,14 +88,15 @@ class DiaryProvider with ChangeNotifier {
   }
 
   Future<void> updateLesson(int lessonNumber, Lesson lesson) async {
-    notifyListeners();
     try {
       if (_dayLesson?.studies != null) {
         _dayLesson!.studies[lessonNumber] = lesson;
+        _lesson = lesson;
       }
     } catch (e) {
       _lesson = null;
+    } finally {
+      notifyListeners();
     }
-    notifyListeners();
   }
 }

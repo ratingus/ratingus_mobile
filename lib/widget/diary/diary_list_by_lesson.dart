@@ -50,14 +50,6 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
   }
 
   @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-    lesson = widget.dayLessonDetail.studies[selectedLesson];
-    myController = TextEditingController(text: lesson.note);
-  }
-
-  @override
   void dispose() {
     myController.removeListener(_updateCounterText);
     myController.dispose();
@@ -99,14 +91,6 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
     final diaryProvider = Provider.of<DiaryProvider>(context);
     final dayLesson = diaryProvider.dayLesson;
     final _lesson = diaryProvider.lesson;
-
-    if ((dayLesson?.dateTime != null &&
-            isSameDate(dayLesson!.dateTime, widget.dayLessonDetail.dateTime) ==
-                false) ||
-        (_lesson == null)) {
-      diaryProvider.fetchLesson(
-          widget.dayLessonDetail.dateTime, selectedLesson);
-    }
 
     Widget renderHomeWork(Lesson lesson) {
       if (lesson.homework != null) {
@@ -155,7 +139,7 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
               onPressed: () async {
                 await addNote(lesson);
                 final l = Lesson(
-                  teacher: lesson.teacher,
+                    teacher: lesson.teacher,
                     scheduleId: lesson.scheduleId,
                     teacherSubjectId: lesson.teacherSubjectId,
                     subject: lesson.subject,
@@ -170,6 +154,8 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
                     note: myController.text);
                 await diaryProvider.updateLesson(selectedLesson, l);
                 myController = TextEditingController(text: l.note);
+                  setState(() {
+                  });
               },
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(

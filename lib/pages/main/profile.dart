@@ -223,8 +223,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     backgroundColor: AppColors.primaryMain,
                   ),
                   onPressed: () async {
-                    print('_dateController.text');
-                    print(_dateController.text);
                     await profileRepo.editProfile(
                         EditProfileDto(
                             birthDate: _dateController.text == ''
