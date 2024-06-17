@@ -16,11 +16,11 @@ class Attendance {
 
   static Attendance fromString(String value) {
     switch (value) {
-      case 'Опоздал':
+      case 'Опоздал':case 'late':
         return late;
-      case 'Уважительная причина':
+      case 'Уважительная причина':case 'validAbsent':
         return validAbsent;
-      case 'Неуважительная причина':
+      case 'Неуважительная причина':case 'invalidAbsent':
         return invalidAbsent;
       default:
         throw ArgumentError('Unknown Attendance value: $value');

@@ -9,13 +9,13 @@ class School {
   final int id;
   final String name;
   final UserRole role;
-  final ClassItem classDto;
+  final ClassItem? classDto;
 
   School({
     required this.id,
     required this.name,
     required this.role,
-    required this.classDto,
+    this.classDto,
   });
 
   factory School.fromJson(Map<String, dynamic> json) => _$SchoolFromJson(json);
