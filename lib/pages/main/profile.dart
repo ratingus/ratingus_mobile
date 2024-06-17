@@ -107,7 +107,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ));
         });
       } catch (e) {
-        print('Error: $e');
+        debugPrint('Error: $e');
         AppMetrica.reportEvent(
             'Ошибка при добавлении пользователя в организацию');
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -223,8 +223,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     backgroundColor: AppColors.primaryMain,
                   ),
                   onPressed: () async {
-                    print('_dateController.text');
-                    print(_dateController.text);
                     await profileRepo.editProfile(
                         EditProfileDto(
                             birthDate: _dateController.text == ''

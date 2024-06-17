@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -12,8 +13,6 @@ class Api {
   // static const basePath = 'http://192.168.0.191:5000';
   static const basePath = 'https://ratingus.fun/spring-api';
 
-  // static const basePath = 'https://ratingus.fun/spring-api';
-
   void init() {
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: (
@@ -22,41 +21,40 @@ class Api {
       ) async {
         options.path = basePath + options.path;
 
-        print("start req");
+        debugPrint("start req");
         final token = await secureStorage.read(key: 'token');
         if (await isTokenExpired()) {
-          print("token expired!");
+          debugPrint("token expired!");
           options.headers['Authorization'] = 'Bearer  ';
         } else {
-          print("token okay!");
+          debugPrint("token okay!");
           options.headers['Authorization'] = 'Bearer $token';
         }
 
-        print("req go!");
+        debugPrint("req go!");
         return handler.next(options);
       },
       onResponse:
           (Response response, ResponseInterceptorHandler handler) async {
-        print("start resp!");
+            debugPrint("start resp!");
         final setCookie = response.headers['Set-Cookie'];
         if (setCookie != null && setCookie.isNotEmpty) {
           final token = _extractTokenFromSetCookie(setCookie.first);
-          print("token: $token");
+          debugPrint("token: $token");
           if (token != null) {
-            print("await secure!");
+            debugPrint("await secure!");
             await secureStorage.write(key: 'token', value: token);
-            print("success secure!");
+            debugPrint("success secure!");
           }
         }
-        print("lets go!!");
+            debugPrint("lets go!!");
         return handler.next(response);
       },
       onError: (
         DioException error,
         ErrorInterceptorHandler handler,
       ) async {
-        print("error: ${error.response}");
-        print("error: ${error.response?.statusCode}");
+        debugPrint("error: ${error.response?.statusCode}");
         if (error.response?.statusCode == 403) {
           GetIt.I<AppRouter>().popAndPush(const LoginRoute());
           await secureStorage.delete(key: 'token');

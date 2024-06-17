@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 import 'package:ratingus_mobile/entity/user/model/edit_profile_dto.dart';
 import 'package:ratingus_mobile/entity/user/model/profile_dto.dart';
@@ -10,10 +11,10 @@ class HttpProfileRepo extends AbstractProfileRepo {
   @override
   Future<void> changeSchool(int schoolId) async {
     try {
-      print("schoolId: $schoolId");
+      debugPrint("schoolId: $schoolId");
       await api.dio.post('/profile/change-school', data: { 'id': schoolId });
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
       rethrow;
     }
   }
@@ -24,7 +25,7 @@ class HttpProfileRepo extends AbstractProfileRepo {
       final response = await api.dio.get('/profile');
       return ProfileDto.fromJson(response.data);
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
       rethrow;
     }
   }
@@ -34,7 +35,7 @@ class HttpProfileRepo extends AbstractProfileRepo {
     try {
       await api.dio.post('/profile/user-code', data: { "code": code });
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
       rethrow;
     }
   }
@@ -42,7 +43,7 @@ class HttpProfileRepo extends AbstractProfileRepo {
   @override
   Future<void> editProfile(EditProfileDto editProfileDto) async {
     try {
-      print(editProfileDto);
+      debugPrint(editProfileDto.toString());
       await api.dio.put('/profile', data: {
         "name": editProfileDto.name,
         "surname": editProfileDto.surname,
@@ -50,7 +51,7 @@ class HttpProfileRepo extends AbstractProfileRepo {
         "birthDate": editProfileDto.birthDate,
       });
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
       rethrow;
     }
   }

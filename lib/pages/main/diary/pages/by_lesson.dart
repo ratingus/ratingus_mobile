@@ -33,11 +33,10 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
     super.initState();
     selectedLesson = widget.selectedLesson;
     _pageController = PageController(initialPage: selectedLesson);
-    postInit();
-  }
-
-  void postInit() {
-    Provider.of<DiaryProvider>(context, listen: false).fetchLesson(widget.day.dateTime, selectedLesson);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final diaryProvider = Provider.of<DiaryProvider>(context, listen: false);
+      diaryProvider.fetchLesson(widget.day.dateTime, selectedLesson);
+    });
   }
 
   @override
@@ -45,10 +44,6 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
     final diaryProvider = Provider.of<DiaryProvider>(context);
     final dayLesson = diaryProvider.dayLesson;
     final _lesson = diaryProvider.lesson;
-
-    if ((dayLesson?.dateTime != null && isSameDate(dayLesson!.dateTime, widget.day.dateTime) == false) || (_lesson == null)) {
-      diaryProvider.fetchLesson(widget.day.dateTime, selectedLesson);
-    }
 
     void nextLesson() async {
       if (dayLesson != null) {
@@ -89,7 +84,6 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
         diaryProvider.fetchLesson(widget.day.dateTime, selectedLesson);
       }
     }
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.backgroundPaper,
@@ -173,6 +167,7 @@ class _DiaryByLessonPageState extends State<DiaryByLessonPage> {
           ? PageView.builder(
         controller: _pageController,
         onPageChanged: (int index) {
+          // Сейчас при создании нового Lesson после редактирования заметки ломается поиск в дропдауне (разные селекты)
           setState(() {
             selectedLesson = index;
           });
