@@ -94,42 +94,44 @@ class _CalendarPageState extends State<CalendarPage> {
                   ),
                 );
               } else {
-                return DropdownButton<String>(
-                  hint: const Text('Выберите класс'),
-                  value: viewModel.selectedClass.value?.name,
-                  icon: arrowDown,
-                  underline: const SizedBox(
-                    height: 0,
-                  ),
-                  selectedItemBuilder: (BuildContext context) {
-                    return classesInSchool.map((ClassItem classItem) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: Center(
-                          child: Text(
-                            classItem.name,
-                            style: Theme.of(context).textTheme.displaySmall,
+                return ValueListenableBuilder(valueListenable: viewModel.selectedClass, builder: (BuildContext context, ClassItem? selectedClass, Widget? child) {
+                  return DropdownButton<String>(
+                    hint: const Text('Выберите класс'),
+                    value: selectedClass?.name,
+                    icon: arrowDown,
+                    underline: const SizedBox(
+                      height: 0,
+                    ),
+                    selectedItemBuilder: (BuildContext context) {
+                      return classesInSchool.map((ClassItem classItem) {
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: Center(
+                            child: Text(
+                              classItem.name,
+                              style: Theme.of(context).textTheme.displaySmall,
+                            ),
                           ),
-                        ),
+                        );
+                      }).toList();
+                    },
+                    items: classesInSchool.map((ClassItem classItem) {
+                      return DropdownMenuItem<String>(
+                        value: classItem.name,
+                        child: Text(classItem.name),
                       );
-                    }).toList();
-                  },
-                  items: classesInSchool.map((ClassItem classItem) {
-                    return DropdownMenuItem<String>(
-                      value: classItem.name,
-                      child: Text(classItem.name),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      viewModel.setSelectedClass(classesInSchool
-                          .firstWhere((classItem) => classItem.name == newValue));
-                    });
-                    if (viewModel.selectedClass.value != null) {
-                      viewModel.refreshStudies(viewModel.selectedClass.value!);
-                    }
-                  },
-                );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        viewModel.setSelectedClass(classesInSchool
+                            .firstWhere((classItem) => classItem.name == newValue));
+                      });
+                      if (selectedClass != null) {
+                        viewModel.refreshStudies(selectedClass);
+                      }
+                    },
+                  );
+                });
               }
             },
           ),

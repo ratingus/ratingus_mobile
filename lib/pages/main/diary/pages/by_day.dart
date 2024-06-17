@@ -32,7 +32,10 @@ class _DiaryByDayPageState extends State<DiaryByDayPage> {
     super.initState();
     selectedDay = widget.date;
     _pageController = PageController(initialPage: selectedDay.weekday);
-    Provider.of<DiaryProvider>(context, listen: false).fetchLessonsByDay(selectedDay);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<DiaryProvider>(context, listen: false).fetchLessonsByDay(selectedDay);
+    });
   }
 
   void nextDayOfWeek() {
