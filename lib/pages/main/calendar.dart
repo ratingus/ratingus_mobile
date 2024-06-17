@@ -31,9 +31,10 @@ class CalendarPage extends StatefulWidget {
 
 class _CalendarPageState extends State<CalendarPage> {
   late final CalendarPageViewModel viewModel;
+  bool isLoading = false;
 
   @override
-  void initState()  {
+  void initState() {
     super.initState();
     viewModel = CalendarPageViewModel(GetIt.I<TokenNotifier>(), GetIt.I<Api>());
   }
@@ -43,6 +44,26 @@ class _CalendarPageState extends State<CalendarPage> {
     viewModel.dispose();
     super.dispose();
   }
+
+  Future<void> _refreshData() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      if (viewModel.selectedClass.value != null) {
+        await viewModel.refreshStudies(viewModel.selectedClass.value!);
+      }
+      await viewModel.refreshClasses();
+      await viewModel.getClassFromToken();
+    } catch (e) {
+      // handle exception if needed
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,9 +76,12 @@ class _CalendarPageState extends State<CalendarPage> {
             valueListenable: viewModel.classesInSchool,
             builder: (BuildContext context, List<ClassItem> classesInSchool, Widget? child) {
               if (classesInSchool.isEmpty) {
-                return Text(
-                  "Классы не найдены",
-                  style: Theme.of(context).textTheme.displaySmall,
+                return TextButton(
+                  child: Text("Классы не найдены",
+                      style: Theme.of(context).textTheme.displaySmall),
+                  onPressed: () async {
+                    await viewModel.refreshClasses();
+                  },
                 );
               } else if (classesInSchool.length == 1) {
                 return Padding(
@@ -72,7 +96,7 @@ class _CalendarPageState extends State<CalendarPage> {
               } else {
                 return DropdownButton<String>(
                   hint: const Text('Выберите класс'),
-                  value: viewModel.selectedClass != null ? viewModel.selectedClass!.name : 'Выберите класс',
+                  value: viewModel.selectedClass.value?.name,
                   icon: arrowDown,
                   underline: const SizedBox(
                     height: 0,
@@ -99,10 +123,11 @@ class _CalendarPageState extends State<CalendarPage> {
                   onChanged: (String? newValue) {
                     setState(() {
                       viewModel.setSelectedClass(classesInSchool
-                          .where((classItem) => classItem.name == newValue)
-                          .firstOrNull!);
+                          .firstWhere((classItem) => classItem.name == newValue));
                     });
-                    viewModel.refreshStudies(viewModel.selectedClass!);
+                    if (viewModel.selectedClass.value != null) {
+                      viewModel.refreshStudies(viewModel.selectedClass.value!);
+                    }
                   },
                 );
               }
@@ -111,11 +136,7 @@ class _CalendarPageState extends State<CalendarPage> {
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: () async {
-          await viewModel.refreshStudies(viewModel.selectedClass!);
-          await viewModel.refreshClasses();
-          await viewModel.getClassFromToken();
-        },
+        onRefresh: _refreshData,
         child: ValueListenableBuilder<List<DayStudy>>(
           valueListenable: viewModel.studyList,
           builder: (BuildContext context, List<DayStudy> studyList, Widget? child) {
@@ -129,7 +150,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       .format(getDayOfWeek(currentStudyDay.dayOfWeek))),
                   style: Theme.of(context).textTheme.displayMedium,
                 ),
-                renderItem: (study, day, _) => StudyItem(
+                renderItem: (study, day, index) => StudyItem(
                   study: study,
                 ),
               );
