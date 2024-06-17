@@ -9,10 +9,50 @@ getDayOfWeek(int dayOfWeek) {
   return now.add(Duration(days: difference)); // 2 дня вперед
 }
 
-getDayMonth(DateTime date) {
+String getMonthInGenitiveCase(int month) {
+  switch (month) {
+    case 1:
+      return 'января';
+    case 2:
+      return 'февраля';
+    case 3:
+      return 'марта';
+    case 4:
+      return 'апреля';
+    case 5:
+      return 'мая';
+    case 6:
+      return 'июня';
+    case 7:
+      return 'июля';
+    case 8:
+      return 'августа';
+    case 9:
+      return 'сентября';
+    case 10:
+      return 'октября';
+    case 11:
+      return 'ноября';
+    case 12:
+      return 'декабря';
+    default:
+      return '';
+  }
+}
+
+bool isSameDate(DateTime date1, DateTime date2) {
+  return date1.year == date2.year &&
+      date1.month == date2.month &&
+      date1.day == date2.day &&
+      date1.hour == date2.hour &&
+      date1.minute == date2.minute &&
+      date1.second == date2.second;
+}
+
+String getDayMonth(DateTime date) {
   final formatDay = DateFormat('d');
-  final formatMonth = DateFormat('MMM', 'ru_RU');
-  return '${formatDay.format(date)} ${capitalize(formatMonth.format(date))}';
+  final month = capitalize(getMonthInGenitiveCase(date.month));
+  return '${formatDay.format(date)} $month';
 }
 
 String getStringOfWeek(DateTime date) {
@@ -38,7 +78,8 @@ DateTime getAcademicDateByWeek(int weekOfYear) {
 }
 
 int getAcademicWeekOfYear(DateTime date) {
-  int weekOfYear = ((date.difference(getAcademicDate(date)).inDays) / 7).ceil() + 1;
+  int weekOfYear =
+      ((date.difference(getAcademicDate(date)).inDays) / 7).ceil() + 1;
 
   return weekOfYear;
 }

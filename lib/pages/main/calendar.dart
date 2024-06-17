@@ -129,7 +129,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       .format(getDayOfWeek(currentStudyDay.dayOfWeek))),
                   style: Theme.of(context).textTheme.displayMedium,
                 ),
-                renderItem: (study, day) => StudyItem(
+                renderItem: (study, day, _) => StudyItem(
                   study: study,
                 ),
               );

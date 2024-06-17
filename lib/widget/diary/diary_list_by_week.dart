@@ -33,8 +33,10 @@ class DiaryListByWeek extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final diaryProvider = Provider.of<DiaryProvider>(context);
-    return StudyListView<DayLesson, Lesson>(
-      list: lessonList,
+    final dayLessons = diaryProvider.dayLessons;
+
+    return dayLessons != null ? StudyListView<DayLesson, Lesson>(
+      list: dayLessons,
       renderDay: (currentDay) => TextButton(
           onPressed: () {
             diaryProvider.fetchLessonsByDay(currentDay.dateTime);
@@ -55,17 +57,19 @@ class DiaryListByWeek extends StatelessWidget {
               )
             ],
           )),
-      renderItem: (lesson, day) => TextButton(
+      renderItem: (lesson, day, index) => TextButton(
           onPressed: () {
+            diaryProvider.fetchLesson(day.dateTime, day.studies.indexOf(lesson));
             AutoRouter.of(context).push(DiaryByLessonRoute(
-                day: day, selectedLesson: day.studies.indexOf(lesson),
+                day: day,
+                selectedLesson: day.studies.indexOf(lesson),
                 onRefetch: () async {
-                  Provider.of<DiaryProvider>(context, listen: false)
-                      .fetchLessonsByDay(day.dateTime);
+                  diaryProvider
+                       .fetchLesson(day.dateTime, day.studies.indexOf(lesson));
                 }));
           },
           child:
               StudyItem(study: lesson, rightSlot: markSlot(lesson))),
-    );
+    ) : const Text("Нет расписания");
   }
 }

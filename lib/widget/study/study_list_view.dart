@@ -5,7 +5,7 @@ class StudyListView<Day extends DayWithStudies<Study>, Study>
     extends StatelessWidget {
   final List<Day> list;
   final Function(Day)? renderDay;
-  final Function(Study, Day) renderItem;
+  final Function(Study, Day, int) renderItem;
 
   const StudyListView(
       {super.key,
@@ -32,7 +32,7 @@ class StudyListView<Day extends DayWithStudies<Study>, Study>
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (BuildContext context, int index) {
-                            return renderItem(currentDay.studies[index], currentDay);
+                            return renderItem(currentDay.studies[index], currentDay, index);
                           },
                           separatorBuilder: (BuildContext context, int index) {
                             return const Divider(

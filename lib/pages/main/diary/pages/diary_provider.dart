@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:ratingus_mobile/entity/lesson/model/day_lesson.dart';
 import 'package:ratingus_mobile/entity/lesson/model/lesson.dart';
 import 'package:ratingus_mobile/entity/lesson/repo/abstract_repo.dart';
+import 'package:ratingus_mobile/shared/helpers/datetime.dart';
 
 class DiaryProvider with ChangeNotifier {
   final AbstractLessonRepo _lessonRepo;
@@ -47,6 +48,7 @@ class DiaryProvider with ChangeNotifier {
     notifyListeners();
     try {
       await fetchDayLessons(dateTime);
+      print(dateTime);
 
       if (_dayLessons == null) {
         _dayLesson = null;
@@ -70,21 +72,34 @@ class DiaryProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchLesson(DateTime date) async {
+  Future<void> fetchLesson(DateTime date, int lessonNumber) async {
     var dateTime = date.add(const Duration(minutes: 1));
-    print("dateTime: $dateTime");
     _isLessonLoading = true;
     notifyListeners();
     try {
-      if (_dayLesson != null) {
-        _lesson = _dayLesson!.studies.where((element) => element.startTime.isBefore(dateTime) && element.endTime.isAfter(dateTime)).first;
-      } else {
-        _lesson = null;
+      if (_dayLesson == null) {
+        await fetchLessonsByDay(dateTime);
       }
+      if ((dayLesson?.dateTime != null && isSameDate(dayLesson!.dateTime, date) == false)) {
+        await fetchLessonsByDay(dateTime);
+      }
+      _lesson = _dayLesson!.studies[lessonNumber];
     } catch (e) {
       _lesson = null;
     }
     _isLessonLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> updateLesson(int lessonNumber, Lesson lesson) async {
+    notifyListeners();
+    try {
+      if (_dayLesson?.studies != null) {
+        _dayLesson!.studies[lessonNumber] = lesson;
+      }
+    } catch (e) {
+      _lesson = null;
+    }
     notifyListeners();
   }
 }
