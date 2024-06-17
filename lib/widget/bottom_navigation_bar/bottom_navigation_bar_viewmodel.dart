@@ -6,7 +6,7 @@ import 'package:ratingus_mobile/shared/api/api_dio.dart';
 class BottomNavigationBarViewModel {
   final TokenNotifier _tokenNotifier;
   final Api api;
-  ValueNotifier<UserRole> _role = ValueNotifier(UserRole.guest);
+  final ValueNotifier<UserRole> _role = ValueNotifier(UserRole.guest);
 
   BottomNavigationBarViewModel(this._tokenNotifier, this.api) {
     _tokenNotifier.addListener(_onTokenChanged);

@@ -12,7 +12,7 @@ class CalendarPageViewModel {
   final Api api;
   final ValueNotifier<List<DayStudy>> _studyList = ValueNotifier([]);
   final ValueNotifier<List<ClassItem>> _classesInSchool = ValueNotifier([]);
-  ClassItem? _selectedClass;
+  final ValueNotifier<ClassItem?> _selectedClass = ValueNotifier(null);
 
   CalendarPageViewModel(this._tokenNotifier, this.api) {
     _tokenNotifier.addListener(_onTokenChanged);
@@ -20,9 +20,10 @@ class CalendarPageViewModel {
   }
 
   Future<void> _initData() async {
-    var clazz = await getClassFromToken();
-    await refreshStudies(clazz);
     await refreshClasses();
+    var clazz = await getClassFromToken();
+    if (clazz == null) return;
+    await refreshStudies(clazz);
   }
 
   void dispose() {
@@ -30,16 +31,23 @@ class CalendarPageViewModel {
   }
 
   void _onTokenChanged() {
+    refreshClasses();
     getClassFromToken().then((clazz) {
-      refreshStudies(clazz);
-      refreshClasses();
+      if (clazz != null) {
+        refreshStudies(clazz);
+      }
     });
   }
 
-  Future<ClassItem> getClassFromToken() async {
+  Future<ClassItem?> getClassFromToken() async {
     var jwt = await api.decodeToken();
+    if (jwt.classId == null || jwt.className == null) {
+      var clazz = _classesInSchool.value.firstOrNull;
+      if (_classesInSchool.value.contains(_selectedClass.value) == false || (clazz != null && _selectedClass.value == null)) _selectedClass.value = clazz;
+      return clazz;
+    }
     var clazz = ClassItem(id: jwt.classId!, name: jwt.className!);
-    _selectedClass = clazz;
+    _selectedClass.value ??= clazz;
     return clazz;
   }
 
@@ -65,9 +73,9 @@ class CalendarPageViewModel {
 
   ValueNotifier<List<DayStudy>> get studyList => _studyList;
   ValueNotifier<List<ClassItem>> get classesInSchool => _classesInSchool;
-  ClassItem? get selectedClass => _selectedClass;
+  ValueNotifier<ClassItem?> get selectedClass => _selectedClass;
 
   setSelectedClass(ClassItem classInSchool) {
-    _selectedClass = classInSchool;
+    _selectedClass.value = classInSchool;
   }
 }

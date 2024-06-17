@@ -77,10 +77,12 @@ class _DiaryListByDayState extends State<DiaryListByDay> {
         height: 0,
       );
     }
+    final diaryProvider = Provider.of<DiaryProvider>(context);
+    final dayLesson = diaryProvider.dayLesson;
 
-    return StudyListView<DayLesson, Lesson>(
-      list: widget.lessonList,
-      renderItem: (lesson, day) => TextButton(
+    return dayLesson != null ? StudyListView<DayLesson, Lesson>(
+      list: [dayLesson],
+      renderItem: (lesson, day, _) => TextButton(
           style: ButtonStyle(
               padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
                   const EdgeInsets.all(0))),
@@ -89,7 +91,7 @@ class _DiaryListByDayState extends State<DiaryListByDay> {
                 selectedLesson: day.studies.indexOf(lesson),
                 day: day,
               onRefetch: () async {
-                Provider.of<DiaryProvider>(context, listen: false)
+                diaryProvider
                     .fetchLessonsByDay(day.dateTime);
               }
             ));
@@ -105,6 +107,6 @@ class _DiaryListByDayState extends State<DiaryListByDay> {
               ],
             ),
           )),
-    );
+    ) : const Text("Загрузка...");
   }
 }
