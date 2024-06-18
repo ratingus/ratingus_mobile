@@ -50,11 +50,11 @@ class _CalendarPageState extends State<CalendarPage> {
       isLoading = true;
     });
     try {
+      await viewModel.refreshClasses();
+      await viewModel.getClassFromToken();
       if (viewModel.selectedClass.value != null) {
         await viewModel.refreshStudies(viewModel.selectedClass.value!);
       }
-      await viewModel.refreshClasses();
-      await viewModel.getClassFromToken();
     } catch (e) {
       // handle exception if needed
     } finally {
@@ -122,13 +122,14 @@ class _CalendarPageState extends State<CalendarPage> {
                       );
                     }).toList(),
                     onChanged: (String? newValue) {
+                      final newClass = classesInSchool
+                          .where((classItem) => classItem.name == newValue).firstOrNull;
                       setState(() {
-                        viewModel.setSelectedClass(classesInSchool
-                            .firstWhere((classItem) => classItem.name == newValue));
+                        viewModel.setSelectedClass(newClass);
+                        if (newClass != null) {
+                          viewModel.refreshStudies(newClass);
+                        }
                       });
-                      if (selectedClass != null) {
-                        viewModel.refreshStudies(selectedClass);
-                      }
                     },
                   );
                 });
