@@ -26,7 +26,8 @@ class _RatingusBottomNavigationBarState
   @override
   void initState() {
     super.initState();
-    viewModel = BottomNavigationBarViewModel(GetIt.I<TokenNotifier>(), GetIt.I<Api>());
+    viewModel =
+        BottomNavigationBarViewModel(GetIt.I<TokenNotifier>(), GetIt.I<Api>());
   }
 
   @override
@@ -49,7 +50,7 @@ class _RatingusBottomNavigationBarState
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-
+                    if (role.value != UserRole.guest.value) ...[
                       TextButton(
                         style: ButtonStyle(
                           padding: MaterialStateProperty.all<EdgeInsets>(
@@ -73,34 +74,35 @@ class _RatingusBottomNavigationBarState
                       Container(
                         color: AppColors.backgroundMain,
                         width: 1,
-                      ),
-                      if (role.value == UserRole.student.value)
-                      ...[
-                        TextButton(
-                          style: ButtonStyle(
-                            padding: MaterialStateProperty.all<EdgeInsets>(
-                                const EdgeInsets.all(0)),
-                          ),
-                          onPressed: () {
-                            AppMetrica.reportEvent('Посещение дневника');
-                            widget.onTap(1);
-                          },
-                          child: Column(
-                            children: [
-                              diaryIcon,
-                              const Text('Дневник',
-                                  style: TextStyle(
-                                      color: AppColors.textPrimary,
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w500))
-                            ],
-                          ),
+                      )
+                    ],
+                    if (role.value == UserRole.student.value) ...[
+                      TextButton(
+                        style: ButtonStyle(
+                          padding: MaterialStateProperty.all<EdgeInsets>(
+                              const EdgeInsets.all(0)),
                         ),
-                        Container(
-                          color: AppColors.backgroundMain,
-                          width: 1,
-                        )
-                      ],
+                        onPressed: () {
+                          AppMetrica.reportEvent('Посещение дневника');
+                          widget.onTap(1);
+                        },
+                        child: Column(
+                          children: [
+                            diaryIcon,
+                            const Text('Дневник',
+                                style: TextStyle(
+                                    color: AppColors.textPrimary,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500))
+                          ],
+                        ),
+                      ),
+                      Container(
+                        color: AppColors.backgroundMain,
+                        width: 1,
+                      )
+                    ],
+                    if (role.value != UserRole.guest.value) ...[
                       TextButton(
                         style: ButtonStyle(
                           padding: MaterialStateProperty.all<EdgeInsets>(
@@ -125,10 +127,12 @@ class _RatingusBottomNavigationBarState
                         color: AppColors.backgroundMain,
                         width: 1,
                       ),
+                    ],
                     TextButton(
                       style: ButtonStyle(
                         padding: MaterialStateProperty.all<EdgeInsets>(
-                            const EdgeInsets.all(0)),
+                            const EdgeInsets.all(0),
+                        ),
                       ),
                       onPressed: () {
                         AppMetrica.reportEvent('Посещение профиля');
@@ -137,11 +141,14 @@ class _RatingusBottomNavigationBarState
                       child: Column(
                         children: [
                           profileIcon,
-                          const Text('Профиль',
-                              style: TextStyle(
-                                  color: AppColors.textPrimary,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500))
+                          const Text(
+                            'Профиль',
+                            style: TextStyle(
+                                color: AppColors.textPrimary,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500,
+                            ),
+                          )
                         ],
                       ),
                     )
