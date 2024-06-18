@@ -80,6 +80,7 @@ class Api {
 
       return JWT.fromJson(decodedToken);
     }
+    logout();
     throw "Нет токена";
   }
 
@@ -93,8 +94,8 @@ class Api {
     return true;
   }
 
-  logout() {
-    secureStorage.delete(key: 'token');
+  logout() async {
+    await secureStorage.delete(key: 'token');
     GetIt.I<AppRouter>().popAndPush(const LoginRoute());
   }
 }
