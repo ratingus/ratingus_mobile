@@ -335,5 +335,8 @@ buildTextFormField({
           borderRadius: const BorderRadius.all(Radius.circular(10)),
         ),
         labelText: labelText,
+        labelStyle: const TextStyle(
+          color: AppColors.textHelper,
+        ),
       ));
 }
