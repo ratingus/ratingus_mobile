@@ -11,7 +11,7 @@ import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 
 class SchoolTabs extends StatefulWidget {
   final List<School> schools;
-  final int defaultSchoolId;
+  final int? defaultSchoolId;
 
   const SchoolTabs({super.key, required this.schools, required this.defaultSchoolId});
 

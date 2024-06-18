@@ -103,7 +103,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
       initialDate: getSelectedDate() ??
           DateTime.now().subtract(const Duration(days: 365 * 7)),
       firstDate: DateTime(1900),
-      lastDate: DateTime.now().subtract(const Duration(days: 365 * 6)),
+      lastDate: DateTime.now().subtract(const Duration(days: 365 * 4)),
     );
     if (picked != null) {
       _dateController.text = _dateFormatter.format(picked);

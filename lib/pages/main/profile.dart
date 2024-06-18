@@ -82,7 +82,7 @@ class _ProfilePageState extends State<ProfilePage> {
       initialDate: getSelectedDate() ??
           DateTime.now().subtract(const Duration(days: 365 * 7)),
       firstDate: DateTime(1900),
-      lastDate: DateTime.now().subtract(const Duration(days: 365 * 6)),
+      lastDate: DateTime.now().subtract(const Duration(days: 365 * 4)),
     );
     if (picked != null) {
       _dateController.text = _dateFormatter.format(picked);
@@ -97,7 +97,7 @@ class _ProfilePageState extends State<ProfilePage> {
             'Отправлен запрос на подключение пользователя к организации');
         await profileRepo.enterCode(code);
         AppMetrica.reportEvent('Пользователь добавлен в организацию');
-        await _fetchUser();
+        await _refreshUser();
         JWT jwt = await api.decodeToken();
         _tokenNotifier.value = jwt;
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -121,7 +121,7 @@ class _ProfilePageState extends State<ProfilePage> {
     var changeCodeModal = CustomModal(
       content: (BuildContext context) => Padding(
         padding:
-        const EdgeInsets.only(top: 64, left: 16, right: 16, bottom: 16),
+            const EdgeInsets.only(top: 64, left: 16, right: 16, bottom: 16),
         child: Form(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -156,8 +156,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Text(
                   'Ввести код',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: AppColors.primaryPaper,
-                  ),
+                        color: AppColors.primaryPaper,
+                      ),
                 ),
               ),
             ],
@@ -190,16 +190,20 @@ class _ProfilePageState extends State<ProfilePage> {
                 const SizedBox(
                   height: 10,
                 ),
-                buildTextFormField(onChanged: (value) => surname = value, labelText: 'Фамилия'),
-                const SizedBox(
-                  height: 10,
-                ),
-                buildTextFormField(onChanged: (value) => name = value, labelText: 'Имя'),
+                buildTextFormField(
+                    onChanged: (value) => surname = value,
+                    labelText: 'Фамилия'),
                 const SizedBox(
                   height: 10,
                 ),
                 buildTextFormField(
-                    onChanged: (value) => patronymic = value, labelText: 'Отчество'),
+                    onChanged: (value) => name = value, labelText: 'Имя'),
+                const SizedBox(
+                  height: 10,
+                ),
+                buildTextFormField(
+                    onChanged: (value) => patronymic = value,
+                    labelText: 'Отчество'),
                 const SizedBox(
                   height: 10,
                 ),
@@ -223,20 +227,24 @@ class _ProfilePageState extends State<ProfilePage> {
                     backgroundColor: AppColors.primaryMain,
                   ),
                   onPressed: () async {
-                    await profileRepo.editProfile(
-                        EditProfileDto(
-                            birthDate: _dateController.text == ''
-                                ? null
-                                : (){
-                              DateFormat format = DateFormat('d MMM yyyy', 'ru');
-                              DateTime date = format.parse(_dateController.text);
+                    if (name?.trim().isEmpty == true || surname?.trim().isEmpty == true || patronymic?.trim().isEmpty == true) {
+                      return;
+                    }
+                    await profileRepo.editProfile(EditProfileDto(
+                      birthDate: _dateController.text == ''
+                          ? null
+                          : () {
+                              DateFormat format =
+                                  DateFormat('d MMM yyyy', 'ru');
+                              DateTime date =
+                                  format.parse(_dateController.text);
                               return date.toIso8601String();
                             }(),
-                          name: name,
-                          surname: surname,
-                          patronymic: patronymic,
-                        )
-                    );
+                      name: name?.trim(),
+                      surname: surname?.trim(),
+                      patronymic: patronymic?.trim(),
+                    ));
+                    await _refreshUser();
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       Navigator.pop(context);
                     });
@@ -267,7 +275,6 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     ));
   }
-
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -275,154 +282,152 @@ class _ProfilePageState extends State<ProfilePage> {
         await _refreshUser();
       },
       child: FutureBuilder<ProfileDto>(
-          future: _profileDto.timeout(const Duration(seconds: 10), onTimeout: () {
-            throw TimeoutException('Превышено время ожидания');
-          }),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Ошибка: ${snapshot.error}'));
-            } else if (!snapshot.hasData || snapshot.data == null) {
-              return const Center(child: Text('Данные не найдены'));
-            } else {
-              final profile = snapshot.data!;
-              return FutureBuilder<JWT>(
-                  future: api.decodeToken(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Ошибка: ${snapshot.error}'));
-                    } else if (!snapshot.hasData || snapshot.data == null) {
-                      return const Center(child: Text('Данные не найдены'));
-                    } else {
-                      final jwt = snapshot.data!;
-                      return Stack(
+        future: _profileDto.timeout(const Duration(seconds: 10), onTimeout: () {
+          throw TimeoutException('Превышено время ожидания');
+        }),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Ошибка: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data == null) {
+            return const Center(child: Text('Данные не найдены'));
+          } else {
+            final profile = snapshot.data!;
+            return FutureBuilder<JWT>(
+              future: api.decodeToken(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Ошибка: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data == null) {
+                  return const Center(child: Text('Данные не найдены'));
+                } else {
+                  final jwt = snapshot.data!;
+                  return Stack(
+                    children: <Widget>[
+                      const Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          const Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Image(
-                                  image: AssetImage(
-                                      "assets/images/profile_empty_back_image.png"),
-                                  height: 180,
-                                  fit: BoxFit.fitHeight,
-                                )
-                              ]),
-                          Positioned(
-                              top: 180 - 20,
-                              left: 0,
-                              right: 0,
-                              bottom: 2,
-                              child: Card(
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20)),
+                          Image(
+                            image: AssetImage(
+                              "assets/images/profile_empty_back_image.png",
+                            ),
+                            height: 180,
+                            fit: BoxFit.fitHeight,
+                          ),
+                        ],
+                      ),
+                      Positioned(
+                        top: 180 - 20,
+                        left: 0,
+                        right: 0,
+                        bottom: 2,
+                        child: Card(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                  horizontal: 6,
                                 ),
-                                child: Column(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 12, horizontal: 6),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          PressedIconButton(
-                                            onPressed: () {
-                                              AppMetrica.reportEvent(
-                                                  'Нажата кнопка "Ввести код"');
-                                              _showCodeModal(context);
-                                            },
-                                            icon: addUserIcon,
-                                            activeIcon: activeAddUserIcon,
-                                          ),
-                                          PressedIconButton(
-                                            onPressed: () {
-                                              _showEditModal(context);
-                                            },
-                                            icon: settingsIcon,
-                                            activeIcon: activeSettingsIcon,
-                                          ),
-                                        ],
-                                      ),
+                                    PressedIconButton(
+                                      onPressed: () {
+                                        AppMetrica.reportEvent(
+                                          'Нажата кнопка "Ввести код"',
+                                        );
+                                        _showCodeModal(context);
+                                      },
+                                      icon: addUserIcon,
+                                      activeIcon: activeAddUserIcon,
                                     ),
-                                    Flexible(
-                                        child: ConstrainedBox(
-                                            constraints: const BoxConstraints(
-                                              maxHeight: 0,
-                                            ),
-                                            child: const Stack(
-                                              clipBehavior: Clip.none,
-                                              children: [
-                                                Positioned(
-                                                  top: -128 - 12,
-                                                  left: 0,
-                                                  right: 0,
-                                                  child: ProfileIcon(size: 128),
-                                                ),
-                                              ],
-                                            ))),
-                                    Flexible(
-                                      flex: 30,
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            profile.login,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .displayMedium
-                                                ?.copyWith(
-                                                    color:
-                                                        AppColors.textPrimary),
-                                          ),
-                                          Text(
-                                            profile.getFio(),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .displaySmall
-                                                ?.copyWith(
-                                                    color:
-                                                        AppColors.textPrimary),
-                                          ),
-                                          Text(
-                                            DateFormat('d MMM yyyy', 'ru')
-                                                .format(profile.birthdate)
-                                                .toLowerCase(),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleLarge
-                                                ?.copyWith(
-                                                    color:
-                                                        AppColors.textHelper),
-                                          ),
-                                          const SizedBox(
-                                            height: 12,
-                                          ),
-                                          if (jwt.school != null)
-                                            Expanded(
-                                                child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 12),
-                                              child: SchoolTabs(
-                                                  schools: profile.schools,
-                                                  defaultSchoolId:
-                                                      int.parse(jwt.school!)),
-                                            )),
-                                        ],
-                                      ),
+                                    PressedIconButton(
+                                      onPressed: () {
+                                        _showEditModal(context);
+                                      },
+                                      icon: settingsIcon,
+                                      activeIcon: activeSettingsIcon,
                                     ),
                                   ],
                                 ),
-                              ))
-                        ],
-                      );
-                    }
-                  });
-            }
-          }),
+                              ),
+                              Flexible(
+                                child: ConstrainedBox(
+                                  constraints: const BoxConstraints(
+                                    maxHeight: 0,
+                                  ),
+                                  child: const Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      Positioned(
+                                        top: -128 - 12,
+                                        left: 0,
+                                        right: 0,
+                                        child: ProfileIcon(size: 128),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Flexible(
+                                flex: 30,
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      profile.login,
+                                      style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                                        color: AppColors.textPrimary,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    Text(
+                                      profile.getFio(),
+                                      style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                                        color: AppColors.textPrimary,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    Text(
+                                      DateFormat('d MMM yyyy', 'ru').format(profile.birthdate).toLowerCase(),
+                                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                        color: AppColors.textHelper,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(
+                                      height: 12,
+                                    ),
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                                          child: SchoolTabs(
+                                            schools: profile.schools,
+                                            defaultSchoolId: jwt.school == null ? null : int.parse(jwt.school!),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+              },
+            );
+          }
+        },
+      ),
     );
   }
-}
+  }
