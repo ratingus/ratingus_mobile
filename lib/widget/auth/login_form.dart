@@ -25,16 +25,12 @@ class _LoginFormState extends State<LoginForm> {
   String? Function(String?) usernameValidator = (String? username) {
     if (username == null || username.isEmpty) {
       return 'Логин не может быть пустым';
-    } else if (username.length < 3) {
-      return 'Логин должен быть длиннее 2 символов';
     }
     return null;
   };
   String? Function(String?) passwordValidator = (String? password) {
     if (password == null || password.isEmpty) {
       return 'Пароль не может быть пустым';
-    } else if (password.length < 3) {
-      return 'Пароль должен быть длиннее 2 символов';
     }
     return null;
   };
