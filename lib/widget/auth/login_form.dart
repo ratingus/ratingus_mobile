@@ -92,7 +92,6 @@ class _LoginFormState extends State<LoginForm> {
             TextFormField(
                 validator: passwordValidator,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                style: Theme.of(context).textTheme.bodySmall,
                 keyboardType: TextInputType.visiblePassword,
                 obscureText: !_passwordVisible,
                 onChanged: (value) {
