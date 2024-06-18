@@ -239,7 +239,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ),
                                     PressedIconButton(
                                       onPressed: () {
-                                        _showEditModal(context, new EditProfileDto(
+                                        _showEditModal(context, EditProfileDto(
                                           name: profile.name,
                                           surname: profile.surname,
                                           patronymic: profile.patronymic,
