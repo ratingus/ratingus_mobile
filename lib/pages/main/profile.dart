@@ -16,6 +16,7 @@ import 'package:ratingus_mobile/shared/components/pressed_button.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
 import 'package:ratingus_mobile/shared/theme/consts/icons.dart';
 import 'package:ratingus_mobile/widget/auth/registration_form.dart';
+import 'package:ratingus_mobile/widget/edit_profile_modal/edit_profile_modal.dart';
 import 'package:ratingus_mobile/widget/profile/profile_icon.dart';
 import 'package:ratingus_mobile/widget/school/tab_school.dart';
 
@@ -73,20 +74,6 @@ class _ProfilePageState extends State<ProfilePage> {
     _dateController.dispose();
     _tokenNotifier.removeListener(_onTokenChanged);
     super.dispose();
-  }
-
-  Future<void> _selectDate() async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      locale: const Locale('ru', 'RU'),
-      initialDate: getSelectedDate() ??
-          DateTime.now().subtract(const Duration(days: 365 * 7)),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now().subtract(const Duration(days: 365 * 4)),
-    );
-    if (picked != null) {
-      _dateController.text = _dateFormatter.format(picked);
-    }
   }
 
   void _showCodeModal(BuildContext context) {
@@ -169,112 +156,14 @@ class _ProfilePageState extends State<ProfilePage> {
     Navigator.of(context).push(changeCodeModal);
   }
 
-  void _showEditModal(BuildContext context) {
-    String? name;
-    String? surname;
-    String? patronymic;
-
-    Navigator.of(context).push(CustomModal(
-      content: (BuildContext context) => Padding(
-        padding:
-            const EdgeInsets.only(top: 64, left: 16, right: 16, bottom: 16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Column(
-              children: [
-                Text(
-                  'Профиль',
-                  style: Theme.of(context).textTheme.displayMedium,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                buildTextFormField(
-                    onChanged: (value) => surname = value,
-                    labelText: 'Фамилия'),
-                const SizedBox(
-                  height: 10,
-                ),
-                buildTextFormField(
-                    onChanged: (value) => name = value, labelText: 'Имя'),
-                const SizedBox(
-                  height: 10,
-                ),
-                buildTextFormField(
-                    onChanged: (value) => patronymic = value,
-                    labelText: 'Отчество'),
-                const SizedBox(
-                  height: 10,
-                ),
-                buildTextFormField(
-                    readOnly: true,
-                    controller: _dateController,
-                    labelText: 'Дата рождения',
-                    suffixIcon: InkWell(
-                        onTap: _selectDate,
-                        child: const Icon(
-                          Icons.calendar_today_outlined,
-                          color: AppColors.textHelper,
-                        ))),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: AppColors.primaryMain,
-                  ),
-                  onPressed: () async {
-                    if (name?.trim().isEmpty == true || surname?.trim().isEmpty == true || patronymic?.trim().isEmpty == true) {
-                      return;
-                    }
-                    await profileRepo.editProfile(EditProfileDto(
-                      birthDate: _dateController.text == ''
-                          ? null
-                          : () {
-                              DateFormat format =
-                                  DateFormat('d MMM yyyy', 'ru');
-                              DateTime date =
-                                  format.parse(_dateController.text);
-                              return date.toIso8601String();
-                            }(),
-                      name: name?.trim(),
-                      surname: surname?.trim(),
-                      patronymic: patronymic?.trim(),
-                    ));
-                    await _refreshUser();
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      Navigator.pop(context);
-                    });
-                  },
-                  child: Text(
-                    'Изменить',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: AppColors.primaryPaper,
-                        ),
-                  ),
-                ),
-                TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: AppColors.primaryPaper,
-                  ),
-                  onPressed: () => {api.logout()},
-                  child: Text(
-                    'Выйти',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: AppColors.textPrimary,
-                        ),
-                  ),
-                ),
-              ],
-            )
-          ],
-        ),
+  void _showEditModal(BuildContext context, EditProfileDto editProfileDto) {
+    Navigator.of(context).push(
+      CustomModal(
+        content: (BuildContext context) => EditProfileModal(editProfileDto: editProfileDto, refreshUser: _refreshUser),
       ),
-    ));
+    );
   }
+
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -350,7 +239,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ),
                                     PressedIconButton(
                                       onPressed: () {
-                                        _showEditModal(context);
+                                        _showEditModal(context, new EditProfileDto(
+                                          name: profile.name,
+                                          surname: profile.surname,
+                                          patronymic: profile.patronymic,
+                                          birthDate: profile.birthdate.toIso8601String(),
+                                        ));
                                       },
                                       icon: settingsIcon,
                                       activeIcon: activeSettingsIcon,
