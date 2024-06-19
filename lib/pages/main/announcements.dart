@@ -37,32 +37,30 @@ class _AnnouncementsPageState extends State<AnnouncementsPage>
 
   void _onTokenChanged() async {
     isLoading = true;
-    setState(() {
-    });
+    setState(() {});
     try {
       role = (await api.decodeToken()).role;
-        _tabController = TabController(length: role == UserRole.student ? 2 : 1, vsync: this);
+      _tabController =
+          TabController(length: role == UserRole.student ? 2 : 1, vsync: this);
     } catch (error) {
     } finally {
       isLoading = false;
     }
-    setState(() {
-    });
+    setState(() {});
   }
 
   void _initialize() async {
     isLoading = true;
-    setState(() {
-    });
+    setState(() {});
     try {
       role = (await api.decodeToken()).role;
-        _tabController = TabController(length: role == UserRole.student ? 2 : 1, vsync: this);
-        isLoading = false;
+      _tabController =
+          TabController(length: role == UserRole.student ? 2 : 1, vsync: this);
+      isLoading = false;
     } catch (error) {
-        isLoading = false;
+      isLoading = false;
     }
-    setState(() {
-    });
+    setState(() {});
   }
 
   @override
