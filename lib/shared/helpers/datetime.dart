@@ -49,10 +49,10 @@ bool isSameDate(DateTime date1, DateTime date2) {
       date1.second == date2.second;
 }
 
-String getDayMonth(DateTime date) {
+String getDayMonth(DateTime date, bool? isShort) {
   final formatDay = DateFormat('d');
   final month = capitalize(getMonthInGenitiveCase(date.month));
-  return '${formatDay.format(date)} $month';
+  return '${formatDay.format(date)} ${isShort == true ? month.toString().substring(0, 3) : month}';
 }
 
 String getStringOfWeek(DateTime date) {
@@ -66,7 +66,7 @@ String getStringOfWeek(DateTime date) {
 
   final startString =
       '${formatDay.format(startOfWeek)}${isMonthDifferent ? ' ${capitalize(formatMonth.format(startOfWeek))}' : ''}';
-  final endString = '${getDayMonth(endOfWeek)}';
+  final endString = '${getDayMonth(endOfWeek, false)}';
 
   return '$startString - $endString';
 }

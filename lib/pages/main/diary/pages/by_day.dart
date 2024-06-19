@@ -92,7 +92,7 @@ class _DiaryByDayPageState extends State<DiaryByDayPage> {
                 set: setDayOfWeek,
                 renderSelectDate: ({required DateTime selectedDate}) {
                   return Text(
-                      '${capitalize(DateFormat('EEE', 'ru').format(selectedDate))}, ${getDayMonth(selectedDate)}',
+                      '${capitalize(DateFormat('EEE', 'ru').format(selectedDate))}, ${getDayMonth(selectedDate, false)}',
                       style: Theme.of(context).textTheme.displaySmall);
                 },
               );
