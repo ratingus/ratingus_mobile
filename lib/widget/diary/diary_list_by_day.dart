@@ -105,6 +105,7 @@ class _DiaryListByDayState extends State<DiaryListByDay> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 renderHomeWork(lesson),
+                if (lesson.homework != null || lesson.note != null)
                 const SizedBox(height: 8,),
                 renderNote(lesson),
               ],

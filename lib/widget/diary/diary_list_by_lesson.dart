@@ -81,6 +81,12 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
           lessonStudentId: lesson.studentLessonId,
           text: value,
           date: lesson.startTime));
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              "Заметка сохранена!"),
+        ));
+      });
 
       AppMetrica.reportEvent('Оставлена заметка в дневнике');
     }
@@ -224,6 +230,7 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           renderHomeWork(_lesson),
+                          if (lesson.homework != null || lesson.mark != null || lesson.attendance != null)
                           const SizedBox(height: 8,),
                           markSlot(_lesson),
                         ]),
