@@ -43,11 +43,12 @@ class _DiaryListByDayState extends State<DiaryListByDay> {
           children: [
             Text(
               "Домашнее задание:",
-              style: Theme.of(context).textTheme.titleLarge,
+              style: Theme.of(context).textTheme.displaySmall,
             ),
+            const SizedBox(height: 4,),
             Text(
               lesson.homework!,
-              style: Theme.of(context).textTheme.bodySmall,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
           ],
         );
@@ -65,11 +66,12 @@ class _DiaryListByDayState extends State<DiaryListByDay> {
             children: [
               Text(
                 "Заметки:",
-                style: Theme.of(context).textTheme.titleLarge,
+                style: Theme.of(context).textTheme.displaySmall,
               ),
+              const SizedBox(height: 4,),
               Text(
                 lesson.note!,
-                style: Theme.of(context).textTheme.bodySmall,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
             ]);
       }
@@ -103,6 +105,7 @@ class _DiaryListByDayState extends State<DiaryListByDay> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 renderHomeWork(lesson),
+                const SizedBox(height: 8,),
                 renderNote(lesson),
               ],
             ),

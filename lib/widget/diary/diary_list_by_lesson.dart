@@ -102,9 +102,10 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
               'Д/з',
               style: Theme.of(context).textTheme.displayMedium,
             ),
+            const SizedBox(height: 4,),
             Text(
               lesson.homework!,
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
           ],
         );
@@ -219,10 +220,11 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(12),
-                    child: Row(
+                    child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           renderHomeWork(_lesson),
+                          const SizedBox(height: 8,),
                           markSlot(_lesson),
                         ]),
                   ),
