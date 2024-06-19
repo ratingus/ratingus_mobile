@@ -11,8 +11,16 @@ class AttendanceMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LessonMark(
-      mark: capitalize(attendance.toString()).substring(0, 1),
+    return Row(
+      children: [
+        Text(
+          'Посещаемость: ',
+          style: Theme.of(context).textTheme.displaySmall,
+        ),
+        LessonMark(
+          mark: capitalize(attendance.toString()).substring(0, 1),
+        )
+      ],
     );
   }
 }

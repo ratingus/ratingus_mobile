@@ -105,7 +105,7 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Д/з',
+              'Д/з: ',
               style: Theme.of(context).textTheme.displayMedium,
             ),
             const SizedBox(height: 4,),
