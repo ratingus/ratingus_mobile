@@ -189,7 +189,7 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
                         ?.copyWith(color: AppColors.textHelper),
                   ),
                   Text(
-                    getDayMonth(widget.dayLessonDetail.dateTime),
+                    getDayMonth(widget.dayLessonDetail.dateTime, false),
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge
