@@ -54,8 +54,12 @@ class StudyItem extends StatelessWidget {
                       child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.start,
                             children: [
-                              Row(
+                              Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
