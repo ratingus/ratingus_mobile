@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:ratingus_mobile/entity/auth/utils/token_notifier.dart';
 import 'package:ratingus_mobile/entity/user/model/role.dart';
 import 'package:ratingus_mobile/shared/api/api_dio.dart';
 import 'package:ratingus_mobile/shared/theme/consts/colors.dart';
@@ -20,6 +21,7 @@ class AnnouncementsPage extends StatefulWidget {
 
 class _AnnouncementsPageState extends State<AnnouncementsPage>
     with SingleTickerProviderStateMixin {
+  late final TokenNotifier _tokenNotifier;
   late TabController _tabController;
   final api = GetIt.I<Api>();
   late UserRole? role;
@@ -28,25 +30,44 @@ class _AnnouncementsPageState extends State<AnnouncementsPage>
   @override
   void initState() {
     super.initState();
+    _tokenNotifier = GetIt.I<TokenNotifier>();
+    _tokenNotifier.addListener(_onTokenChanged);
     _initialize();
   }
 
-  Future<void> _initialize() async {
+  void _onTokenChanged() async {
+    isLoading = true;
+    setState(() {
+    });
     try {
       role = (await api.decodeToken()).role;
-      setState(() {
+        _tabController = TabController(length: role == UserRole.student ? 2 : 1, vsync: this);
+    } catch (error) {
+    } finally {
+      isLoading = false;
+    }
+    setState(() {
+    });
+  }
+
+  void _initialize() async {
+    isLoading = true;
+    setState(() {
+    });
+    try {
+      role = (await api.decodeToken()).role;
         _tabController = TabController(length: role == UserRole.student ? 2 : 1, vsync: this);
         isLoading = false;
-      });
     } catch (error) {
-      setState(() {
         isLoading = false;
-      });
     }
+    setState(() {
+    });
   }
 
   @override
   void dispose() {
+    _tokenNotifier.removeListener(_onTokenChanged);
     _tabController.dispose();
     super.dispose();
   }
