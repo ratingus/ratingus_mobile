@@ -51,7 +51,7 @@ class _CalendarPageState extends State<CalendarPage> {
     });
     try {
       await viewModel.refreshClasses();
-      await viewModel.getClassFromToken();
+      var clas = await viewModel.getClassFromToken();
       if (viewModel.selectedClass.value != null) {
         await viewModel.refreshStudies(viewModel.selectedClass.value!);
       }
