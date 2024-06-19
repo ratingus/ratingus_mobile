@@ -81,6 +81,12 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
           lessonStudentId: lesson.studentLessonId,
           text: value,
           date: lesson.startTime));
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              "Заметка сохранена!"),
+        ));
+      });
 
       AppMetrica.reportEvent('Оставлена заметка в дневнике');
     }
@@ -102,9 +108,10 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
               'Д/з',
               style: Theme.of(context).textTheme.displayMedium,
             ),
+            const SizedBox(height: 4,),
             Text(
               lesson.homework!,
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
           ],
         );
@@ -189,7 +196,7 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
                         ?.copyWith(color: AppColors.textHelper),
                   ),
                   Text(
-                    getDayMonth(widget.dayLessonDetail.dateTime),
+                    getDayMonth(widget.dayLessonDetail.dateTime, false),
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge
@@ -219,10 +226,12 @@ class _DiaryListByLessonState extends State<DiaryListByLesson> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(12),
-                    child: Row(
+                    child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           renderHomeWork(_lesson),
+                          if (lesson.homework != null || lesson.mark != null || lesson.attendance != null)
+                          const SizedBox(height: 8,),
                           markSlot(_lesson),
                         ]),
                   ),

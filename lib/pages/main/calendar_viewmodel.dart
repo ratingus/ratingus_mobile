@@ -30,8 +30,8 @@ class CalendarPageViewModel {
     _tokenNotifier.removeListener(_onTokenChanged);
   }
 
-  void _onTokenChanged() {
-    refreshClasses();
+  void _onTokenChanged() async {
+    await refreshClasses();
     getClassFromToken().then((clazz) {
       if (clazz != null) {
         refreshStudies(clazz);
@@ -41,16 +41,20 @@ class CalendarPageViewModel {
 
   Future<ClassItem?> getClassFromToken() async {
     var jwt = await api.decodeToken();
+    var myClazz = _classesInSchool.value.where((e) => e.id == _selectedClass.value?.id).firstOrNull;
     if (jwt.classId == null || jwt.className == null) {
       var clazz = _classesInSchool.value.firstOrNull;
-      if (_classesInSchool.value.where((e) => e.name == _selectedClass.value?.name).firstOrNull == null || (clazz != null && _selectedClass.value == null)) {
+      if (myClazz != null) {
+        _selectedClass.value = myClazz;
+        return myClazz;
+      } else if (clazz != null) {
         _selectedClass.value = clazz;
         return clazz;
       } else {
         return _selectedClass.value;
       }
     }
-    if (_classesInSchool.value.where((e) => e.name == _selectedClass.value?.name).firstOrNull == null) {
+    if (myClazz == null) {
       var clazz = ClassItem(id: jwt.classId!, name: jwt.className!);
       _selectedClass.value = clazz;
       return clazz;

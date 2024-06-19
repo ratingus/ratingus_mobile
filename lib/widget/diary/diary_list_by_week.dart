@@ -52,7 +52,7 @@ class DiaryListByWeek extends StatelessWidget {
                 style: Theme.of(context).textTheme.displayMedium,
               ),
               Text(
-                getDayMonth(currentDay.dateTime),
+                getDayMonth(currentDay.dateTime, true),
                 style: Theme.of(context).textTheme.displaySmall,
               )
             ],
