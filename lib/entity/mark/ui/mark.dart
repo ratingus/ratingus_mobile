@@ -24,10 +24,15 @@ class LessonMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(mark,
-        style: Theme.of(context)
-            .textTheme
-            .displayLarge
-            ?.copyWith(color: getColorMark(mark)));
+    return Row(
+      children: [
+        Text('Оценка: ', style: Theme.of(context).textTheme.displayMedium),
+        Text(mark,
+            style: Theme.of(context)
+                .textTheme
+                .displayLarge
+                ?.copyWith(color: getColorMark(mark))),
+      ],
+    );
   }
 }
